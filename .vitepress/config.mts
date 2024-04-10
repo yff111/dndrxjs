@@ -3,7 +3,8 @@ import { defineConfig } from "vitepress"
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "superdrop",
-  description: "a versatile drag & drop js library",
+  description: "simple low level drag & drop library based on rxjs",
+  base: "/superdrop/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
