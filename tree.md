@@ -12,18 +12,7 @@ import dragImageMiddleware  from './src/drag-image'
 import { moveTreeNodesById }  from './src/utils'
 
 
-const NestedList = defineComponent({
-  name: 'nested-list', 
-  props: { node: Object, parent: String, level: Number}, 
-  template:`
-    <ul v-if='node.children && node.children.length > 0' style="margin: 0">
-      <li v-for='(child, index) in node.children' :key='child.id'  style='margin: 0;'>
-        <span style='display: block' :data-index='index' :data-id='child.id' :data-level='level' :data-parent-id='parent' >{{child.name}}  <span v-if='child.children.length'>({{child.children.length}})</span></span>
-        <nested-list v-if='child.children && child.children.length' :node='child' :level='level + 1' :parent='child.id'></nested-list>
-      </li>
-    </ul>`
-})
-
+import  Tree  from './src/Tree.vue'
 
 const root = ref({id: "root", children: data})
 const container = ref(null)
@@ -56,7 +45,7 @@ onMounted(() => {
 **Demo**
 
 <div ref='container' >
-<nested-list :node='root' :level='0' ></nested-list>
+<tree :node='root' :level='0' ></tree>
 </div>
 
 <style>
