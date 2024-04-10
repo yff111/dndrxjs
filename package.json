@@ -36,9 +36,9 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build-fast": "tsup",
-    "build": "pnpm run build-fast -- --dts-resolve",
+    "build": "npm run build-fast -- --dts-resolve",
     "test": "vitest run",
-    "prepublishOnly": "pnpm run build",
+    "prepublishOnly": "npm run build",
     "docs:dev": "vitepress dev",
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview"
