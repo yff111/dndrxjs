@@ -1,0 +1,303 @@
+[
+  { "id": "1", "name": "Lecidella Lichen", "allowed": true, "children": [] },
+  {
+    "id": "2",
+    "name": "Richardson's Calliergon Moss",
+    "allowed": true,
+    "children": [
+      {
+        "id": "98",
+        "name": "Bactrospora Lichen",
+        "allowed": false,
+        "children": []
+      },
+      { "id": "99", "name": "Suksdorfia", "allowed": true, "children": [] },
+      { "id": "100", "name": "Cercipo", "allowed": true, "children": [] }
+    ]
+  },
+  { "id": "3", "name": "White Deadnettle", "allowed": true, "children": [] },
+  {
+    "id": "4",
+    "name": "Latin American Mock Vervain",
+    "allowed": false,
+    "children": []
+  },
+  { "id": "5", "name": "Whitehead", "allowed": true, "children": [] },
+  { "id": "6", "name": "Field Paspalum", "allowed": true, "children": [] },
+  {
+    "id": "7",
+    "name": "Porcupine River Thimbleweed",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "8", "name": "Desert Wirelettuce", "allowed": true, "children": [] },
+  { "id": "9", "name": "Whitetop", "allowed": true, "children": [] },
+  { "id": "10", "name": "Rough Pricklypoppy", "allowed": true, "children": [] },
+  {
+    "id": "11",
+    "name": "Roughhairy Maiden Fern",
+    "allowed": false,
+    "children": []
+  },
+  {
+    "id": "12",
+    "name": "Priest Valley Spineflower",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "13", "name": "Talinopsis", "allowed": true, "children": [] },
+  { "id": "14", "name": "Orthodontium Moss", "allowed": true, "children": [] },
+  {
+    "id": "15",
+    "name": "Calkins' Wart Lichen",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "16", "name": "Devil Cholla", "allowed": true, "children": [] },
+  { "id": "17", "name": "Forest Clermontia", "allowed": true, "children": [] },
+  {
+    "id": "18",
+    "name": "Towering Jacob's-ladder",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "19", "name": "Agrimony", "allowed": true, "children": [] },
+  {
+    "id": "20",
+    "name": "Japanese Meadowsweet",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "21", "name": "Yellow Thistle", "allowed": true, "children": [] },
+  {
+    "id": "22",
+    "name": "Woodland Tuftedorchid",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "23", "name": "Nevada Sumpweed", "allowed": true, "children": [] },
+  { "id": "24", "name": "California Figwort", "allowed": true, "children": [] },
+  { "id": "25", "name": "Chihuahuan Sedge", "allowed": true, "children": [] },
+  { "id": "26", "name": "Erect Milkpea", "allowed": false, "children": [] },
+  { "id": "27", "name": "Chaparral Clarkia", "allowed": true, "children": [] },
+  { "id": "28", "name": "Star Tickseed", "allowed": true, "children": [] },
+  {
+    "id": "29",
+    "name": "Panamint Mountain Lupine",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "30", "name": "Mixed Jointfir", "allowed": true, "children": [] },
+  { "id": "31", "name": "Leafy Wildparsley", "allowed": true, "children": [] },
+  {
+    "id": "32",
+    "name": "San Miguel Milkvetch",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "33",
+    "name": "Pingpong-ball Cactus",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "34",
+    "name": "Lavender Oldfield Aster",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "35", "name": "Largeleaf Phlox", "allowed": true, "children": [] },
+  { "id": "36", "name": "Laurel Amarillo", "allowed": true, "children": [] },
+  { "id": "37", "name": "Bruised Lichen", "allowed": false, "children": [] },
+  { "id": "38", "name": "Grama", "allowed": true, "children": [] },
+  { "id": "39", "name": "Chess-apple", "allowed": true, "children": [] },
+  {
+    "id": "40",
+    "name": "Brandegee's Clarkia",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "41",
+    "name": "Largeleaf Rose Gentian",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "42", "name": "Dirinaria Lichen", "allowed": false, "children": [] },
+  { "id": "43", "name": "Bastard Cherry", "allowed": true, "children": [] },
+  {
+    "id": "44",
+    "name": "Cylindric Navel Lichen",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "45",
+    "name": "Falfurrias Milkvine",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "46", "name": "Snakeroot", "allowed": true, "children": [] },
+  {
+    "id": "47",
+    "name": "Eared Indian Plantain",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "48",
+    "name": "San Benito Monardella",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "49",
+    "name": "Trans-pecos Morning-glory",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "50", "name": "Diffuse Dot Lichen", "allowed": true, "children": [] },
+  {
+    "id": "51",
+    "name": "Carrotleaf Horkelia",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "52",
+    "name": "Goldenmane Tickseed",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "53", "name": "Woolly Paperflower", "allowed": true, "children": [] },
+  { "id": "54", "name": "Alpine Aster", "allowed": true, "children": [] },
+  { "id": "55", "name": "Dwarf Euonymus", "allowed": true, "children": [] },
+  { "id": "56", "name": "Omphalora", "allowed": true, "children": [] },
+  { "id": "57", "name": "Asthmaweed", "allowed": true, "children": [] },
+  {
+    "id": "58",
+    "name": "Island Mountain Mahogany",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "59",
+    "name": "Kohala False Ohelo",
+    "allowed": false,
+    "children": []
+  },
+  { "id": "60", "name": "Velvet Lichen", "allowed": true, "children": [] },
+  { "id": "61", "name": "Largehead Sedge", "allowed": true, "children": [] },
+  {
+    "id": "62",
+    "name": "Small Limestone Moss",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "63", "name": "Laurel Oak", "allowed": true, "children": [] },
+  { "id": "64", "name": "Butterfly Palm", "allowed": true, "children": [] },
+  { "id": "65", "name": "Gray's Beaksedge", "allowed": true, "children": [] },
+  { "id": "66", "name": "Haha", "allowed": true, "children": [] },
+  { "id": "67", "name": "Sharpleaf Twinpod", "allowed": true, "children": [] },
+  { "id": "68", "name": "Scamman's Oxytrope", "allowed": true, "children": [] },
+  { "id": "69", "name": "Addersmeat", "allowed": true, "children": [] },
+  {
+    "id": "70",
+    "name": "Canelo Lady's Tresses",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "71",
+    "name": "Little River Canyon Onion",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "72", "name": "Paulownia", "allowed": true, "children": [] },
+  { "id": "73", "name": "Nigella", "allowed": false, "children": [] },
+  {
+    "id": "74",
+    "name": "Tunbridge Filmy Fern",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "75", "name": "Dimple Lichen", "allowed": false, "children": [] },
+  {
+    "id": "76",
+    "name": "Lanceleaf Ticktrefoil",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "77",
+    "name": "Ornduff's Goldfields",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "78", "name": "Thoroughwort", "allowed": true, "children": [] },
+  {
+    "id": "79",
+    "name": "Howard's Evening Primrose",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "80",
+    "name": "Torrey's Blue Eyed Mary",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "81", "name": "Ginseng", "allowed": true, "children": [] },
+  { "id": "82", "name": "Redwood Keckiella", "allowed": false, "children": [] },
+  { "id": "83", "name": "Hairy Snakefern", "allowed": true, "children": [] },
+  { "id": "84", "name": "Beach Pea", "allowed": false, "children": [] },
+  {
+    "id": "85",
+    "name": "Broom-like Ragwort",
+    "allowed": false,
+    "children": []
+  },
+  {
+    "id": "86",
+    "name": "Vitt's Candle Snuffer Moss",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "87",
+    "name": "Palmer's Monardella",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "88", "name": "White Box", "allowed": true, "children": [] },
+  { "id": "89", "name": "Rimmed Lichen", "allowed": true, "children": [] },
+  { "id": "90", "name": "Pacific Silverweed", "allowed": true, "children": [] },
+  {
+    "id": "91",
+    "name": "Narrowleaf Crimson Clover",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "92", "name": "Swartz's Flatsedge", "allowed": true, "children": [] },
+  { "id": "93", "name": "Curcuma", "allowed": false, "children": [] },
+  {
+    "id": "94",
+    "name": "Hall's Woolly Sunflower",
+    "allowed": true,
+    "children": []
+  },
+  {
+    "id": "95",
+    "name": "Threadleaf Crowfoot",
+    "allowed": true,
+    "children": []
+  },
+  { "id": "96", "name": "Clubmoss", "allowed": true, "children": [] },
+  {
+    "id": "97",
+    "name": "Crandall's Beardtongue",
+    "allowed": true,
+    "children": []
+  }
+]
