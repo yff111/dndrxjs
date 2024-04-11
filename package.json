@@ -1,6 +1,6 @@
 {
   "name": "dnd-rxjs-ts",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Drag & Drop rxjs ts library – low level, modular, performant.",
   "author": "yff111",
   "license": "MIT",
