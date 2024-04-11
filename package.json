@@ -1,7 +1,10 @@
 {
   "name": "dnd-rxjs-ts",
   "version": "0.0.1",
-  "description": "dnd-rxjs-ts",
+  "description": "simple, low level and modular drag & drop library based on rxjs",
+  "author": "yff111",
+  "license": "MIT",
+  "repository": "https://github.com/yff111/dnd-rxjs-ts.git",
   "publishConfig": {
     "access": "public",
     "registry": "https://npm.pkg.github.com"
@@ -44,7 +47,6 @@
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview"
   },
-  "license": "MIT",
   "dependencies": {
     "rxjs": "^7.8.1"
   },
