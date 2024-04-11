@@ -1,7 +1,7 @@
 {
-  "name": "superdrop.ts",
-  "version": "0.0.0",
-  "description": "superdrop",
+  "name": "dnd-rxjs-ts",
+  "version": "0.0.1",
+  "description": "dnd-rxjs-ts",
   "publishConfig": {
     "access": "public"
   },

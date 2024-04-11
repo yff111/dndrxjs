@@ -1,5 +1,5 @@
 
-# superdrop
+# dnd-rxjs-ts
  
 simple low level drag & drop library based on rxjs
 
