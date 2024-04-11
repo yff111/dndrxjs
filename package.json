@@ -7,7 +7,7 @@
   "repository": "https://github.com/yff111/dnd-rxjs-ts.git",
   "publishConfig": {
     "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "@yff111:registry": "https://npm.pkg.github.com"
   },
   "tsup": {
     "entry": [
