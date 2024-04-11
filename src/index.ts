@@ -22,6 +22,7 @@ import {
   GetRectFn,
   DragDropPayload,
   DragDropOptions,
+  GetElementIdFn,
 } from "./types"
 
 /**
@@ -60,36 +61,39 @@ export const calcPosition = (
 export const useDragDrop = (
   container: HTMLElement,
   options: DragDropOptions,
-  middlewares: DragDropMiddleware[] = [],
+  middleware: DragDropMiddleware[] = [],
 ) => {
   const {
-    idAttribute = "data-id",
     targetSelector = "[data-id]",
-    handleSelector = "[data-id]" || options.targetSelector, // use target selector when no handle selector was provided
-    onDragEnd,
+    // use target selector when no handle selector was provided
+    handleSelector = "[data-id]" || options.targetSelector,
     dropPositionFn = () => "around",
     getSelectedElements,
+    getElementId = (el: HTMLElement) => el.getAttribute("data-id") as string,
     vertical = true,
     dragOverThrottle = 50,
-    ignoreSelectors = "button:not([data-id]), a:not([data-id]), input, textarea",
+    onDrop,
     onDragStart,
+    onBeforeDragStart = (el: HTMLElement) =>
+      !el.closest("button:not([data-id]), a:not([data-id]), input, textarea"),
   } = options
 
   const setAttributesTo = (
     selector: string,
     attribute: string,
     value: string,
-    parent: Element = container,
+    parent: HTMLElement = container,
   ) =>
     parent
       .querySelectorAll(selector)
       .forEach((e: Element) => e.setAttribute(attribute, value))
 
+  console.log("handleSelector", handleSelector)
   const mousedown$ = fromEvent<MouseEvent>(container, "mousedown")
   const mouseDownSubscription = mousedown$.subscribe((e: MouseEvent) => {
-    !(e.target as Element)?.closest(ignoreSelectors) &&
-      (e.target as Element)?.closest(handleSelector) &&
-      (e.target as Element)
+    onBeforeDragStart(e.target! as HTMLElement) &&
+      (e.target as HTMLElement)?.closest(handleSelector) &&
+      (e.target as HTMLElement)
         .closest(targetSelector)!
         ?.setAttribute("draggable", "true")
   })
@@ -115,12 +119,12 @@ export const useDragDrop = (
   > = {}
 
   const getRectCached: GetRectFn = (
-    element: Element,
-    idAttributeLocal: string = idAttribute,
+    element: HTMLElement,
+    getElementIdLocal: GetElementIdFn = getElementId,
   ) => {
-    const id = element.getAttribute(idAttributeLocal)
+    const id = getElementIdLocal(element)
     return (
-      boundingRectCache[id!] ||
+      // boundingRectCache[id!] ||
       (boundingRectCache[id!] = [element.getBoundingClientRect()].map(
         ({ width, height, x, y }) => ({
           width,
@@ -133,22 +137,22 @@ export const useDragDrop = (
   }
   // returns 0 or element width or height
   const getRelativeOffsetValue = vertical
-    ? (evt: DragEvent, element: Element) =>
+    ? (evt: DragEvent, element: HTMLElement) =>
         evt.pageY < getRectCached(element).y ? 0 : getRectCached(element).height
-    : (evt: DragEvent, element: Element) =>
+    : (evt: DragEvent, element: HTMLElement) =>
         evt.pageX < getRectCached(element).x ? 0 : getRectCached(element).width
 
   const calcPositionLocal = vertical
     ? (dropElement: HTMLElement, dragElement: HTMLElement, offset: number) =>
         calcPosition(
           dragElement !== dropElement
-            ? dropPositionFn({ target: dropElement, from: dragElement })
+            ? dropPositionFn({ dropElement, dragElement })
             : "none",
         )(offset, getRectCached(dropElement).height)
     : (dropElement: HTMLElement, dragElement: HTMLElement, offset: number) =>
         calcPosition(
           dragElement !== dropElement
-            ? dropPositionFn({ target: dropElement, from: dragElement })
+            ? dropPositionFn({ dropElement, dragElement })
             : "none",
         )(offset, getRectCached(dropElement).width)
 
@@ -166,7 +170,7 @@ export const useDragDrop = (
                 getRectCached(el).x,
                 getRectCached(el).y,
               ),
-            ] as [Element, number],
+            ] as [HTMLElement, number],
         )
         .sort((a, b) => a[1] - b[1])[0][0]
 
@@ -175,13 +179,13 @@ export const useDragDrop = (
       : [0, null, evt]
   }
 
-  const documentDragOver = (e: Event) => e.preventDefault()
+  // const documentDragOver = (e: Event) => e.preventDefault()
   let dragOverSubscription: Subscription | null = null
   let dragEndSubscription: Subscription | null = null
   let dropSubscription: Subscription | null = null
 
-  const middlewareReturns = middlewares.map((m) =>
-    m({ vertical, container, getRectCached, idAttribute, scrollContainer }),
+  const middlewareReturns = middleware.map((m) =>
+    m({ vertical, container, getRectCached, getElementId, scrollContainer }),
   )
   const dragStartSubscription = dragStart$
     .pipe(
@@ -189,10 +193,7 @@ export const useDragDrop = (
         e.dataTransfer!.effectAllowed = "move"
         e.dataTransfer!.dropEffect = "move"
 
-        const target = e.target as Element
-        // prevents drag end animation
-        document.addEventListener("dragover", documentDragOver)
-
+        const target = e.target as HTMLElement
         // abort if text was selected
         if (window.getSelection()?.type === "Range") {
           e.preventDefault()
@@ -210,8 +211,10 @@ export const useDragDrop = (
 
         // subscribe to following drag events
         dragOverSubscription = dragOverSubscribe()
-        dragEndSubscription = dragEndSubscribe()
-        dropSubscription = dropSubscribe()
+        dragEndSubscription = subscribeToDragEndEvent()
+        dropSubscription = subscribeToDropEvent()
+
+        scrollContainer = getClosestScrollContainer(e.target as HTMLElement)
 
         // flush rectangle cache
         boundingRectCache = {}
@@ -226,6 +229,7 @@ export const useDragDrop = (
           m.onDragStart?.({
             dragElement: currentDragElement!,
             selectedElements,
+            scrollContainer,
             event: e,
           }),
         )
@@ -242,6 +246,8 @@ export const useDragDrop = (
   const dragOverSubscribe = () =>
     dragOver$
       .pipe(
+        // prevents drag end animation
+        tap((dragEvent: DragEvent) => dragEvent.preventDefault()),
         dragOverThrottle ? throttleTime(dragOverThrottle) : tap(),
         map(
           (dragEvent: DragEvent) =>
@@ -284,16 +290,15 @@ export const useDragDrop = (
         map(([offset, dropElement, dragEvent]) => ({
           position: calcPositionLocal(
             dropElement!,
-            // dropElement?.querySelector("span")!,
             currentDragElement!,
             offset,
           ),
           dropElement: dropElement!,
-          fromId: dropElement!.getAttribute(idAttribute),
           dragEvent,
         })),
         distinctUntilChanged(
-          (e, e2) => e.position === e2.position && e.fromId === e2.fromId,
+          (e, e2) =>
+            e.position === e2.position && e.dropElement === e2.dropElement,
         ),
       )
       .subscribe(
@@ -315,11 +320,14 @@ export const useDragDrop = (
             return
           }
 
+          scrollContainer = getClosestScrollContainer(currentDropElement)
+
           // call middleware hooks
           middlewareReturns.forEach((m) =>
             m.onDragOver?.({
               dragElement: currentDragElement!,
               dropElement: currentDropElement!,
+              scrollContainer,
               selectedElements,
               position,
               event: e.dragEvent,
@@ -331,19 +339,18 @@ export const useDragDrop = (
   const cleanUp = () => {
     dragOverSubscription?.unsubscribe?.()
     setAttributesTo(targetSelector, "draggable", "false")
-    document.removeEventListener("dragover", documentDragOver)
   }
 
-  const dragEndSubscribe = () =>
+  const subscribeToDragEndEvent = () =>
     dragEnd$.pipe(take(1)).subscribe((e: DragEvent) => {
       e.preventDefault()
       cleanUp()
       // call middleware onDragEnd hooks
-      console.log("dragEnd")
       middlewareReturns.forEach((m) =>
         m.onDragEnd?.({
           dragElement: currentDragElement!,
           dropElement: currentDropElement!,
+          scrollContainer,
           selectedElements,
           position,
           event: e,
@@ -351,15 +358,15 @@ export const useDragDrop = (
       )
     })
 
-  const dropSubscribe = () =>
+  const subscribeToDropEvent = () =>
     drop$.pipe(take(1)).subscribe((e: DragEvent) => {
       e.preventDefault()
       cleanUp()
-      console.log("onDrop")
+
       if (currentDropElement) {
-        onDragEnd({
-          from: currentDragElement,
-          to: currentDropElement,
+        onDrop({
+          dragElement: currentDragElement,
+          dropElement: currentDropElement,
           position,
           selectedElements,
         } as DragDropPayload)
@@ -370,6 +377,7 @@ export const useDragDrop = (
         m.onDrop?.({
           dragElement: currentDragElement!,
           dropElement: currentDropElement!,
+          scrollContainer,
           selectedElements,
           position,
           event: e,

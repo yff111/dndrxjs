@@ -23,7 +23,7 @@ const getIndicatorStyleFn = (
         ? `width:${width}px; height:2px; top:${y + height - 1}px; left:${x}px; background: black; pointer-events: none; position: absolute;`
         : `width: 2px; height:${height}px; top:${y}px; left:${x + width - 1}px; background: black; pointer-events: none; position: absolute;`,
     in: () =>
-      `width:${width + 4}px; height:${height + 4}px; top:${y - 2}px; left:${x - 2}px; opacity: 0.15; border-radius: 5px; background: black; pointer-events: none; position: absolute;r`,
+      `width:${width}px; height:${height}px; top:${y}px; left:${x}px; opacity: 0.15; border-radius: 5px; background: black; pointer-events: none; position: absolute; max-width: 100%; max-height: 100%;`,
     before: () =>
       vertical
         ? `width:${width}px; height:2px; top:${y - 1}px; left:${x}px; background: black; pointer-events: none; position: absolute;`
@@ -52,22 +52,38 @@ const indicatorMiddleware = (
       indicatorElement.setAttribute("style", styleAsString)
     }
 
+    const stop = () => {
+      indicatorElement.remove()
+    }
+
+    let currentScrollContainer: HTMLElement | Window | null
+    const addIndicatorToElement = (element: HTMLElement) => {
+      currentScrollContainer = element
+      containerRect = element!.getBoundingClientRect()
+      element!.style.position = "relative"
+      element!.appendChild(indicatorElement)
+    }
     return {
-      onDragStart: () => {
-        if (state.scrollContainer instanceof Window) {
+      onDragStart: ({ scrollContainer }) => {
+        if (scrollContainer instanceof Window) {
           document.body.appendChild(indicatorElement)
         } else {
-          containerRect = state.scrollContainer.getBoundingClientRect()
-          state.scrollContainer.style.position = "relative"
-          state.scrollContainer.appendChild(indicatorElement)
+          addIndicatorToElement(scrollContainer!)
         }
         indicatorElement.style.display = "none"
       },
-      onDragOver: ({ dropElement, position }) =>
-        updateIndicator(dropElement!, position!),
-      onDragEnd: () => indicatorElement.remove(),
-      onDrop: () => indicatorElement.remove(),
-      onDestroy: () => indicatorElement.remove(),
+      onDragOver: ({ dropElement, position, scrollContainer }) => {
+        if (
+          currentScrollContainer !== scrollContainer &&
+          !(scrollContainer instanceof Window)
+        ) {
+          addIndicatorToElement(scrollContainer!)
+        }
+        updateIndicator(dropElement!, position!)
+      },
+      onDragEnd: stop,
+      onDrop: stop,
+      onDestroy: stop,
     }
   }) as DragDropMiddleware
 

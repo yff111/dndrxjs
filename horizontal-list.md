@@ -4,11 +4,12 @@
 <script setup>
 import { ref, shallowRef, triggerRef, watch, watchEffect, reactive, customRef, onMounted, toRef, computed, defineComponent } from 'vue'
 import data from './MOCK_DATA.json'
+import './styles.css'
 
 import useDragDrop from './src'
 import addClassesMiddleware  from './src/add-classes'
 import indicatorMiddleware  from './src/indicator'
-import autoScrollMiddleware  from './src/autoscroll'
+import autoScrollMiddleware  from './src/auto-scroll'
 import dragImageMiddleware  from './src/drag-image'
 import { moveTreeNodesById }  from './src/utils'
 
@@ -18,10 +19,10 @@ const container = ref(null)
 onMounted(() => {
   useDragDrop(container.value, {
   vertical: false,
-  dropPositionFn: ({ target, from }) =>  'around',
-    onDragEnd: ({from, to, selectedElements, position}) => {
-      const index = parseInt(to.getAttribute('data-index'))
-      const toId = to.getAttribute('data-id')
+  dropPositionFn: ({ dragElement, dropElement }) =>  'around',
+    onDrop: ({dragElement, dropElement, selectedElements, position}) => {
+      const index = parseInt(dropElement.getAttribute('data-index'))
+      const dropElementId = dropElement.getAttribute('data-id')
       const selectedIds = selectedElements.map((e) => e.getAttribute('data-id'))
       if (position === 'after'){
         moveTreeNodesById(root.value, 'root', selectedIds, index)
@@ -44,28 +45,6 @@ onMounted(() => {
   </transition-group>
 </div>
 
-<style>
-[draggable="true"], .dragging{ opacity: 0.5; }
-[draggable] {  cursor: grab; }
-/* not working in chrome and safari due to: https://issues.chromium.org/issues/40191172 */
-[draggable="true"] {  cursor: grabbing!important; }
-
-/* vue transitions */
-.list-move, 
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.2s cubic-bezier(.57,.03,.51,.94);
-}
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
-.list-leave-active {
-  position: absolute;
-}
-
-</style>
 
 
 **Output**
@@ -75,11 +54,11 @@ onMounted(() => {
 import useDragDrop from './src'
 import addClassesMiddleware  from './src/add-classes'
 import indicatorMiddleware  from './src/indicator'
-import autoScrollMiddleware  from './src/autoscroll'
+import autoScrollMiddleware  from './src/auto-scroll'
 
 useDragDrop(containerElement, {
   vertical: true,
-    onDragEnd: ({from, to, selectedIds, position}) => {
+    onDrop: ({dragElement, dropElement, selectedIds, position}) => {
       // transformation here
     }
   },

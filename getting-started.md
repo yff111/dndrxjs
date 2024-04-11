@@ -6,10 +6,10 @@
 import useDragDrop from './dist'
 import addClassesMiddleware  from './dist/add-classes'
 import indicatorMiddleware  from './dist/indicator'
-import autoScrollMiddleware  from './dist/autoscroll'
+import autoScrollMiddleware  from './dist/auto-scroll'
 
 useDragDrop(containerElement, {
-    onDragEnd: ({from, to, selectedIds, position}) => {
+    onDrop: ({dragElement, dropElement, selectedIds, position}) => {
       // transformation here
     }
   },

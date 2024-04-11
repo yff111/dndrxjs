@@ -1,0 +1,45 @@
+span:has(+ ul) {
+  font-weight: bold;
+}
+
+[draggable="true"],
+.dragging {
+  opacity: 0.5;
+}
+[draggable="true"] {
+  cursor: grabbing;
+}
+li {
+  cursor: grab;
+}
+
+@keyframes drop {
+  0% {
+    background: #cccccc00;
+  }
+  20% {
+    background: #cccccc;
+  }
+  100% {
+    background: #cccccc00;
+  }
+}
+.drop {
+  animation: drop 0.35s ease;
+}
+
+.list-move, /* apply transition to moving elements */
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.2s cubic-bezier(0.57, 0.03, 0.51, 0.94);
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.list-leave-active {
+  position: absolute;
+}

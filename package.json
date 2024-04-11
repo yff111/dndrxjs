@@ -8,7 +8,7 @@
   "tsup": {
     "entry": [
       "src/index.ts",
-      "src/autoscroll.ts",
+      "src/auto-scroll.ts",
       "src/drag-image.ts",
       "src/indicator.ts",
       "src/add-classes.ts",

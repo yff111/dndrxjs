@@ -1,5 +1,5 @@
 import { DragDropMiddleware, Rect } from "./types"
-import { getScrollX, getScrollY, getClosestScrollContainer } from "./helpers"
+import { getScrollX, getScrollY } from "./helpers"
 export interface AutoScrollMiddlewareOptions {
   interval?: number
   steps?: number
@@ -9,15 +9,16 @@ export interface AutoScrollMiddlewareOptions {
 const autoScrollMiddleware = (options: AutoScrollMiddlewareOptions = {}) =>
   (() => {
     const { interval = 8, steps = 4, threshold = 100 } = options
-    let scrollContainer: Window | HTMLElement = window
     let scrollInterval: any
+    let currentScrollContainer: HTMLElement | Window = window
+
     const scroll = (overlapY: number, overlapX: number) => (
       clearInterval(scrollInterval),
       (scrollInterval = setInterval(
         () =>
-          scrollContainer.scrollTo({
-            top: getScrollY(scrollContainer) + overlapY * steps,
-            left: getScrollX(scrollContainer) + overlapX * steps,
+          currentScrollContainer!.scrollTo({
+            top: getScrollY(currentScrollContainer!) + overlapY * steps,
+            left: getScrollX(currentScrollContainer!) + overlapX * steps,
           }),
         interval,
       ))
@@ -32,20 +33,27 @@ const autoScrollMiddleware = (options: AutoScrollMiddlewareOptions = {}) =>
       width: 0,
       height: 0,
     }
+
+    const updateScrollContainer = (element: HTMLElement | Window) => {
+      currentScrollContainer = element
+      scrollContainerRect =
+        element instanceof Window
+          ? {
+              x: 0,
+              y: 0,
+              height: element.innerHeight,
+              width: element.innerWidth,
+            }
+          : element!.getBoundingClientRect()
+    }
+
     return {
-      onDragStart: ({ dragElement }) => {
-        scrollContainer = getClosestScrollContainer(dragElement)!
-        scrollContainerRect =
-          scrollContainer instanceof Window
-            ? {
-                x: 0,
-                y: 0,
-                height: scrollContainer.innerHeight,
-                width: scrollContainer.innerWidth,
-              }
-            : scrollContainer.getBoundingClientRect()
-      },
-      onDragOver: ({ event }) => {
+      onDragStart: ({ scrollContainer }) =>
+        updateScrollContainer(scrollContainer!),
+      onDragOver: ({ event, scrollContainer }) => {
+        if (scrollContainer !== currentScrollContainer) {
+          updateScrollContainer(scrollContainer!)
+        }
         const overlapY =
           event.clientY - scrollContainerRect.y < threshold
             ? -1

@@ -3,11 +3,12 @@
 <script setup>
 import { ref, shallowRef, triggerRef, watch, watchEffect, reactive, customRef, onMounted, toRef, computed, defineComponent } from 'vue'
 import data from './MOCK_DATA_1000.json'
+import './styles.css'
 
 import useDragDrop from './src'
 import addClassesMiddleware  from './src/add-classes'
 import indicatorMiddleware  from './src/indicator'
-import autoScrollMiddleware  from './src/autoscroll'
+import autoScrollMiddleware  from './src/auto-scroll'
 import dragImageMiddleware  from './src/drag-image'
 import { reorderItems }  from './src/utils'
 
@@ -17,9 +18,9 @@ const container = ref(null)
 
 onMounted(() => {
   useDragDrop(container.value, {
-  dropPositionFn: ({ target, from }) => 'around' ,
-  onDragEnd: ({from, to, selectedElements, position}) => {
-      const index = parseInt(to.getAttribute('data-index'))
+  dropPositionFn: ({ dragElement, dropElement }) => 'around' ,
+  onDrop: ({dragElement, dropElement, selectedElements, position}) => {
+      const index = parseInt(dropElement.getAttribute('data-index'))
       const selectedItems = selectedElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
       if (position === 'after'){
         items.value = reorderItems(items.value, selectedItems, index + 1)
@@ -40,19 +41,6 @@ onMounted(() => {
   </ul>
 </div>
 
-<style>
-span:has(+ ul) { font-weight: bold; }
-[draggable="true"], .dragging{ opacity: 0.5; }
-[draggable="true"] { cursor: grabbing; }
-li { cursor: grab; }
-@keyframes drop {
-  0% { background: #999; }
-  100% { background: #fff; }
-}
-.drop { animation: drop .35s ease; }
-</style>
-
-
 **Output**
 
 ```js{4}
@@ -60,10 +48,10 @@ li { cursor: grab; }
 import useDragDrop from './dist'
 import addClassesMiddleware  from './dist/add-classes'
 import indicatorMiddleware  from './dist/indicator'
-import autoScrollMiddleware  from './dist/autoscroll'
+import autoScrollMiddleware  from './dist/auto-scroll'
 
 useDragDrop(containerElement, {
-    onDragEnd: ({from, to, selectedIds, position}) => {
+    onDrop: ({dragElement, dropElement, selectedIds, position}) => {
       // transformation here
     }
   },

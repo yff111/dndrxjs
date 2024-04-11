@@ -1,8 +1,10 @@
 
-# tiny-dnd-rxjs
+# superdrop
  
 simple low level drag & drop library based on rxjs
 
+
+**NOTE: "auto-scroll"- and "ghost-image"-middleware currently not stable.**
 
 # Features 
 
