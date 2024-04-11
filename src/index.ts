@@ -57,6 +57,14 @@ export {
   GetRectFn,
 }
 
+import autoScroll from "./auto-scroll"
+import dragImage from "./drag-image"
+import ghostElement from "./ghost-element"
+import addClasses from "./ghost-element"
+import indicator from "./indicator"
+
+export { autoScroll, dragImage, ghostElement, addClasses, indicator }
+
 import useDragDrop from "./main"
 
 export default useDragDrop
