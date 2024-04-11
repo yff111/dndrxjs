@@ -50,15 +50,16 @@ import addClassesMiddleware  from './dist/add-classes'
 import indicatorMiddleware  from './dist/indicator'
 import autoScrollMiddleware  from './dist/auto-scroll'
 
-useDragDrop(containerElement, {
-    onDrop: ({dragElement, dropElement, selectedIds, position}) => {
-      // transformation here
-    }
-  },
-  [ 
-   addClassesMiddleware(),
-   indicatorMiddleware(), 
-   autoScrollMiddleware()]
-)
+ useDragDrop(document.querySelector('.container'), {
+  dropPositionFn: ({ dragElement, dropElement }) => 'around' ,
+  onDrop: ({dragElement, dropElement, selectedElements, position}) => {
+      const index = parseInt(dropElement.getAttribute('data-index'))
+      const selectedItems = selectedElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
+      if (position === 'after'){
+        items.value = reorderItems(items.value, selectedItems, index + 1)
+      } else if (position === 'before'){
+        items.value = reorderItems(items.value, selectedItems, index)
+      }
+  }},[addClassesMiddleware(), indicatorMiddleware(), autoScrollMiddleware(), dragImageMiddleware({minElements: 0})])
 
 ```

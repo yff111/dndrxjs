@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "dnd-rxjs-ts",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "tsup": {
     "entry": [

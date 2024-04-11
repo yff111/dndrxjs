@@ -1,7 +1,7 @@
 
 # dnd-rxjs-ts
  
-simple low level drag & drop library based on rxjs
+simple, low level and modular drag & drop library based on rxjs
 
 
 **NOTE: "auto-scroll"- and "ghost-image"-middleware currently not stable.**

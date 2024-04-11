@@ -1,25 +1,18 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
 hero:
-  name: "superdrop"
-  text: "diy drag & drop js library"
-  tagline: My great project tagline
+  name: "dnd-rxjs-ts"
+  text: "Drag & Drop with Rxjs"
+  tagline: "Low-level modular drag & drop library based on Rxjs."
   actions:
     - theme: brand
       text: Getting Started
       link: /getting-started
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Examples
+      link: /tree
 
-features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+
 ---
 

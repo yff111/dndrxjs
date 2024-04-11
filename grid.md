@@ -34,6 +34,8 @@ onMounted(() => {
 
 <br>
 
+**Demo**
+
 <div ref='container' style='display: flex;  flex-wrap: wrap; position: relative;'>
   <transition-group name="list">
     <div v-for="(item, index) in items" draggable="false" style='padding: 1px;  width: calc((100% / 10) - 2px);'  :key='item.id' :data-index='index' :data-id='item.id' >
@@ -42,26 +44,3 @@ onMounted(() => {
   </transition-group>
 </div>
 
-
-**Output**
-
-```js{4}
-
-import useDragDrop from './src'
-import addClassesMiddleware  from './src/add-classes'
-import indicatorMiddleware  from './src/indicator'
-import autoScrollMiddleware  from './src/auto-scroll'
-
-useDragDrop(containerElement, {
-  vertical: true,
-    onDrop: ({dragElement, dropElement, selectedIds, position}) => {
-      // transformation here
-    }
-  },
-  [ 
-   addClassesMiddleware(),
-   indicatorMiddleware(), 
-   autoScrollMiddleware()]
-)
-
-```

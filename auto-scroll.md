@@ -47,25 +47,3 @@ onMounted(() => {
 </div>
 
 
-**Output**
-
-```js{4}
-
-import useDragDrop from './src'
-import addClassesMiddleware  from './src/add-classes'
-import indicatorMiddleware  from './src/indicator'
-import autoScrollMiddleware  from './src/auto-scroll'
-
-useDragDrop(containerElement, {
-  vertical: true,
-    onDrop: ({dragElement, dropElement, selectedIds, position}) => {
-      // transformation here
-    }
-  },
-  [ 
-   addClassesMiddleware(),
-   indicatorMiddleware(), 
-   autoScrollMiddleware()]
-)
-
-```
