@@ -5,7 +5,7 @@ export type DropPositionFn = (payload: {
   dropElement: Element
 }) => DropPositionRules
 export type OnDragEndFn = (e: DragDropPayload) => void
-export interface DragDropPayload {
+export type DragDropPayload = {
   dragElement: HTMLElement
   dropElement: HTMLElement
   selectedElements: HTMLElement[]
@@ -18,7 +18,7 @@ export type GetSelectedElementsFn = () => HTMLElement[]
 export type GetElementIdFn = (element: HTMLElement) => string
 export type OnDragStartFn = (dragElement: HTMLElement) => any
 export type OnBeforeDragStartFn = (dragElement: HTMLElement) => boolean
-export interface DragDropOptions {
+export type DragDropOptions = {
   targetSelector?: string
   handleSelector?: string
   // A function that returns the allowed drop positions that are allowed for a potential drop element.

@@ -1,6 +1,6 @@
 {
   "name": "dnd-rxjs-ts",
-  "version": "0.0.1",
+  "version": "0.0.11",
   "description": "simple, low level and modular drag & drop library based on rxjs",
   "author": "yff111",
   "license": "MIT",
@@ -12,6 +12,7 @@
   "tsup": {
     "entry": [
       "src/index.ts",
+      "src/main.ts",
       "src/auto-scroll.ts",
       "src/drag-image.ts",
       "src/indicator.ts",
@@ -20,6 +21,7 @@
       "src/utils.ts"
     ],
     "splitting": false,
+    "treeshake": true,
     "sourcemap": true,
     "minify": true,
     "format": [
