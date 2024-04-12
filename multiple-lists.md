@@ -17,7 +17,7 @@ import {
 import data from "./MOCK_DATA.json";
 import "./styles.css";
 
-import useDragDrop from "./src";
+import useDragDrop from "./src/main";
 import addClassesMiddleware from "./src/add-classes";
 import indicatorMiddleware from "./src/indicator";
 import autoScrollMiddleware from "./src/auto-scroll";
