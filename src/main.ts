@@ -88,19 +88,19 @@ export const useDragDrop = (
       .querySelectorAll(selector)
       .forEach((e: Element) => e.setAttribute(attribute, value))
 
-  console.log("handleSelector", handleSelector)
   const mousedown$ = fromEvent<MouseEvent>(container, "mousedown")
   const mouseDownSubscription = mousedown$.subscribe((e: MouseEvent) => {
-    onBeforeDragStart(e.target! as HTMLElement) &&
-      (e.target as HTMLElement)?.closest(handleSelector) &&
-      (e.target as HTMLElement)
-        .closest(targetSelector)!
-        ?.setAttribute("draggable", "true")
+    if (
+      e.target instanceof HTMLElement &&
+      onBeforeDragStart(e.target) &&
+      e.target.closest(handleSelector)
+    ) {
+      e.target.closest(targetSelector)?.setAttribute("draggable", "true")
+      fromEvent<MouseEvent>(document, "mouseup")
+        .pipe(take(1))
+        .subscribe(() => setAttributesTo(targetSelector, "draggable", "false"))
+    }
   })
-  const mouseup$ = fromEvent<MouseEvent>(document, "mouseup")
-  const mouseUpSubscription = mouseup$.subscribe(() =>
-    setAttributesTo(targetSelector, "draggable", "false"),
-  )
 
   const dragStart$ = fromEvent<DragEvent>(container, "dragstart")
   const dragOver$ = fromEvent<DragEvent>(document.body, "dragover")
@@ -391,7 +391,6 @@ export const useDragDrop = (
     dropSubscription?.unsubscribe()
     dragOverSubscription?.unsubscribe()
     mouseDownSubscription?.unsubscribe()
-    mouseUpSubscription?.unsubscribe()
     middlewareReturns.forEach((m) => m.onDestroy?.())
   }
 
