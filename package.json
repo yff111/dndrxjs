@@ -55,6 +55,7 @@
   },
   "devDependencies": {
     "@egoist/prettier-config": "1.0.0",
+    "install-peers": "^1.0.4",
     "prettier": "3.2.5",
     "tsup": "8.0.2",
     "typescript": "5.4.4",

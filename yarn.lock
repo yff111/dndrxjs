@@ -1048,6 +1048,13 @@ execa@^8.0.1:
     signal-exit "^4.1.0"
     strip-final-newline "^3.0.0"
 
+executioner@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/executioner/-/executioner-2.0.1.tgz#add328e03bc45dd598f358fbb529fc0be0ec6fcd"
+  integrity sha512-idZAlKsxEZASjaIqP4PQ1txyS1bOcDwWCHy/8p5oMmLGV0XNCQPD6WWAOwJCUVsWItWzAN2BEash5N78PliaIw==
+  dependencies:
+    mixly "^1.0.0"
+
 fast-glob@^3.2.9:
   version "3.3.2"
   resolved "https://registry.npmjs.org/fast-glob/-/fast-glob-3.3.2.tgz"
@@ -1092,6 +1099,11 @@ fsevents@~2.3.2, fsevents@~2.3.3:
   version "2.3.3"
   resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
   integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
+
+fulcon@^1.0.1:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/fulcon/-/fulcon-1.0.2.tgz#8a4dfda4c73fcd9cc62a79d5045c392b45547320"
+  integrity sha512-vYwUBqbdo9XK0NmN7cFmURmy2T1YHpEsTCbxGO3aErxx6a0Z/HkWXcqcPkk7yOuJ74mSAHGWGBSBBd6v3GKebA==
 
 get-func-name@^2.0.1, get-func-name@^2.0.2:
   version "2.0.2"
@@ -1157,6 +1169,13 @@ ignore@^5.2.0:
   version "5.3.1"
   resolved "https://registry.npmjs.org/ignore/-/ignore-5.3.1.tgz"
   integrity sha512-5Fytz/IraMjqpwfd34ke28PTVMjZjJG2MPn5t7OE4eUCUNf8BAa7b5WUS9/Qvr6mwOQS7Mk6vdsMno5he+T8Xw==
+
+install-peers@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/install-peers/-/install-peers-1.0.4.tgz#0fcfe18d223a72bb39ddeca09394ce50e3305c79"
+  integrity sha512-0POFG2zRn/rt0uO1tUekCDhq6t6l3HDjxR42+Hcbjmj75Gv4yuqEfMe63HC76piO1lsctAp/cQW+Ny+i/SxTlg==
+  dependencies:
+    executioner "^2.0.1"
 
 is-binary-path@~2.1.0:
   version "2.1.0"
@@ -1327,6 +1346,13 @@ mitt@^3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/mitt/-/mitt-3.0.1.tgz"
   integrity sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==
+
+mixly@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/mixly/-/mixly-1.0.0.tgz#9b5a2e1f63e6dfba0d30e6797ffae62ab1dc24ef"
+  integrity sha512-ks+xIMVeIDwuYK4LnOMXTfmiEI8oo3tFNFirpHd60C4r2H0wMwKN5/qHCrFBKFK+BYx2Gp7qs+evUJw7QO9D2w==
+  dependencies:
+    fulcon "^1.0.1"
 
 mlly@^1.2.0, mlly@^1.4.2:
   version "1.6.1"
@@ -1537,7 +1563,7 @@ rfdc@^1.3.1:
   resolved "https://registry.npmjs.org/rfdc/-/rfdc-1.3.1.tgz"
   integrity sha512-r5a3l5HzYlIC68TpmYKlxWjmOP6wiPJ1vWv2HeLhNsRZMrCkxeqxiHlQ21oXmQ4F3SiryXBHhAD7JZqvOJjFmg==
 
-rollup@^4.0.2, rollup@^4.13.0, "rollup@npm:@rollup/wasm-node":
+rollup@^4.0.2, rollup@^4.13.0:
   version "4.14.1"
   resolved "https://registry.yarnpkg.com/@rollup/wasm-node/-/wasm-node-4.14.1.tgz#808327158453381aa808734fd65528d2c9509af8"
   integrity sha512-w5GZ2p1F7tOop6WJxa5x0Ot1s6eVPKOlEo5hmWT3KGxv0naGqiGJa/fz7S/it06nzgS3fmkDbtDfpAYwqOMKRQ==
@@ -1552,13 +1578,6 @@ run-parallel@^1.1.9:
   integrity sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==
   dependencies:
     queue-microtask "^1.2.2"
-
-rxjs@^7.8.1:
-  version "7.8.1"
-  resolved "https://registry.npmjs.org/rxjs/-/rxjs-7.8.1.tgz"
-  integrity sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==
-  dependencies:
-    tslib "^2.1.0"
 
 shebang-command@^2.0.0:
   version "2.0.0"
@@ -1627,6 +1646,7 @@ std-env@^3.5.0:
   integrity sha512-JPbdCEQLj1w5GilpiHAx3qJvFndqybBysA3qUOnznweH4QbNYUsW/ea8QzSrnh0vNsezMMw5bcVool8lM0gwzg==
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -1645,6 +1665,7 @@ string-width@^5.0.1, string-width@^5.1.2:
     strip-ansi "^7.0.1"
 
 "strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+  name strip-ansi-cjs
   version "6.0.1"
   resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -1745,11 +1766,6 @@ ts-interface-checker@^0.1.9:
   version "0.1.13"
   resolved "https://registry.npmjs.org/ts-interface-checker/-/ts-interface-checker-0.1.13.tgz"
   integrity sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==
-
-tslib@^2.1.0:
-  version "2.6.2"
-  resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz"
-  integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
 
 tsup@8.0.2:
   version "8.0.2"
