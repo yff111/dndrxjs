@@ -4,7 +4,7 @@
 Add Package 
 
 ```terminal
-yarn install dnd-rxjs-ts
+yarn add dnd-rxjs-ts
 
 ```
 
@@ -12,10 +12,7 @@ Import dependency
 
 ```js{4}
 
-import useDragDrop from 'dnd-rxjs-ts'
-import addClassesMiddleware  from './dist/add-classes'
-import indicatorMiddleware  from './dist/indicator'
-import autoScrollMiddleware  from './dist/auto-scroll'
+import useDragDrop, {addClasses, indicator, autoScroll} from 'dnd-rxjs-ts'
 
 useDragDrop(containerElement, {
     onDrop: ({dragElement, dropElement, selectedIds, position}) => {
@@ -23,9 +20,9 @@ useDragDrop(containerElement, {
     }
   },
   [ 
-   addClassesMiddleware(),
-   indicatorMiddleware(), 
-   autoScrollMiddleware()]
+   addClasses(),
+   indicator(), 
+   autoScroll()]
 )
 
 ```

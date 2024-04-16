@@ -3,14 +3,9 @@ defineProps({ node: Object, parent: String, level: Number })
 </script>
 
 <template>
-  <ul v-if="node.children && node.children.length > 0" style="margin: 0">
-    <li
-      v-for="(child, index) in node.children"
-      :key="child.id"
-      style="margin: 0"
-    >
+  <ul class="tree" v-if="node.children && node.children.length > 0">
+    <li v-for="(child, index) in node.children" :key="child.id">
       <span
-        style="display: block"
         :data-index="index"
         :data-id="child.id"
         :data-level="level"

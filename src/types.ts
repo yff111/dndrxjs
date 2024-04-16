@@ -4,13 +4,7 @@ export type DropPositionFn = (payload: {
   dragElement: Element
   dropElement: Element
 }) => DropPositionRules
-export type OnDragEndFn = (e: DragDropPayload) => void
-export type DragDropPayload = {
-  dragElement: HTMLElement
-  dropElement: HTMLElement
-  selectedElements: HTMLElement[]
-  position: DropPosition
-}
+export type OnDropFn = (e: DragDropHookPayload) => void
 
 export type Rect = { x: number; y: number; width: number; height: number }
 
@@ -20,6 +14,7 @@ export type OnDragStartFn = (dragElement: HTMLElement) => any
 export type OnBeforeDragStartFn = (dragElement: HTMLElement) => boolean
 export type DragDropOptions = {
   targetSelector?: string
+  containerSelector?: string
   handleSelector?: string
   // A function that returns the allowed drop positions that are allowed for a potential drop element.
   dropPositionFn?: DropPositionFn
@@ -29,7 +24,7 @@ export type DragDropOptions = {
   vertical?: boolean
   dragOverThrottle?: number
   ignoreSelectors?: string
-  onDrop: OnDragEndFn
+  onDrop: OnDropFn
   onDragStart?: OnDragStartFn
   onBeforeDragStart?: OnBeforeDragStartFn
 }
@@ -46,7 +41,8 @@ export type DragDropHookPayload = {
 export interface DragDropMiddlewareReturn {
   onDragStart?: (payload: DragDropHookPayload) => void
   onDragOver?: (payload: DragDropHookPayload) => void
-  onDragEnd?: (payload: DragDropHookPayload) => void
+  onDragEnterContainer?: (payload: DragDropHookPayload) => void
+  onDragLeaveContainer?: (payload: DragDropHookPayload) => void
   onDrop?: (payload: DragDropHookPayload) => void
   onDestroy?: () => void
 }

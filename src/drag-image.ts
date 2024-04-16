@@ -67,7 +67,6 @@ const dragImageMiddleware: DragDropMiddlewareFn<DragImageMiddlewareOptions> =
         document.body.appendChild(customImageContainer)
         update(event)
       },
-      onDragEnd: () => stop(),
       onDestroy: () => stop(),
       onDrop: () => stop(),
     }

@@ -1,4 +1,4 @@
-import { fromEvent, EMPTY, Subscription } from "rxjs"
+import { fromEvent, EMPTY, Subscription, merge } from "rxjs"
 import {
   map,
   filter,
@@ -20,9 +20,10 @@ import {
   DropPosition,
   DragDropMiddleware,
   GetRectFn,
-  DragDropPayload,
   DragDropOptions,
   GetElementIdFn,
+  DragDropMiddlewareReturn,
+  DragDropHookPayload,
 } from "./types"
 
 /**
@@ -64,6 +65,7 @@ export const useDragDrop = (
   middleware: DragDropMiddleware[] = [],
 ) => {
   const {
+    // containerSelector,
     targetSelector = "[data-id]",
     // use target selector when no handle selector was provided
     handleSelector = "[data-id]" || options.targetSelector,
@@ -71,7 +73,7 @@ export const useDragDrop = (
     getSelectedElements,
     getElementId = (el: HTMLElement) => el.getAttribute("data-id") as string,
     vertical = true,
-    dragOverThrottle = 50,
+    dragOverThrottle = 20,
     onDrop,
     onDragStart,
     onBeforeDragStart = (el: HTMLElement) =>
@@ -105,12 +107,10 @@ export const useDragDrop = (
   const dragStart$ = fromEvent<DragEvent>(container, "dragstart")
   const dragOver$ = fromEvent<DragEvent>(document.body, "dragover")
   const dragEnd$ = fromEvent<DragEvent>(document.body, "dragend")
-  const drop$ = fromEvent<DragEvent>(document.body, "drop")
 
   let currentDropElement: HTMLElement | null = null
   let currentDragElement: HTMLElement | null = null
   let selectedElements: HTMLElement[] = []
-  let targetElements: HTMLElement[] = []
   let scrollContainer: HTMLElement | Window =
     getClosestScrollContainer(container)
   let boundingRectCache: Record<
@@ -124,7 +124,7 @@ export const useDragDrop = (
   ) => {
     const id = getElementIdLocal(element)
     return (
-      // boundingRectCache[id!] ||
+      // boundingRectCache[id!] || // @TODO
       (boundingRectCache[id!] = [element.getBoundingClientRect()].map(
         ({ width, height, x, y }) => ({
           width,
@@ -157,6 +157,7 @@ export const useDragDrop = (
         )(offset, getRectCached(dropElement).width)
 
   const getClosestElement = (evt: DragEvent, elements: HTMLElement[]) => {
+    console.log("getClosestElement", evt)
     const closestElement =
       elements.length > 0 &&
       elements
@@ -179,14 +180,45 @@ export const useDragDrop = (
       : [0, null, evt]
   }
 
-  // const documentDragOver = (e: Event) => e.preventDefault()
   let dragOverSubscription: Subscription | null = null
   let dragEndSubscription: Subscription | null = null
-  let dropSubscription: Subscription | null = null
 
   const middlewareReturns = middleware.map((m) =>
     m({ vertical, container, getRectCached, getElementId, scrollContainer }),
   )
+  const createPayload = (event?: DragEvent) =>
+    ({
+      dragElement: currentDragElement!,
+      dropElement: currentDropElement,
+      selectedElements,
+      scrollContainer,
+      position,
+      event,
+    }) as DragDropHookPayload
+
+  const callMiddleWareHook = (
+    method: keyof DragDropMiddlewareReturn,
+    e?: DragEvent,
+    getPayload = createPayload,
+  ) => middlewareReturns.forEach((m) => m[method]?.(getPayload(e)))
+
+  const updateScrollContainer = () => {
+    const newScrollContainer = getClosestScrollContainer(currentDropElement!)
+    if (scrollContainer !== newScrollContainer) {
+      callMiddleWareHook(
+        "onDragEnterContainer",
+        undefined,
+        (e?: DragEvent) => ({
+          ...createPayload(),
+          scrollContainer: newScrollContainer,
+        }),
+      )
+      // call onDragLeaveContainer with previous scrollContainer
+      callMiddleWareHook("onDragLeaveContainer")
+    }
+
+    scrollContainer = newScrollContainer
+  }
   const dragStartSubscription = dragStart$
     .pipe(
       mergeMap((e: DragEvent) => {
@@ -205,34 +237,26 @@ export const useDragDrop = (
         if (!(currentDragElement = target.closest?.(targetSelector))) {
           return EMPTY
         }
+        updateScrollContainer()
 
         // callback from option call
         onDragStart?.(currentDragElement)
 
-        // subscribe to following drag events
         dragOverSubscription = dragOverSubscribe()
         dragEndSubscription = subscribeToDragEndEvent()
-        dropSubscription = subscribeToDropEvent()
+        // keyDownSubscription = subscribeToKeyDownEvent()
 
-        scrollContainer = getClosestScrollContainer(e.target as HTMLElement)
+        fromEvent<KeyboardEvent>(document, "keydown").pipe(
+          filter((e) => e.key === "Escape"),
+        )
 
         // flush rectangle cache
         boundingRectCache = {}
 
         selectedElements = getSelectedElements?.() || [currentDragElement]
-        targetElements = Array.from(
-          container.querySelectorAll(`${targetSelector}:not(:active)`),
-        )
 
         // call middleware hooks
-        middlewareReturns.forEach((m) =>
-          m.onDragStart?.({
-            dragElement: currentDragElement!,
-            selectedElements,
-            scrollContainer,
-            event: e,
-          }),
-        )
+        callMiddleWareHook("onDragStart", e)
 
         // start drag over subscription
         return dragOver$.pipe(takeUntil(dragEnd$))
@@ -261,26 +285,6 @@ export const useDragDrop = (
         ),
         // only proceed when offset has changed
         distinctUntilChanged(([offset], [offset2]) => offset === offset2),
-        map(
-          ([offset, dropElement, dragEvent]: [
-            number,
-            HTMLElement,
-            DragEvent,
-          ]) =>
-            !!dropElement
-              ? ([offset, dropElement, dragEvent] as [
-                  number,
-                  HTMLElement,
-                  DragEvent,
-                ])
-              : // find and assign closest target element when none was provided by DragEvent
-                // @TODO make this more efficient by checking if inside container i.e.
-                (getClosestElement(dragEvent, targetElements) as [
-                  number,
-                  HTMLElement,
-                  DragEvent,
-                ]),
-        ),
         // only proceed when element exists (was found)
         filter(
           ([, dropElement]: [number, HTMLElement | null, DragEvent]) =>
@@ -320,75 +324,36 @@ export const useDragDrop = (
             return
           }
 
-          scrollContainer = getClosestScrollContainer(currentDropElement)
+          updateScrollContainer()
 
           // call middleware hooks
-          middlewareReturns.forEach((m) =>
-            m.onDragOver?.({
-              dragElement: currentDragElement!,
-              dropElement: currentDropElement!,
-              scrollContainer,
-              selectedElements,
-              position,
-              event: e.dragEvent,
-            }),
-          )
+          callMiddleWareHook("onDragOver", e.dragEvent)
         },
       )
 
   const cleanUp = () => {
     dragOverSubscription?.unsubscribe?.()
+    currentDropElement = null
+    currentDragElement = null
     setAttributesTo(targetSelector, "draggable", "false")
   }
 
   const subscribeToDragEndEvent = () =>
     dragEnd$.pipe(take(1)).subscribe((e: DragEvent) => {
-      e.preventDefault()
-      cleanUp()
-      // call middleware onDragEnd hooks
-      middlewareReturns.forEach((m) =>
-        m.onDragEnd?.({
-          dragElement: currentDragElement!,
-          dropElement: currentDropElement!,
-          scrollContainer,
-          selectedElements,
-          position,
-          event: e,
-        }),
-      )
-    })
-
-  const subscribeToDropEvent = () =>
-    drop$.pipe(take(1)).subscribe((e: DragEvent) => {
-      e.preventDefault()
-      cleanUp()
-
-      if (currentDropElement) {
-        onDrop({
-          dragElement: currentDragElement,
-          dropElement: currentDropElement,
-          position,
-          selectedElements,
-        } as DragDropPayload)
+      // @TODO: this does not work in FF
+      if (e.dataTransfer?.dropEffect === "none") {
+        currentDropElement = null
       }
-
-      // call middleware onDragEnd hooks
-      middlewareReturns.forEach((m) =>
-        m.onDrop?.({
-          dragElement: currentDragElement!,
-          dropElement: currentDropElement!,
-          scrollContainer,
-          selectedElements,
-          position,
-          event: e,
-        }),
-      )
+      e.preventDefault()
+      // call middleware onDrop hooks
+      callMiddleWareHook("onDrop", e)
+      onDrop(createPayload(e))
+      cleanUp()
     })
 
   const destroy = () => {
     dragStartSubscription?.unsubscribe()
     dragEndSubscription?.unsubscribe()
-    dropSubscription?.unsubscribe()
     dragOverSubscription?.unsubscribe()
     mouseDownSubscription?.unsubscribe()
     middlewareReturns.forEach((m) => m.onDestroy?.())

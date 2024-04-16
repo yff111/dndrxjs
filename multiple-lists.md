@@ -77,7 +77,8 @@ onMounted(() => {
   useDragDrop(
     container.value,
     {
-      handleSelector: "[data-id]",
+      handleSelector: "[data-id]:not([data-has-children])",
+      containerSelector: "[data-has-children]",
       dragOverThrottle: 10,
       dropPositionFn: ({ dragElement, dropElement }) => {
         const isDropElementParent =
@@ -88,6 +89,9 @@ onMounted(() => {
         return isOwnChild || hasChildren ? "none" : isDropElementParent ? "in" : "around";
       },
       onDrop: ({ dragElement, dropElement, selectedElements, position }) => {
+        if(!dropElement){
+          return
+        }
         const index = parseInt(dropElement.getAttribute("data-index"));
         const dropElementId = dropElement.getAttribute("data-id");
         const dropElementParentId = dropElement.getAttribute("data-parent-id") || "root";
@@ -105,7 +109,7 @@ onMounted(() => {
     },
     [
       addClassesMiddleware(),
-      indicatorMiddleware(),
+      indicatorMiddleware({offset: 0}),
       autoScrollMiddleware(),
       dragImageMiddleware({ minElements: 0 }),
     ]
@@ -114,12 +118,18 @@ onMounted(() => {
 
 </script>
 
+<style>
+.active {
+  background: #ccc!important;
+}
+</style>
+
 **Demo**
 
 <div ref='container' style='display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px'>
   <div  v-for='(row) in root.children' style='overflow-x: none; overflow-y: auto; max-height: 200px; min-height: 150px; padding: 20px;  background: #f5f5f5; border-radius: 10px; padding: 10px;' :data-id='row.id' :data-has-children='row.children.length > 0'>
     <ul style="margin: 0px; padding: 0;">
-        <li v-for='(item, index) in row.children' :key='item.id' :data-id='item.id' :data-index='index'  style='margin: 0; padding: 5px; list-style: none' :data-parent-id='row.id'>
+        <li v-for='(item, index) in row.children' :key='item.id' :data-id='item.id' :data-index='index'  style='margin: 0; padding: 4px; list-style: none' :data-parent-id='row.id'>
           <span>{{item.name}} </span>
       </li>
     </ul>

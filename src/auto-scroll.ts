@@ -75,7 +75,6 @@ const autoScrollMiddleware = (options: AutoScrollMiddlewareOptions = {}) =>
           cancelScroll()
         }
       },
-      onDragEnd: () => cancelScroll(),
       onDrop: () => cancelScroll(),
       onDestroy: () => cancelScroll(),
     }

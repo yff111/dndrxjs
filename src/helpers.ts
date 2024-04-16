@@ -9,15 +9,18 @@ export const fromHTML = (html: string) => {
   return template.content.children[0] as HTMLElement
 }
 
+export function isWindow(el: HTMLElement | Window | undefined): el is Window {
+  return el instanceof Window
+}
 export const getScrollX = (container: HTMLElement | Window) =>
-  container instanceof Window ? container.scrollX : container.scrollLeft
+  isWindow(container) ? container.scrollX : container.scrollLeft
 
 export const getScrollY = (container: HTMLElement | Window) =>
-  container instanceof Window ? container.scrollY : container.scrollTop
+  isWindow(container) ? container.scrollY : container.scrollTop
 
 export const getClosestScrollContainer = (element: HTMLElement) => {
   if (!element) {
-    return document.documentElement
+    return window
   }
   let parent: HTMLElement = element
   while (parent) {

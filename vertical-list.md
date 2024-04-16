@@ -20,6 +20,9 @@ onMounted(() => {
   useDragDrop(container.value, {
   dropPositionFn: ({ dragElement, dropElement }) => 'around' ,
   onDrop: ({dragElement, dropElement, selectedElements, position}) => {
+      if(!dropElement){
+        return
+      }
       const index = parseInt(dropElement.getAttribute('data-index'))
       const selectedItems = selectedElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
       if (position === 'after'){
@@ -33,10 +36,10 @@ onMounted(() => {
 
 **Demo**
 
-<div ref='container' style='overflow: scroll; max-height: 400px; padding-right: 10px;'>
-  <ul style="margin: 0">
-      <li v-for='(item, index) in items' :key='item.id' :data-id='item.id' :data-index='index'  style='margin: 0;'>
-        <span  >{{item.name}} </span>
+<div ref='container' style='overflow:auto; max-height: 400px; padding: 5px;'>
+  <ul class='list'>
+      <li v-for='(item, index) in items' :key='item.id'>
+        <span :data-id='item.id' :data-index='index'>{{item.name}}</span>
     </li>
   </ul>
 </div>

@@ -13,15 +13,42 @@ li {
   cursor: grab;
 }
 
+ul.tree,
+ul.list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0 !important;
+}
+ul.tree li,
+ul.list li {
+  margin: 0;
+}
+ul.tree li > span,
+ul.list li > span {
+  display: inline-block !important;
+  width: 100%;
+  background: #f9f9f9;
+  border-radius: 5px;
+  padding: 7px 12px !important;
+  /* border: 2px solid #fff; */
+  margin-bottom: 4px;
+}
+ul.tree ul.tree {
+  padding-left: 20px;
+}
+
+li {
+  list-style: none;
+}
 @keyframes drop {
   0% {
-    background: #cccccc00;
+    background: rgba(0, 0, 0, 0.1) !important;
   }
-  20% {
-    background: #cccccc;
+  10% {
+    background: rgba(0, 0, 0, 0.2) !important;
   }
   100% {
-    background: #cccccc00;
+    background: rgba(240, 240, 240, 1) !important;
   }
 }
 .drop {

@@ -27,6 +27,9 @@ onMounted(() => {
     return isOwnChild ? 'none' : isDropElementParent ? 'notAfter': 'all'
    },
   onDrop: ({dragElement, dropElement, selectedElements, position}) => {
+    if(!dropElement){
+      return
+    }
     const index = parseInt(dropElement.getAttribute('data-index'))
     const dropElementId = dropElement.getAttribute('data-id')
     const toParentId = dropElement.getAttribute('data-parent-id') || 'root'
@@ -38,7 +41,7 @@ onMounted(() => {
     } else if (position === 'before'){
       moveTreeNodesById(root.value, toParentId, selectedIds, index)
     }
-  }},[addClassesMiddleware(), indicatorMiddleware(), autoScrollMiddleware(), dragImageMiddleware({minElements: 0})])
+  }},[addClassesMiddleware(), indicatorMiddleware(), autoScrollMiddleware(), dragImageMiddleware({minElements: 1})])
 })
 </script>
 

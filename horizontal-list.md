@@ -21,6 +21,9 @@ onMounted(() => {
   vertical: false,
   dropPositionFn: ({ dragElement, dropElement }) =>  'around',
     onDrop: ({dragElement, dropElement, selectedElements, position}) => {
+      if(!dropElement){
+        return
+      }
       const index = parseInt(dropElement.getAttribute('data-index'))
       const dropElementId = dropElement.getAttribute('data-id')
       const selectedIds = selectedElements.map((e) => e.getAttribute('data-id'))
@@ -29,7 +32,7 @@ onMounted(() => {
       } else if (position === 'before'){
         moveTreeNodesById(root.value, 'root', selectedIds, index)
       }
-    }},[addClassesMiddleware(), indicatorMiddleware(), autoScrollMiddleware(), dragImageMiddleware({minElements: 1})])
+    }},[addClassesMiddleware(), indicatorMiddleware({offset: 6}), autoScrollMiddleware(), dragImageMiddleware({minElements: 1})])
 })
 </script>
 
@@ -37,10 +40,10 @@ onMounted(() => {
 **Demo**
 
 
-<div ref='container' style='display: flex; overflow: auto; position: relative;'>
+<div ref='container' style='display: flex; overflow: auto; gap: 12px;  padding: 10px 0; position: relative;'>
   <transition-group name="list">
-    <div v-for="(item, index) in root.children" draggable="false" style='padding: 8px;'  :key='item.id' :data-index='index' :data-id='item.id' >
-      <div style='min-width: 80px; height: 80px; white-space: nowrap; padding: 5px; font-size: 11px; line-height: 1; border-radius: 4px;  background: #fff; display: flex;  text-align: center; align-items: center; justify-content: center;  border: 1px solid black; '><span>{{item.name}}</span></div>
+    <div v-for="(item, index) in root.children" draggable="false"   :key='item.id' :data-index='index' :data-id='item.id' >
+      <div style='min-width: 0;  display: flex;  height: 100px; white-space: nowrap; padding: 20px; font-size: 12px; line-height: 1; border-radius: 4px;  background: #f5f5f5; color: #ccc; font-weight: bold; display: flex;  text-align: center; align-items: center; justify-content: center; '>{{item.name}}</div>
     </div>
   </transition-group>
 </div>
