@@ -1,4 +1,4 @@
-import { fromEvent, EMPTY, Subscription, merge } from "rxjs"
+import { fromEvent, EMPTY, Subscription } from "rxjs"
 import {
   map,
   filter,
@@ -9,12 +9,7 @@ import {
   take,
   tap,
 } from "rxjs/operators"
-import {
-  getDistance,
-  getScrollX,
-  getScrollY,
-  getClosestScrollContainer,
-} from "./helpers"
+import { getScrollX, getScrollY, getClosestScrollContainer } from "./helpers"
 import {
   DropPositionRules,
   DropPosition,
@@ -136,11 +131,11 @@ export const useDragDrop = (
     )
   }
   // returns 0 or element width or height
-  const getRelativeOffsetValue = vertical
-    ? (evt: DragEvent, element: HTMLElement) =>
-        evt.pageY < getRectCached(element).y ? 0 : getRectCached(element).height
-    : (evt: DragEvent, element: HTMLElement) =>
-        evt.pageX < getRectCached(element).x ? 0 : getRectCached(element).width
+  // const getRelativeOffsetValue = vertical
+  //   ? (evt: DragEvent, element: HTMLElement) =>
+  //       evt.pageY < getRectCached(element).y ? 0 : getRectCached(element).height
+  //   : (evt: DragEvent, element: HTMLElement) =>
+  //       evt.pageX < getRectCached(element).x ? 0 : getRectCached(element).width
 
   const calcPositionLocal = vertical
     ? (dropElement: HTMLElement, dragElement: HTMLElement, offset: number) =>
@@ -156,29 +151,28 @@ export const useDragDrop = (
             : "none",
         )(offset, getRectCached(dropElement).width)
 
-  const getClosestElement = (evt: DragEvent, elements: HTMLElement[]) => {
-    console.log("getClosestElement", evt)
-    const closestElement =
-      elements.length > 0 &&
-      elements
-        .map(
-          (el) =>
-            [
-              el,
-              getDistance(
-                evt.pageX,
-                evt.pageY,
-                getRectCached(el).x,
-                getRectCached(el).y,
-              ),
-            ] as [HTMLElement, number],
-        )
-        .sort((a, b) => a[1] - b[1])[0][0]
+  // const getClosestElement = (evt: DragEvent, elements: HTMLElement[]) => {
+  //   const closestElement =
+  //     elements.length > 0 &&
+  //     elements
+  //       .map(
+  //         (el) =>
+  //           [
+  //             el,
+  //             getDistance(
+  //               evt.pageX,
+  //               evt.pageY,
+  //               getRectCached(el).x,
+  //               getRectCached(el).y,
+  //             ),
+  //           ] as [HTMLElement, number],
+  //       )
+  //       .sort((a, b) => a[1] - b[1])[0][0]
 
-    return closestElement
-      ? [getRelativeOffsetValue(evt, closestElement), closestElement, evt]
-      : [0, null, evt]
-  }
+  //   return closestElement
+  //     ? [getRelativeOffsetValue(evt, closestElement), closestElement, evt]
+  //     : [0, null, evt]
+  // }
 
   let dragOverSubscription: Subscription | null = null
   let dragEndSubscription: Subscription | null = null
