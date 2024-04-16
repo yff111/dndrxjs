@@ -33,7 +33,7 @@ const dragImageMiddleware: DragDropMiddlewareFn<DragImageMiddlewareOptions> =
       updateElement = defaultUpdateElementFn,
       updateContainerStyle = defaultUpdateContainerStyleFn,
       minElements = 0,
-    } = options!
+    } = options || {}
     let subscription: any = null
 
     const mousemove$ = fromEvent<DragEvent>(document, "dragover")
