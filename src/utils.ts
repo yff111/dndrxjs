@@ -51,6 +51,15 @@ export const reorderItems = <T = any>(
   a.splice(targetIndex, 0, items)
   return a.filter((e) => items.indexOf(e) === -1).flatMap((e) => e) as T[]
 }
+
+export const swapElements = (
+  array: Array<any>,
+  index1: number,
+  index2: number,
+) => {
+  array[index1] = array.splice(index2, 1, array[index1])[0]
+}
+
 export const moveItemsToArrayMutate = <T = any>(
   source: T[],
   target: T[],

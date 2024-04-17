@@ -51,7 +51,7 @@ const indicatorMiddleware = (options: {
     const {
       getIndicatorStyleFn = defaultGetIndicatorStyleFn,
       indicatorClasses = defaultIndicatorClasses,
-      offset = 2,
+      offset = 0,
     } = options || {}
     let containerRect: { x: number; y: number } = { x: 0, y: 0 }
     const indicatorElement = document.createElement("div")

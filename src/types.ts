@@ -24,6 +24,10 @@ export type DragDropOptions = {
   vertical?: boolean
   dragOverThrottle?: number
   ignoreSelectors?: string
+  /**
+   * If enabled getBoundingClientRect() call on dropElements will be cached for each drag operation.
+   */
+  enableRectCaching?: boolean
   onDrop: OnDropFn
   onDragStart?: OnDragStartFn
   onBeforeDragStart?: OnBeforeDragStartFn
@@ -47,13 +51,16 @@ export interface DragDropMiddlewareReturn {
   onDestroy?: () => void
 }
 export type DragDropMiddlewareFn<T> = (options?: T) => DragDropMiddleware
-export type DragDropMiddleware = (state: {
-  vertical: boolean
-  container: HTMLElement
-  scrollContainer: HTMLElement | Window
-  getRectCached: GetRectFn
-  getElementId: GetElementIdFn
-}) => DragDropMiddlewareReturn
+export type DragDropMiddleware = (
+  state: {
+    vertical: boolean
+    container: HTMLElement
+    scrollContainer: HTMLElement | Window
+    getRectCached: GetRectFn
+    getElementId: GetElementIdFn
+  },
+  options: DragDropOptions,
+) => DragDropMiddlewareReturn
 
 export type GetRectFn = (
   element: HTMLElement,

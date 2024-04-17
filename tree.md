@@ -41,7 +41,7 @@ onMounted(() => {
     } else if (position === 'before'){
       moveTreeNodesById(root.value, toParentId, selectedIds, index)
     }
-  }},[addClassesMiddleware(), indicatorMiddleware(), autoScrollMiddleware(), dragImageMiddleware({minElements: 1})])
+  }},[addClassesMiddleware(), indicatorMiddleware({offset: 2}), autoScrollMiddleware(), dragImageMiddleware({minElements: 1})])
 })
 </script>
 

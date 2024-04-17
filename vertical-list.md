@@ -30,7 +30,7 @@ onMounted(() => {
       } else if (position === 'before'){
         items.value = reorderItems(items.value, selectedItems, index)
       }
-  }},[addClassesMiddleware(), indicatorMiddleware(), autoScrollMiddleware(), dragImageMiddleware({minElements: 0})])
+  }},[addClassesMiddleware(), indicatorMiddleware({offset: 2}), autoScrollMiddleware(), dragImageMiddleware({minElements: 0})])
 })
 </script>
 
@@ -38,8 +38,8 @@ onMounted(() => {
 
 <div ref='container' style='overflow:auto; max-height: 400px; padding: 5px;'>
   <ul class='list'>
-      <li v-for='(item, index) in items' :key='item.id'>
-        <span :data-id='item.id' :data-index='index'>{{item.name}}</span>
+      <li v-for='(item, index) in items' :key='item.id' :data-id='item.id' :data-index='index' style='margin-bottom: 4px'>
+        <span >{{item.name}}</span>
     </li>
   </ul>
 </div>

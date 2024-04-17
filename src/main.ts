@@ -19,6 +19,7 @@ import {
   GetElementIdFn,
   DragDropMiddlewareReturn,
   DragDropHookPayload,
+  Rect,
 } from "./types"
 
 /**
@@ -113,29 +114,25 @@ export const useDragDrop = (
     { width: number; height: number; x: number; y: number }
   > = {}
 
+  const getRelativeRect = (element: HTMLElement) => {
+    const { width, height, x, y } = element.getBoundingClientRect()
+    return {
+      width,
+      height,
+      x: x + getScrollX(scrollContainer),
+      y: y + getScrollY(scrollContainer),
+    } as Rect
+  }
   const getRectCached: GetRectFn = (
     element: HTMLElement,
     getElementIdLocal: GetElementIdFn = getElementId,
   ) => {
     const id = getElementIdLocal(element)
-    return (
-      // boundingRectCache[id!] || // @TODO
-      (boundingRectCache[id!] = [element.getBoundingClientRect()].map(
-        ({ width, height, x, y }) => ({
-          width,
-          height,
-          x: x + getScrollX(scrollContainer),
-          y: y + getScrollY(scrollContainer),
-        }),
-      )[0])
-    )
+    return !options.enableRectCaching
+      ? getRelativeRect(element)
+      : boundingRectCache[id!] ||
+          (boundingRectCache[id!] = getRelativeRect(element))
   }
-  // returns 0 or element width or height
-  // const getRelativeOffsetValue = vertical
-  //   ? (evt: DragEvent, element: HTMLElement) =>
-  //       evt.pageY < getRectCached(element).y ? 0 : getRectCached(element).height
-  //   : (evt: DragEvent, element: HTMLElement) =>
-  //       evt.pageX < getRectCached(element).x ? 0 : getRectCached(element).width
 
   const calcPositionLocal = vertical
     ? (dropElement: HTMLElement, dragElement: HTMLElement, offset: number) =>
@@ -150,6 +147,13 @@ export const useDragDrop = (
             ? dropPositionFn({ dropElement, dragElement })
             : "none",
         )(offset, getRectCached(dropElement).width)
+
+  // returns 0 or element width or height
+  // const getRelativeOffsetValue = vertical
+  //   ? (evt: DragEvent, element: HTMLElement) =>
+  //       evt.pageY < getRectCached(element).y ? 0 : getRectCached(element).height
+  //   : (evt: DragEvent, element: HTMLElement) =>
+  //       evt.pageX < getRectCached(element).x ? 0 : getRectCached(element).width
 
   // const getClosestElement = (evt: DragEvent, elements: HTMLElement[]) => {
   //   const closestElement =
@@ -178,7 +182,21 @@ export const useDragDrop = (
   let dragEndSubscription: Subscription | null = null
 
   const middlewareReturns = middleware.map((m) =>
-    m({ vertical, container, getRectCached, getElementId, scrollContainer }),
+    m(
+      { vertical, container, getRectCached, getElementId, scrollContainer },
+      {
+        targetSelector,
+        handleSelector,
+        dropPositionFn,
+        getSelectedElements,
+        getElementId,
+        vertical,
+        dragOverThrottle,
+        onDrop,
+        onDragStart,
+        onBeforeDragStart,
+      },
+    ),
   )
   const createPayload = (event?: DragEvent) =>
     ({
@@ -236,13 +254,9 @@ export const useDragDrop = (
         // callback from option call
         onDragStart?.(currentDragElement)
 
-        dragOverSubscription = dragOverSubscribe()
+        // subscribe to dragover- and dragend-events
+        dragOverSubscription = subscribeToDragOverEvent()
         dragEndSubscription = subscribeToDragEndEvent()
-        // keyDownSubscription = subscribeToKeyDownEvent()
-
-        fromEvent<KeyboardEvent>(document, "keydown").pipe(
-          filter((e) => e.key === "Escape"),
-        )
 
         // flush rectangle cache
         boundingRectCache = {}
@@ -261,7 +275,7 @@ export const useDragDrop = (
   let property = vertical ? "offsetY" : ("offsetX" as keyof DragEvent)
   let position: DropPosition = "none"
 
-  const dragOverSubscribe = () =>
+  const subscribeToDragOverEvent = () =>
     dragOver$
       .pipe(
         // prevents drag end animation

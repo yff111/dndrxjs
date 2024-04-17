@@ -10,117 +10,70 @@ import addClassesMiddleware  from './src/add-classes'
 import indicatorMiddleware  from './src/indicator'
 import autoScrollMiddleware  from './src/auto-scroll'
 import dragImageMiddleware  from './src/drag-image'
-import { reorderItems }  from './src/utils'
+import { reorderItems, swapElements }  from './src/utils'
 const COLORS = [
-  "#ffe2f9",
-"#ffe0f9",
-"#ffdef9",
-"#ffddf9",
-"#ffdbf9",
-"#ffd9f9",
-"#ffd7f9",
-"#ffd6f9",
-"#ffd4f9",
-"#ffd2f9",
-"#ffd0f9",
-"#ffcff9",
-"#ffcdf9",
-"#ffcbf9",
-"#ffc9f9",
-"#ffc8f9",
-"#ffc6fa",
-"#ffc4fa",
-"#ffc2fa",
-"#fec1fa",
-"#febffa",
-"#febdfa",
-"#febcfb",
-"#febafb",
-"#fdb8fb",
-"#fdb6fb",
-"#fdb5fb",
-"#fcb3fc",
-"#fcb1fc",
-"#fcaffc",
-"#fbaefc",
-"#fbacfd",
-"#faaafd",
-"#faa8fd",
-"#faa7fd",
-"#f9a5fe",
-"#f9a3fe",
-"#f8a1fe",
-"#f8a0ff",
-"#f79eff",
-"#f799ff",
-"#f699ff",
-"#f499ff",
-"#f399ff",
-"#f29aff",
-"#f09aff",
-"#ef9aff",
-"#ee9aff",
-"#ec9aff",
-"#eb9aff",
-"#ea9bff",
-"#e89bff",
-"#e79bff",
-"#e69bff",
-"#e49bff",
-"#e39bff",
-"#e29bff",
-"#e09cff",
-"#df9cff",
-"#de9cff",
-"#dc9cff",
-"#db9cff",
-"#da9cff",
-"#d89cff",
-"#d79cff",
-"#d69dff",
-"#d49dff",
-"#d39dff",
-"#d29dff",
-"#d09dff",
-"#cf9dff",
-"#ce9dff",
-"#cc9dff",
-"#cb9dff",
-"#ca9eff",
-"#c89eff",
-"#c79eff",
-"#c69eff",
-"#c49eff",
-"#c39eff",
-]
+"#ffe2f9","#ffe0f9","#ffdef9","#ffddf9","#ffdbf9","#ffd9f9","#ffd7f9","#ffd6f9","#ffd4f9","#ffd2f9","#ffd0f9","#ffcff9","#ffcdf9","#ffcbf9","#ffc9f9","#ffc8f9","#ffc6fa","#ffc4fa","#ffc2fa","#fec1fa","#febffa","#febdfa","#febcfb","#febafb","#fdb8fb","#fdb6fb","#fdb5fb","#fcb3fc","#fcb1fc","#fcaffc","#fbaefc","#fbacfd","#faaafd","#faa8fd","#faa7fd","#f9a5fe","#f9a3fe","#f8a1fe","#f8a0ff","#f79eff","#f799ff","#f699ff","#f499ff","#f399ff","#f29aff","#f09aff","#ef9aff","#ee9aff","#ec9aff","#eb9aff","#ea9bff","#e89bff","#e79bff","#e69bff","#e49bff","#e39bff","#e29bff","#e09cff","#df9cff","#de9cff","#dc9cff","#db9cff","#da9cff","#d89cff","#d79cff","#d69dff","#d49dff","#d39dff","#d29dff","#d09dff","#cf9dff","#ce9dff","#cc9dff","#cb9dff","#ca9eff","#c89eff","#c79eff","#c69eff","#c49eff","#c39eff"]
 const items = ref(COLORS.map(hex => ({id: hex})))
 const container = ref(null)
+
 onMounted(() => {
   useDragDrop(container.value, {
-  vertical: false,
-  dropPositionFn: ({ dragElement, dropElement }) =>  'around',
-    onDrop: ({dragElement, dropElement, selectedElements, position}) => {
-      if(!dropElement){
-        return
-      }
-      const index = parseInt(dropElement.getAttribute('data-index'))
-      const selectedItems = selectedElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
-      if (position === 'after'){
-        items.value = reorderItems(items.value, selectedItems, index + 1)
-      } else if (position === 'before'){
-        items.value = reorderItems(items.value, selectedItems, index)
-      }
-    }},[addClassesMiddleware(), indicatorMiddleware({offset: 3}), autoScrollMiddleware(), dragImageMiddleware({minElements: 1})])
+    vertical: false,
+    dropPositionFn: ({ dragElement, dropElement }) =>  'around',
+      onDrop: ({dragElement, dropElement, selectedElements, position}) => {
+        if(!dropElement){
+          return
+        }
+        const index = parseInt(dropElement.getAttribute('data-index'))
+        const selectedItems = selectedElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
+        if (position === 'after'){
+          items.value = reorderItems(items.value, selectedItems, index + 1)
+        } else if (position === 'before'){
+          items.value = reorderItems(items.value, selectedItems, index)
+        }
+      }},[addClassesMiddleware(), indicatorMiddleware({offset: 3}), autoScrollMiddleware(), dragImageMiddleware({minElements: 1})])
 })
+
+
+const items2 = ref(COLORS.map(hex => ({id: hex})))
+const container2 = ref(null)
+onMounted(() => {
+  useDragDrop(container2.value, {
+    vertical: false,
+    dropPositionFn: ({ dragElement, dropElement }) =>  'in',
+      onDrop: ({dragElement, dropElement, selectedElements, position}) => {
+        if(!dropElement){
+          return
+        }
+        const index1 = parseInt(dropElement.getAttribute('data-index'))
+        const index2 = parseInt(dragElement.getAttribute('data-index'))
+        if (position === 'in'){
+          swapElements(items2.value,index1, index2)
+        }
+      }},[addClassesMiddleware(), indicatorMiddleware(), autoScrollMiddleware(), dragImageMiddleware()])
+
+})
+
+
+
 </script>
 
-
+<br>
 <br>
 
-**Demo**
-
+#### Sort
+<br>
 <div ref='container' style='display: flex;  flex-wrap: wrap; position: relative; gap: 6px'>
-    <div v-for="(item, index) in items" draggable="false" style='width: calc((100% / 10) - 6px);  height: 55px;  padding: 5px; font-size: 11px; font-weight: bold; line-height: 1.25; cursor: grab; border-radius: 4px;  display: flex; color: #fff; text-align: center; align-items: center; justify-content: center;  border: 2px solid transparent; background: #eee; ' :style='{background: item.id}'  :key='item.id' :data-index='index'  :data-id='item.id'  >
+    <div v-for="(item, index) in items" draggable="false" style='width: calc((100% / 10) - 6px);  height: 55px;  padding: 5px; font-size: 11px; font-weight: bold; line-height: 1.25; cursor: grab; border-radius: 4px;  display: flex; color: #fff; text-align: center; align-items: center; justify-content: center;   background: #eee; ' :style='{background: item.id}'  :key='item.id' :data-index='index'  :data-id='item.id'  >
+   <span>{{item.id}}</span></div>
+</div>
+
+<br><br>
+
+#### Swap
+<br>
+<div ref='container2' style='display: flex;  flex-wrap: wrap; position: relative; gap: 6px'>
+    <div v-for="(item, index) in items2" draggable="false" style='width: calc((100% / 10) - 6px);  height: 55px;  padding: 5px; font-size: 11px; font-weight: bold; line-height: 1.25; cursor: grab; border-radius: 4px;  display: flex; color: #fff; text-align: center; align-items: center; justify-content: center;  background: #eee; ' :style='{background: item.id}'  :key='item.id' :data-index='index'  :data-id='item.id'  >
    <span>{{item.id}}</span></div>
 </div>
 

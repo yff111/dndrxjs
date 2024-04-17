@@ -3,11 +3,11 @@ span:has(+ ul) {
 }
 
 [draggable="true"],
-.dragging {
+.drag {
   opacity: 0.5;
 }
 [draggable="true"] {
-  cursor: grabbing;
+  cursor: grabbing !important;
 }
 li {
   cursor: grab;
@@ -27,10 +27,13 @@ ul.tree li > span,
 ul.list li > span {
   display: inline-block !important;
   width: 100%;
-  background: #f9f9f9;
+  background: #f5f5f5;
+  color: var(--vp-c-text-1);
   border-radius: 5px;
   padding: 7px 12px !important;
-  /* border: 2px solid #fff; */
+}
+
+ul.tree li > span {
   margin-bottom: 4px;
 }
 ul.tree ul.tree {
@@ -40,19 +43,24 @@ ul.tree ul.tree {
 li {
   list-style: none;
 }
+
 @keyframes drop {
   0% {
-    background: rgba(0, 0, 0, 0.1) !important;
+    filter: brightness(0.95) saturate(2);
   }
-  10% {
-    background: rgba(0, 0, 0, 0.2) !important;
+  5% {
+    filter: brightness(0.9) saturate(3);
   }
   100% {
-    background: rgba(240, 240, 240, 1) !important;
+    filter: brightness(1) saturate(1);
   }
 }
 .drop {
   animation: drop 0.35s ease;
+}
+
+.dragOver {
+  opacity: 0.8 !important;
 }
 
 .list-move, /* apply transition to moving elements */
