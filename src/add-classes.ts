@@ -1,22 +1,26 @@
+import { isWindow } from "./helpers"
 import { DragDropMiddleware } from "./types"
 
 export type AddClassesMiddlewareOptions = {
   dragClass: string
   dropClass: string
+  dragOverClass: string
   activeContainerClass: string
 }
 const addClassesMiddleware = (
   {
     dragClass,
     dropClass,
+    dragOverClass,
     activeContainerClass,
   }: AddClassesMiddlewareOptions = {
-    dragClass: "dragging",
+    dragClass: "drag",
+    dragOverClass: "dragOver",
     dropClass: "drop",
     activeContainerClass: "active",
   },
 ) =>
-  ((state) => {
+  ((state, { targetSelector, getElementId }) => {
     const { container } = state
     const clear = (scrollContainer?: HTMLElement | Window) => {
       if (scrollContainer instanceof HTMLElement) {
@@ -26,7 +30,51 @@ const addClassesMiddleware = (
         .querySelectorAll("." + dragClass)
         .forEach((e: Element) => e.classList.remove(dragClass))
     }
+
+    const clearDragOverClass = (currentDropElement?: HTMLElement) =>
+      document
+        .querySelectorAll(`.${dragOverClass}`)
+        .forEach(
+          (e) => e !== currentDropElement && e?.classList.remove(dragOverClass),
+        )
+
+    const addDropClassOnMutation = (
+      selectedElements: HTMLElement[],
+      scrollContainer?: HTMLElement | Window,
+    ) => {
+      const selectedElementIds = selectedElements.map(getElementId!)
+      const observer = new MutationObserver((mutations) =>
+        mutations.forEach((mutation) =>
+          mutation.addedNodes.forEach((node) => {
+            if (node instanceof HTMLElement) {
+              const newNodes = node.matches?.(targetSelector!)
+                ? [node]
+                : // check for matching child nodes if parent did not match
+                  (Array.from(
+                    node.querySelectorAll(targetSelector!),
+                  ) as HTMLElement[])
+              // match selected elements with added nodes
+              newNodes.forEach(
+                (n) =>
+                  selectedElementIds.includes(getElementId!(n)) &&
+                  n.classList.add(dropClass),
+              )
+            }
+            observer.disconnect()
+          }),
+        ),
+      )
+      observer.observe(
+        isWindow(scrollContainer) ? document.body : scrollContainer!,
+        { childList: true, subtree: true },
+      )
+    }
+
     return {
+      onDragOver: ({ dropElement }) => {
+        clearDragOverClass(dropElement!)
+        dropElement?.classList.add(dragOverClass)
+      },
       onDragStart: ({ dragElement, selectedElements, scrollContainer }) => {
         if (scrollContainer instanceof HTMLElement) {
           scrollContainer.classList.add(activeContainerClass)
@@ -48,9 +96,10 @@ const addClassesMiddleware = (
           scrollContainer.classList.remove(activeContainerClass)
         }
       },
-      onDrop: ({ selectedElements, scrollContainer }) => {
+      onDrop: ({ scrollContainer, selectedElements }) => {
         clear(scrollContainer)
-        selectedElements.forEach((e) => e.classList.add(dropClass))
+        clearDragOverClass()
+        addDropClassOnMutation(selectedElements, scrollContainer)
       },
     }
   }) as DragDropMiddleware
