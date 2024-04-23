@@ -20,19 +20,19 @@ onMounted(() => {
   useDragDrop(container.value, {
   vertical: false,
   dropPositionFn: ({ dragElement, dropElement }) =>  'around',
-    onDrop: ({dragElement, dropElement, selectedElements, position}) => {
-      if(!dropElement){
-        return
+    }).pipe(addClassesMiddleware(), indicatorMiddleware({offset: 6}), autoScrollMiddleware(), dragImageMiddleware({minElements: 1}))
+    .subscribe(({type, dragElements, dropElement, selectedElements, position}) => {
+      if(!!dropElement && type === 'DragEnd'){
+        const index = parseInt(dropElement.getAttribute('data-index'))
+        const dropElementId = dropElement.getAttribute('data-id')
+        const selectedIds = dragElements.map((e) => e.getAttribute('data-id'))
+        if (position === 'after'){
+          moveTreeNodesById(root.value, 'root', selectedIds, index)
+        } else if (position === 'before'){
+          moveTreeNodesById(root.value, 'root', selectedIds, index)
+        }
       }
-      const index = parseInt(dropElement.getAttribute('data-index'))
-      const dropElementId = dropElement.getAttribute('data-id')
-      const selectedIds = selectedElements.map((e) => e.getAttribute('data-id'))
-      if (position === 'after'){
-        moveTreeNodesById(root.value, 'root', selectedIds, index)
-      } else if (position === 'before'){
-        moveTreeNodesById(root.value, 'root', selectedIds, index)
-      }
-    }},[addClassesMiddleware(), indicatorMiddleware({offset: 6}), autoScrollMiddleware(), dragImageMiddleware({minElements: 1})])
+    })
 })
 </script>
 

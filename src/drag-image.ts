@@ -1,6 +1,10 @@
-import { fromEvent } from "rxjs"
-import { fromHTML } from "./helpers"
-import { DragDropMiddlewareFn } from "./types"
+import { Observable, fromEvent, tap } from "rxjs"
+import { fromHTML } from "./utils"
+import {
+  DragDropMiddlewareHookMap,
+  DragDropPayload,
+  DragDropMiddlewareOperator,
+} from "./types"
 
 export const defaultUpdateElementFn = (selectedElements: HTMLElement[]) =>
   fromHTML(
@@ -26,50 +30,62 @@ export interface DragImageMiddlewareOptions {
   updateElement?: (selectedElements: HTMLElement[]) => HTMLElement
   minElements?: number
 }
-const dragImageMiddleware: DragDropMiddlewareFn<DragImageMiddlewareOptions> =
-  (options) => () => {
-    const customImageContainer = document.createElement("div")
-    const {
-      updateElement = defaultUpdateElementFn,
-      updateContainerStyle = defaultUpdateContainerStyleFn,
-      minElements = 0,
-    } = options || {}
-    let subscription: any = null
+const dragImageMiddleware: DragDropMiddlewareOperator<
+  DragImageMiddlewareOptions
+> = (options) => {
+  const customImageContainer = document.createElement("div")
+  const {
+    updateElement = defaultUpdateElementFn,
+    updateContainerStyle = defaultUpdateContainerStyleFn,
+    minElements = 0,
+  } = options || {}
+  let subscription: any = null
 
-    const mousemove$ = fromEvent<DragEvent>(document, "dragover")
-    const update = (event: DragEvent) =>
-      updateContainerStyle(customImageContainer, event.clientY, event.clientX)
+  const mousemove$ = fromEvent<DragEvent>(document, "dragover")
+  const update = (event: DragEvent) =>
+    updateContainerStyle(customImageContainer, event.clientY, event.clientX)
 
-    const start = () => {
-      document.body.addEventListener("dragend", () => (stop(), false))
-      subscription = mousemove$.subscribe(update)
-    }
-
-    const stop = () => {
-      subscription?.unsubscribe()
-      customImageContainer.remove()
-    }
-    // add dummy drag image
-    const img = new Image(1, 1)
-    img.src =
-      "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
-    document.body.appendChild(img)
-    return {
-      onDragStart: ({ selectedElements, event }) => {
-        if (selectedElements.length === minElements) {
-          return
-        }
-        // set dummy drag Image
-        event.dataTransfer?.setDragImage(img, 0, 0)
-        start()
-        customImageContainer.innerHTML = ""
-        customImageContainer.appendChild(updateElement(selectedElements))
-        document.body.appendChild(customImageContainer)
-        update(event)
-      },
-      onDestroy: () => stop(),
-      onDrop: () => stop(),
-    }
+  const start = () => {
+    document.body.addEventListener("dragend", () => (stop(), false))
+    subscription = mousemove$.subscribe(update)
   }
+
+  const stop = () => {
+    subscription?.unsubscribe()
+    customImageContainer.remove()
+  }
+  // add dummy drag image
+  const img = new Image(1, 1)
+  img.src =
+    "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+  document.body.appendChild(img)
+  return (source: Observable<DragDropPayload>) =>
+    source.pipe(
+      tap(({ type, originalEvent, dragElements }) =>
+        (
+          ({
+            DragStart: () => {
+              if (dragElements.length === minElements) {
+                return
+              }
+              // set dummy drag Image
+              ;(originalEvent as DragEvent).dataTransfer?.setDragImage(
+                img,
+                0,
+                0,
+              )
+              console.log("dragstart --", originalEvent)
+              start()
+              customImageContainer.innerHTML = ""
+              customImageContainer.appendChild(updateElement(dragElements))
+              document.body.appendChild(customImageContainer)
+              update(originalEvent as DragEvent)
+            },
+            DragEnd: () => stop(),
+          }) as DragDropMiddlewareHookMap
+        )[type]?.(),
+      ),
+    )
+}
 
 export default dragImageMiddleware

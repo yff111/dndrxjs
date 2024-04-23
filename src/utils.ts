@@ -1,3 +1,5 @@
+import { GetElementIdFn, GetRectFn, Rect } from "./types"
+
 export type TreeNode<T> = {
   id: string
   data: T
@@ -71,4 +73,97 @@ export const moveItemsToArrayMutate = <T = any>(
     .splice(targetIndex, 0, items)
     .flatMap((item) => item)
   return a.filter((e) => items.indexOf(e) === -1).flatMap((e) => e) as T[]
+}
+
+export const getListInfoFromElement = (e: Element) => ({
+  id: e.getAttribute("data-id"),
+  index: Number(e.getAttribute("data-index")),
+})
+
+export const getTreeInfoFromElement = (e: Element) => ({
+  id: e.getAttribute("data-id"),
+  parentId: e.getAttribute("data-parent-id"),
+  index: Number(e.getAttribute("data-index")),
+  hasChildren: e.getAttribute("data-has-children") === "true",
+  level: Number(e.getAttribute("data-level")),
+  expanded: e.getAttribute("data-expanded") === "true",
+})
+
+export const getRelativeRect = (
+  element: HTMLElement,
+  scrollContainer: HTMLElement | Window,
+) => {
+  const { width, height, x, y } = element.getBoundingClientRect()
+  return {
+    width,
+    height,
+    x: x + getScrollX(scrollContainer),
+    y: y + getScrollY(scrollContainer),
+  } as Rect
+}
+
+export const setAttributesTo = (
+  selector: string,
+  attribute: string,
+  value: string,
+  parent: HTMLElement = document.body,
+) =>
+  parent
+    .querySelectorAll(selector)
+    .forEach((e: Element) => e.setAttribute(attribute, value))
+
+export let boundingRectCache: Record<
+  string,
+  { width: number; height: number; x: number; y: number }
+> = {}
+
+export const flushRectCache = () => {
+  boundingRectCache = {}
+}
+export const getRectCached: GetRectFn = (
+  element: HTMLElement,
+  getElementIdLocal: GetElementIdFn,
+  scrollContainer: HTMLElement,
+) => {
+  const id = getElementIdLocal(element)
+  return (
+    boundingRectCache[id!] ||
+    (boundingRectCache[id!] = getRelativeRect(element, scrollContainer))
+  )
+}
+
+export const getDistance = (x1: number, y1: number, x2: number, y2: number) => {
+  let y = x2 - x1
+  let x = y2 - y1
+  return Math.sqrt(x * x + y * y)
+}
+export const fromHTML = (html: string) => {
+  const template = document.createElement("template")
+  template.innerHTML = html.trim()
+  return template.content.children[0] as HTMLElement
+}
+
+export function isWindow(el: HTMLElement | Window | undefined): el is Window {
+  return el instanceof Window
+}
+export const getScrollX = (container: HTMLElement | Window) =>
+  isWindow(container) ? container.scrollX : container.scrollLeft
+
+export const getScrollY = (container: HTMLElement | Window) =>
+  isWindow(container) ? container.scrollY : container.scrollTop
+
+export const getClosestScrollContainer = (element: HTMLElement) => {
+  if (!element) {
+    return window
+  }
+  let parent: HTMLElement = element
+  while (parent) {
+    const { overflow } = window.getComputedStyle(parent)
+    if (overflow.split(" ").every((o) => o === "auto" || o === "scroll")) {
+      return parent
+    }
+    parent = parent.parentElement!
+  }
+
+  return window
 }

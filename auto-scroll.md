@@ -22,18 +22,24 @@ onMounted(() => {
   useDragDrop(container.value, {
   vertical: false,
   dropPositionFn: ({ dragElement, dropElement }) =>  'around',
-     onDrop: ({dragElement, dropElement, selectedElements, position}) => {
-      if(!dropElement){
-        return
+     }).pipe(
+      addClassesMiddleware(), 
+      indicatorMiddleware({offset: 4 }), 
+      autoScrollMiddleware(), 
+      dragImageMiddleware({minElements: 1})
+    ).subscribe(
+       ({type, dragElements, dropElement,  position}) => {
+        if(!!dropElement && type === 'DragEnd'){
+          const index = parseInt(dropElement.getAttribute('data-index'))
+          const selectedItems = dragElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
+          if (position === 'after'){
+            items.value = reorderItems(items.value, selectedItems, index + 1)
+          } else if (position === 'before'){
+            items.value = reorderItems(items.value, selectedItems, index )
+          }
+        }
       }
-      const index = parseInt(dropElement.getAttribute('data-index'))
-      const selectedItems = selectedElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
-      if (position === 'after'){
-        items.value = reorderItems(items.value, selectedItems, index + 1)
-      } else if (position === 'before'){
-        items.value = reorderItems(items.value, selectedItems, index )
-      }
-    }},[addClassesMiddleware(), indicatorMiddleware({offset: 4 }), autoScrollMiddleware(), dragImageMiddleware({minElements: 1})])
+    )
 })
 </script>
 

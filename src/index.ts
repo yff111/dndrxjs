@@ -3,7 +3,7 @@ import {
   getScrollX,
   getScrollY,
   getClosestScrollContainer,
-} from "./helpers"
+} from "./utils"
 export { getDistance, getScrollX, getScrollY, getClosestScrollContainer }
 
 import {
@@ -25,33 +25,31 @@ import {
   DropPosition,
   DropPositionRules,
   DropPositionFn,
-  OnDropFn,
   Rect,
   GetSelectedElementsFn,
   GetElementIdFn,
   OnDragStartFn,
+  DragDropMiddlewareOperator,
   OnBeforeDragStartFn,
   DragDropOptions,
-  DragDropHookPayload,
-  DragDropMiddlewareFn,
-  DragDropMiddleware,
+  DragDropPayload,
   GetRectFn,
+  DragDropEventType,
 } from "./types"
 
 export {
+  DragDropPayload,
+  DragDropEventType,
   DropPosition,
   DropPositionRules,
   DropPositionFn,
-  OnDropFn,
   Rect,
+  DragDropMiddlewareOperator,
   GetSelectedElementsFn,
   GetElementIdFn,
   OnDragStartFn,
   OnBeforeDragStartFn,
   DragDropOptions,
-  DragDropHookPayload,
-  DragDropMiddlewareFn,
-  DragDropMiddleware,
   GetRectFn,
 }
 

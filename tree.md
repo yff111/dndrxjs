@@ -11,8 +11,6 @@ import indicatorMiddleware  from './src/indicator'
 import autoScrollMiddleware  from './src/auto-scroll'
 import dragImageMiddleware  from './src/drag-image'
 import { moveTreeNodesById }  from './src/utils'
-
-
 import  Tree  from './src/Tree.vue'
 
 const root = ref({id: "root", children: data})
@@ -21,34 +19,42 @@ const container = ref(null)
 onMounted(() => {
   useDragDrop(container.value, {
   dropPositionFn: ({ dragElement, dropElement }) => {
-    const isDropElementParent =  !!dropElement.parentElement.querySelector('ul li')
-    const isOwnChild = dragElement.parentElement.contains(dropElement)
-    const isDropElementNested = !!dropElement.getAttribute('data-parent-id')
-    return isOwnChild ? 'none' : isDropElementParent ? 'notAfter': 'all'
-   },
-  onDrop: ({dragElement, dropElement, selectedElements, position}) => {
-    if(!dropElement){
-      return
+      const isDropElementParent =  !!dropElement.parentElement.querySelector('ul li')
+      const isOwnChild = dragElement.parentElement.contains(dropElement)
+      const isDropElementNested = !!dropElement.getAttribute('data-parent-id')
+      return isOwnChild ? 'none' : isDropElementParent ? 'notAfter': 'all'
+    },
+   }
+  )
+  .pipe(
+    addClassesMiddleware(), 
+    indicatorMiddleware({offset: 2}), 
+    autoScrollMiddleware(), 
+    dragImageMiddleware({minElements: 1})
+  ).subscribe(
+    ({type, dragElement, dropElement, dragElements, position}) => {
+      if (!!dropElement && type === 'DragEnd') {
+        const index = parseInt(dropElement.getAttribute('data-index'))
+        const dropElementId = dropElement.getAttribute('data-id')
+        const toParentId = dropElement.getAttribute('data-parent-id') || 'root'
+        const selectedIds = dragElements.map((e) => e.getAttribute('data-id'))
+        if(position == 'in') {
+          moveTreeNodesById(root.value, dropElementId, selectedIds, 0)
+        } else if (position === 'after'){
+          moveTreeNodesById(root.value, toParentId, selectedIds, index + 1)
+        } else if (position === 'before'){
+          moveTreeNodesById(root.value, toParentId, selectedIds, index)
+        }
+      }
     }
-    const index = parseInt(dropElement.getAttribute('data-index'))
-    const dropElementId = dropElement.getAttribute('data-id')
-    const toParentId = dropElement.getAttribute('data-parent-id') || 'root'
-    const selectedIds = selectedElements.map((e) => e.getAttribute('data-id'))
-    if(position == 'in') {
-      moveTreeNodesById(root.value, dropElementId, selectedIds, 0)
-    } else if (position === 'after'){
-      moveTreeNodesById(root.value, toParentId, selectedIds, index + 1)
-    } else if (position === 'before'){
-      moveTreeNodesById(root.value, toParentId, selectedIds, index)
-    }
-  }},[addClassesMiddleware(), indicatorMiddleware({offset: 2}), autoScrollMiddleware(), dragImageMiddleware({minElements: 1})])
+  )
 })
 </script>
 
 
 **Demo**
 
-<div ref='container' >
+<div ref='container' class='**checkered**'>
 <tree :node='root' :level='0' ></tree>
 </div>
 

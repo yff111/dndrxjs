@@ -15,7 +15,7 @@ simple, low level and modular drag & drop library based on rxjs
 - platform-agnostic: only typescript and rxjs, no framework involved
 - performant: large-list support due to event-throttling, event-delegation and rect-caching
 - auto-scrolling
-- custom drag-image
+
 - custom ghost-image
 - drag handle etc.
 

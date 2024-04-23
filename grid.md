@@ -20,18 +20,27 @@ onMounted(() => {
   useDragDrop(container.value, {
     vertical: false,
     dropPositionFn: ({ dragElement, dropElement }) =>  'around',
-      onDrop: ({dragElement, dropElement, selectedElements, position}) => {
-        if(!dropElement){
-          return
+},)
+.pipe(
+  addClassesMiddleware(),
+  indicatorMiddleware({offset: 3}),
+  autoScrollMiddleware(),
+  dragImageMiddleware({minElements: 1})
+)
+.subscribe(
+  ({type, dragElements, dropElement, position}) => {
+    // console.log(type, position, !!dropElement)
+      if(type === 'DragEnd' && !!dropElement){
+        const selectedItems = dragElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
+          const index = parseInt(dropElement.getAttribute('data-index'))
+          console.log(index,selectedItems)
+          if (position === 'after'){
+            items.value = reorderItems(items.value, selectedItems, index + 1)
+          } else if (position === 'before'){
+            items.value = reorderItems(items.value, selectedItems, index)
+          }
         }
-        const index = parseInt(dropElement.getAttribute('data-index'))
-        const selectedItems = selectedElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
-        if (position === 'after'){
-          items.value = reorderItems(items.value, selectedItems, index + 1)
-        } else if (position === 'before'){
-          items.value = reorderItems(items.value, selectedItems, index)
-        }
-      }},[addClassesMiddleware(), indicatorMiddleware({offset: 3}), autoScrollMiddleware(), dragImageMiddleware({minElements: 1})])
+      })
 })
 
 
@@ -40,17 +49,25 @@ const container2 = ref(null)
 onMounted(() => {
   useDragDrop(container2.value, {
     vertical: false,
-    dropPositionFn: ({ dragElement, dropElement }) =>  'in',
-      onDrop: ({dragElement, dropElement, selectedElements, position}) => {
-        if(!dropElement){
-          return
+    dropPositionFn: ({ dragElement, dropElement }) =>  'in'
+     })
+     .pipe(
+        addClassesMiddleware(),
+        indicatorMiddleware({offset: 3}),
+        autoScrollMiddleware(),
+        dragImageMiddleware({minElements: 0})
+      )
+     .subscribe
+     (({type, dragElements, dropElement, position}) => {
+      console.log(type)
+        if(type === 'DragEnd' && !!dropElement){
+          const index1 = parseInt(dropElement.getAttribute('data-index'))
+          const index2 = parseInt(dragElements[0].getAttribute('data-index'))
+          if (position === 'in'){
+            swapElements(items2.value,index1, index2)
+          }
         }
-        const index1 = parseInt(dropElement.getAttribute('data-index'))
-        const index2 = parseInt(dragElement.getAttribute('data-index'))
-        if (position === 'in'){
-          swapElements(items2.value,index1, index2)
-        }
-      }},[addClassesMiddleware(), indicatorMiddleware(), autoScrollMiddleware(), dragImageMiddleware()])
+      })
 
 })
 

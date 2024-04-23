@@ -18,19 +18,21 @@ const container = ref(null)
 
 onMounted(() => {
   useDragDrop(container.value, {
-  dropPositionFn: ({ dragElement, dropElement }) => 'around' ,
-  onDrop: ({dragElement, dropElement, selectedElements, position}) => {
-      if(!dropElement){
-        return
-      }
-      const index = parseInt(dropElement.getAttribute('data-index'))
-      const selectedItems = selectedElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
+    dropPositionFn: ({ dragElement, dropElement }) => 'around',
+  })
+  .pipe(addClassesMiddleware(), indicatorMiddleware({offset: 2}), autoScrollMiddleware(), dragImageMiddleware({minElements: 0}))
+  .subscribe(
+    ({type, dragElements, dropElement, position}) => {
+      if(!!dropElement && type === "DragEnd") {
+        const index = parseInt(dropElement.getAttribute('data-index'))
+      const selectedItems = dragElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
       if (position === 'after'){
         items.value = reorderItems(items.value, selectedItems, index + 1)
       } else if (position === 'before'){
         items.value = reorderItems(items.value, selectedItems, index)
       }
-  }},[addClassesMiddleware(), indicatorMiddleware({offset: 2}), autoScrollMiddleware(), dragImageMiddleware({minElements: 0})])
+    }
+  })
 })
 </script>
 
@@ -48,21 +50,5 @@ onMounted(() => {
 
 ```js{4}
 
-import useDragDrop from './dist'
-import addClassesMiddleware  from './dist/add-classes'
-import indicatorMiddleware  from './dist/indicator'
-import autoScrollMiddleware  from './dist/auto-scroll'
-
- useDragDrop(document.querySelector('.container'), {
-  dropPositionFn: ({ dragElement, dropElement }) => 'around' ,
-  onDrop: ({dragElement, dropElement, selectedElements, position}) => {
-      const index = parseInt(dropElement.getAttribute('data-index'))
-      const selectedItems = selectedElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
-      if (position === 'after'){
-        items.value = reorderItems(items.value, selectedItems, index + 1)
-      } else if (position === 'before'){
-        items.value = reorderItems(items.value, selectedItems, index)
-      }
-  }},[addClassesMiddleware(), indicatorMiddleware(), autoScrollMiddleware(), dragImageMiddleware({minElements: 0})])
 
 ```

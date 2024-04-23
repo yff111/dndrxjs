@@ -25,7 +25,8 @@ ul.list li {
 }
 ul.tree li > span,
 ul.list li > span {
-  display: inline-block !important;
+  display: flex;
+  align-items: center;
   width: 100%;
   background: #f5f5f5;
   color: var(--vp-c-text-1);
@@ -78,3 +79,36 @@ li {
 .list-leave-active {
   position: absolute;
 }
+/* 
+:root {
+  font-size: 24px;
+  --backgroundColor: rgba(255, 255, 255);
+  --squareColor: rgba(100, 100, 100, 0.1);
+  --squareSize: 0.5em;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --backgroundColor: rgb(0, 0, 0);
+  }
+}
+
+.checkered {
+  padding: 20px;
+  border-radius: 5px;
+  background-color: var(--backgroundColor);
+  background-image: linear-gradient(
+      45deg,
+      var(--squareColor) 25%,
+      transparent 25%
+    ),
+    linear-gradient(135deg, var(--squareColor) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--squareColor) 75%),
+    linear-gradient(135deg, transparent 75%, var(--squareColor) 75%);
+  background-size: calc(2 * var(--squareSize)) calc(2 * var(--squareSize));
+  background-position:
+    0 0,
+    var(--squareSize) 0,
+    var(--squareSize) calc(-1 * var(--squareSize)),
+    0 calc(-1 * var(--squareSize));
+} */

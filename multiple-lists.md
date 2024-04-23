@@ -78,7 +78,7 @@ onMounted(() => {
     container.value,
     {
       handleSelector: "[data-id]:not([data-has-children])",
-      containerSelector: "[data-has-children]",
+      // containerSelector: "[data-has-children]",
       dragOverThrottle: 10,
       dropPositionFn: ({ dragElement, dropElement }) => {
         const isDropElementParent =
@@ -86,35 +86,34 @@ onMounted(() => {
         const isDropElementNested = dropElement.getAttribute("data-parent-id") !== null;
         const isOwnChild = dropElement.contains(dragElement);
         const hasChildren = dropElement.getAttribute('data-has-children') === "true";
-        return isOwnChild  ? "none" : isDropElementParent ? "in" : "around";
+        return isOwnChild  ? "in" : isDropElementParent ?
+         "in"  : "around";
       },
-      onDrop: ({ dragElement, dropElement, selectedElements, position }) => {
-        if(!dropElement){
-          return
-        }
-        const index = parseInt(dropElement.getAttribute("data-index"));
-        const dropElementId = dropElement.getAttribute("data-id");
-        const dropElementParentId = dropElement.getAttribute("data-parent-id") || "root";
-        const selectedIds = selectedElements.map((e) =>
-          e.getAttribute("data-id")
-        );
-        console.log('onDrop', position)
-        if (position == "in") {
-          moveTreeNodesById(root.value, dropElementId, selectedIds, 0);
-        } else if (position === "after") {
-          moveTreeNodesById(root.value, dropElementParentId, selectedIds, index + 1);
-        } else if (position === "before") {
-          moveTreeNodesById(root.value, dropElementParentId, selectedIds, index);
-        }
-      },
+    
     },
-    [
+  ).pipe(
       addClassesMiddleware(),
-      indicatorMiddleware({offset: 0}),
+      indicatorMiddleware({offset: 4}),
       autoScrollMiddleware(),
       dragImageMiddleware({ minElements: 0 }),
-    ]
-  );
+  ).subscribe(
+    ({ type, dragElement, dropElement, dragElements, position }) => {
+        if(!!dropElement && type === 'DragEnd'){
+          const index = parseInt(dropElement.getAttribute("data-index"));
+          const dropElementId = dropElement.getAttribute("data-id");
+          const dropElementParentId = dropElement.getAttribute("data-parent-id") || "root";
+          const selectedIds = dragElements.map((e) => e.getAttribute("data-id"))
+
+          if (position == "in") {
+            moveTreeNodesById(root.value, dropElementId, selectedIds, 0);
+          } else if (position === "after") {
+            moveTreeNodesById(root.value, dropElementParentId, selectedIds, index + 1);
+          } else if (position === "before") {
+            moveTreeNodesById(root.value, dropElementParentId, selectedIds, index);
+          }
+        }
+      },
+  )
 });
 
 </script>
@@ -128,16 +127,16 @@ onMounted(() => {
 **Demo**
 
 <div ref='container' class='multi-list' style='display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px'>
-  <div v-for='(row) in root.children' style='overflow-y: auto; box-sizing: border-box; max-height: 300px; min-height: 150px;  border-radius: 10px; padding: 4px; outline: 4px solid #f5f5f5;' :data-id='row.id' :data-has-children='row.children.length > 0'>
+  <div v-for='(row) in root.children' style='overflow-y: auto; box-sizing: border-box; max-height: 400px; min-height: 150px;  border-radius: 10px; padding: 8px; outline: 4px solid #f5f5f5;' :data-id='row.id' :data-has-children='row.children.length > 0'>
     <ul class='list'>
-        <li v-for='(item, index) in row.children' :key='item.id' :data-id='item.id' :data-index='index' :data-parent-id='row.id' >
-          <span >{{item.name}}</span>
+        <li v-for='(item, index) in row.children' :key='item.id' :data-id='item.id' :data-index='index' :data-parent-id='row.id' style='margin-bottom: 8px;'>
+          <span style=' min-height: 80px;' >{{item.name}}</span>
       </li>
     </ul>
   </div>
 </div>
 
-**Output**
+**Code**
 
 ```js{4}
 

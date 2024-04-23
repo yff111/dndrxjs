@@ -1,5 +1,11 @@
-import { isWindow } from "./helpers"
-import { DragDropMiddleware, DropPosition } from "./types"
+import { getRelativeRect, isWindow } from "./utils"
+import {
+  DragDropPayload,
+  DragDropMiddlewareHookMap,
+  DragDropMiddlewareOperator,
+  DropPosition,
+} from "./types"
+import { Observable, tap } from "rxjs"
 
 export type GetIndicatorStyleFn = (
   x: number,
@@ -26,7 +32,7 @@ const defaultGetIndicatorStyleFn = (
         ? `width:${width}px; height:2px; top:${y + height - 1 + offset}px; left:${x}px; background: currentColor; pointer-events: none; position: absolute;`
         : `width: 2px; height:${height}px; top:${y}px; left:${x + width - 1 + offset}px; background: currentColor; pointer-events: none; position: absolute;`,
     in: () =>
-      `width:${width}px; height:${height}px; top:${y}px; left:${x}px; opacity: 0.15; border-radius: 5px; background: currentColor; pointer-events: none; position: absolute; max-width: 100%; max-height: 100%;`,
+      `width:${width}px; height:${height}px; top:${y}px; left:${x}px; border: 2.5px dashed currentColor; border-radius: 6px;  pointer-events: none; position: absolute; max-width: 100%; max-height: 100%;`,
     before: () =>
       vertical
         ? `width:${width}px; height:2px; top:${y - 1 - offset}px; left:${x}px; background: currentColor; pointer-events: none; position: absolute;`
@@ -42,67 +48,82 @@ export const defaultIndicatorClasses: IndicatorClasses = {
   before: "indicator-before",
   none: "",
 }
-const indicatorMiddleware = (options: {
+const indicatorMiddleware: DragDropMiddlewareOperator = (options: {
   getIndicatorStyleFn: GetIndicatorStyleFn
   indicatorClasses: IndicatorClasses
   offset: number
-}) =>
-  ((state) => {
-    const {
-      getIndicatorStyleFn = defaultGetIndicatorStyleFn,
-      indicatorClasses = defaultIndicatorClasses,
-      offset = 0,
-    } = options || {}
-    let containerRect: { x: number; y: number } = { x: 0, y: 0 }
-    const indicatorElement = document.createElement("div")
-    const updateIndicator = (target: HTMLElement, position: DropPosition) => {
-      const { x, y, width, height } = state.getRectCached(target)
-      const styleAsString = getIndicatorStyleFn(
-        x - containerRect.x,
-        y - containerRect.y,
-        width,
-        height,
-        position,
-        state.vertical,
-        offset,
-      )()
-      indicatorElement.setAttribute("style", styleAsString)
-      indicatorElement.setAttribute(
-        "class",
-        `${indicatorClasses["all"]} ${indicatorClasses[position]}`,
-      )
-    }
+}) => {
+  const {
+    getIndicatorStyleFn = defaultGetIndicatorStyleFn,
+    indicatorClasses = defaultIndicatorClasses,
+    offset = 0,
+  } = options || {}
+  let containerRect: { x: number; y: number } = { x: 0, y: 0 }
+  const indicatorElement = document.createElement("div")
+  const updateIndicator = (
+    target: HTMLElement,
+    container: HTMLElement | Window,
+    position: DropPosition,
+    vertical: boolean,
+  ) => {
+    const { x, y, width, height } = getRelativeRect(target, container)
+    const styleAsString = getIndicatorStyleFn(
+      x - containerRect.x,
+      y - containerRect.y,
+      width,
+      height,
+      position,
+      vertical,
+      offset,
+    )()
+    indicatorElement.setAttribute("style", styleAsString)
+    indicatorElement.setAttribute(
+      "class",
+      `${indicatorClasses["all"]} ${indicatorClasses[position]}`,
+    )
+  }
 
-    const stop = () => {
-      indicatorElement.remove()
-    }
+  const stop = () => {
+    indicatorElement.remove()
+  }
 
-    let currentScrollContainer: HTMLElement | Window | null
-    const addIndicatorToElement = (element: HTMLElement | Window) => {
-      currentScrollContainer = element
-      if (isWindow(element)) {
-        document.body.appendChild(indicatorElement)
-      } else {
-        containerRect = element!.getBoundingClientRect()
-        element!.style.position = "relative"
-        element!.appendChild(indicatorElement)
-      }
+  let currentScrollContainer: HTMLElement | Window | null
+  const addIndicatorToElement = (element: HTMLElement | Window) => {
+    currentScrollContainer = element
+    if (isWindow(element)) {
+      document.body.appendChild(indicatorElement)
+    } else {
+      containerRect = element!.getBoundingClientRect()
+      element!.style.position = "relative"
+      element!.appendChild(indicatorElement)
     }
-    return {
-      onDragStart: ({ scrollContainer }) => {
-        addIndicatorToElement(scrollContainer!)
-        indicatorElement.style.display = "none"
-      },
-      onDragOver: ({ dropElement, position, scrollContainer }) => {
-        if (currentScrollContainer !== scrollContainer) {
-          // change indicator element parent
-          addIndicatorToElement(scrollContainer!)
-        }
-        updateIndicator(dropElement!, position!)
-      },
-      onDrop: stop,
-      onDestroy: stop,
-    }
-  }) as DragDropMiddleware
+  }
+  return (source: Observable<DragDropPayload>) =>
+    source.pipe(
+      tap(({ type, scrollContainer, position, dropElement, options }) =>
+        (
+          ({
+            DragStart: () => {
+              addIndicatorToElement(scrollContainer!)
+              indicatorElement.style.display = "none"
+            },
+            DragOver: () => {
+              if (currentScrollContainer !== scrollContainer) {
+                // change indicator element parent
+                addIndicatorToElement(scrollContainer!)
+              }
+              updateIndicator(
+                dropElement!,
+                scrollContainer,
+                position!,
+                !!options.vertical,
+              )
+            },
+            DragEnd: stop,
+          }) as DragDropMiddlewareHookMap
+        )[type]?.(),
+      ),
+    )
+}
 
 export default indicatorMiddleware
