@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "dndrxjs"
   text: "Drag & Drop with Rxjs"
-  image: "/logo.png"
+  image: "/.vitepress/theme/logo.png"
   tagline: "Low-level modular drag & drop library based on Rxjs."
   actions:
     - theme: brand

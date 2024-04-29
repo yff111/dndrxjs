@@ -167,3 +167,5 @@ export const getClosestScrollContainer = (element: HTMLElement) => {
 
   return window
 }
+
+

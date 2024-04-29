@@ -127,10 +127,10 @@ onMounted(() => {
 **Demo**
 
 <div ref='container' class='multi-list' style='display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px'>
-  <div v-for='(row) in root.children' style='overflow-y: auto; box-sizing: border-box; max-height: 400px; min-height: 150px;  border-radius: 10px; padding: 8px; outline: 4px solid #f5f5f5;' :data-id='row.id' :data-has-children='row.children.length > 0'>
+  <div v-for='(row) in root.children' class='checkered' style='overflow-y: auto; box-sizing: border-box; max-height: 400px; min-height: 150px;  border-radius: 10px; padding: 8px; ' :data-id='row.id' :data-has-children='row.children.length > 0'>
     <ul class='list'>
         <li v-for='(item, index) in row.children' :key='item.id' :data-id='item.id' :data-index='index' :data-parent-id='row.id' style='margin-bottom: 8px;'>
-          <span style=' min-height: 80px;' >{{item.name}}</span>
+          <span style=' min-height: 80px; background: #e79bff; color: #fff;' >{{item.name}}</span>
       </li>
     </ul>
   </div>

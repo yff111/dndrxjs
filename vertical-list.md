@@ -38,7 +38,7 @@ onMounted(() => {
 
 **Demo**
 
-<div ref='container' style='overflow:auto; max-height: 400px; padding: 5px;'>
+<div ref='container' class='checkered' style='overflow:auto; max-height: 400px; padding: 5px;'>
   <ul class='list'>
       <li v-for='(item, index) in items' :key='item.id' :data-id='item.id' :data-index='index' style='margin-bottom: 4px'>
         <span >{{item.name}}</span>

@@ -95,6 +95,16 @@ export const useDragDrop = (
   let property = vertical ? "offsetY" : ("offsetX" as keyof DragEvent)
   let currentPayload: DragDropPayload
 
+  const getCombinedSelectedElements = (currentElement: HTMLElement) =>
+    getSelectedElements
+      ? [currentElement].reduce((acc, item) => {
+          const selectedElements = getSelectedElements()
+          return selectedElements.includes(item)
+            ? selectedElements
+            : [...selectedElements, item]
+        }, [] as HTMLElement[])
+      : [currentElement]
+
   const calcPositionLocal = vertical
     ? (dropElement: HTMLElement, dragElement: HTMLElement, offset: number) =>
         calcPosition(
@@ -129,6 +139,7 @@ export const useDragDrop = (
           (e.target as HTMLElement)?.closest(dragElementSelector),
         ] as [MouseEvent, HTMLElement, HTMLElement],
     ),
+    // don't proceed if there are neither handle- nor drag-elements
     filter(
       ([, handleElement, dragElement]) => !!handleElement && !!dragElement,
     ),
@@ -194,7 +205,11 @@ export const useDragDrop = (
       return createPayload(
         "DragStart",
         event,
-        getSelectedElements?.() || [dragElement],
+        (console.log(
+          "getCombinedSelectedElements",
+          getCombinedSelectedElements(dragElement),
+        ),
+        getCombinedSelectedElements(dragElement)),
         getClosestScrollContainer(dragElement),
       )
     }),

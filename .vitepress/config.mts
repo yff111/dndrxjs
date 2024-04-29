@@ -5,15 +5,6 @@ export default defineConfig({
   title: "dnd-rxjs-ts",
   description: "low level drag & drop library based on rxjs",
   base: "/dnd-rxjs-ts/",
-  head: [
-    [
-      "link",
-      {
-        rel: "stylesheet",
-        href: "https://unpkg.com/tailwindcss@3.4.3/dist/tailwind.min.css",
-      },
-    ],
-  ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [

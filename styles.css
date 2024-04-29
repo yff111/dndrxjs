@@ -1,6 +1,6 @@
-span:has(+ ul) {
+/* span:has(+ ul) {
   font-weight: bold;
-}
+} */
 
 [draggable="true"],
 .drag {
@@ -19,30 +19,61 @@ ul.list {
   padding-left: 0;
   margin: 0 !important;
 }
+
+ul.tree > li > span > button {
+  position: absolute;
+  left: 5px;
+}
+ul.tree > li.hasChildren > span {
+  font-weight: bold;
+}
+ul.tree > li > span > button {
+  transform: rotate(90deg);
+}
+ul.tree > li.collapsed > span > button {
+  transform: rotate(0deg);
+}
+ul.tree > li > span {
+  position: relative;
+}
 ul.tree li,
 ul.list li {
   margin: 0;
 }
-ul.tree li > span,
-ul.list li > span {
+
+ul.tree > li > span {
   display: flex;
+  gap: 6px;
   align-items: center;
-  width: 100%;
-  background: #f5f5f5;
-  color: var(--vp-c-text-1);
   border-radius: 5px;
-  padding: 7px 12px !important;
+  padding: 5px 12px 5px 25px !important;
+  /* color: var(--vp-c-text-1); */
+}
+ul.tree > li > span:hover {
+  background: #f5f5f5;
 }
 
-ul.tree li > span {
-  margin-bottom: 4px;
+ul.list li > span {
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  background: #fff;
+  color: #000;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  padding: 8px 14px;
 }
+
 ul.tree ul.tree {
   padding-left: 20px;
 }
 
 li {
   list-style: none;
+}
+.selected {
+  box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes drop {
@@ -79,11 +110,10 @@ li {
 .list-leave-active {
   position: absolute;
 }
-/* 
 :root {
   font-size: 24px;
   --backgroundColor: rgba(255, 255, 255);
-  --squareColor: rgba(100, 100, 100, 0.1);
+  --squareColor: rgba(100, 100, 100, 0.05);
   --squareSize: 0.5em;
 }
 
@@ -94,6 +124,10 @@ li {
 }
 
 .checkered {
+  color: #000;
+  max-height: 400px;
+  border: 1px solid #eee;
+  overflow: auto;
   padding: 20px;
   border-radius: 5px;
   background-color: var(--backgroundColor);
@@ -111,4 +145,4 @@ li {
     var(--squareSize) 0,
     var(--squareSize) calc(-1 * var(--squareSize)),
     0 calc(-1 * var(--squareSize));
-} */
+}

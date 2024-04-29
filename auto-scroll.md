@@ -46,7 +46,7 @@ onMounted(() => {
 
 **Demo**
 
-<div ref='container' style='overflow: scroll; max-height: 420px; padding: 6px; margin: -6px;  position: relative;'>
+<div ref='container' class='checkered' style='overflow: scroll; max-height: 420px; padding: 6px; margin: -6px;  position: relative;'>
   <div  style='display: flex; flex-wrap: wrap; gap: 8px; width: calc((180px + 8px) * 10);'>
     <div v-for="(item, index) in items" draggable="false"  :key='item.id' :data-index='index' :data-id='item.id' >
       <div style='width: 180px; height: 180px;  padding: 5px; font-size: 13px; border-radius: 4px; display: flex;  text-align: center; align-items: center; justify-content: center; font-weight: bold; color: #fff;' :style='{background: item.id}'><span>{{item.id}}</span></div>
