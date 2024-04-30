@@ -14,9 +14,12 @@ export type GetElementIdFn = (element: HTMLElement) => string
 export type OnDragStartFn = (dragElement: HTMLElement) => any
 export type OnBeforeDragStartFn = (dragElement: HTMLElement) => boolean
 export type DragDropOptions = {
+  /**
+   * Container element where the draggable elements and drop targets are found. Defaults to document body.
+   */
+  container: HTMLElement
   dragElementSelector: string
   dropElementSelector: string
-  // containerSelector?: string
   handleSelector?: string
   // A function that returns the allowed drop positions that are allowed for a potential drop element.
   dropPositionFn: DropPositionFn

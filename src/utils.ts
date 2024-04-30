@@ -39,8 +39,14 @@ export const moveTreeNodesById = <T>(
   elements.forEach((id) => {
     const children = itemMap[id].parent!.children
     const localIndex = children.findIndex((item) => item.id === id)
+    const isSameNode = children == itemMap[target].child.children
     children.splice(localIndex, 1)
-    itemMap[target].child.children.splice(index, 0, itemMap[id].child)
+    const corrector = isSameNode && localIndex < index ? -1 : 0
+    itemMap[target].child.children.splice(
+      index + corrector,
+      0,
+      itemMap[id].child,
+    )
   })
 }
 
@@ -167,5 +173,3 @@ export const getClosestScrollContainer = (element: HTMLElement) => {
 
   return window
 }
-
-

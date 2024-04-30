@@ -10,6 +10,7 @@ import {
   reactive,
   customRef,
   onMounted,
+  onUnmounted,
   toRef,
   computed,
   defineComponent,
@@ -17,7 +18,7 @@ import {
 import data from "./MOCK_DATA.json";
 import "./styles.css";
 
-import useDragDrop from "./src/main";
+import createDragDropObservable from "./src/main";
 import addClassesMiddleware from "./src/add-classes";
 import indicatorMiddleware from "./src/indicator";
 import autoScrollMiddleware from "./src/auto-scroll";
@@ -74,11 +75,10 @@ const root = ref({
 });
 
 onMounted(() => {
-  useDragDrop(
-    container.value,
+  const subscription = createDragDropObservable(
     {
+      container: container.value,
       handleSelector: "[data-id]:not([data-has-children])",
-      // containerSelector: "[data-has-children]",
       dragOverThrottle: 10,
       dropPositionFn: ({ dragElement, dropElement }) => {
         const isDropElementParent =
@@ -114,7 +114,10 @@ onMounted(() => {
         }
       },
   )
-});
+
+onUnmounted(()=> subscription.unsubscribe())
+
+})
 
 </script>
 
@@ -127,10 +130,11 @@ onMounted(() => {
 **Demo**
 
 <div ref='container' class='multi-list' style='display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px'>
-  <div v-for='(row) in root.children' class='checkered' style='overflow-y: auto; box-sizing: border-box; max-height: 400px; min-height: 150px;  border-radius: 10px; padding: 8px; ' :data-id='row.id' :data-has-children='row.children.length > 0'>
+  <div v-for='(row) in root.children' class='demo' style='overflow-y: auto; box-sizing: border-box; max-height: 400px; min-height: 150px;  border-radius: 10px; padding: 8px; ' :data-id='row.id' :data-has-children='row.children.length > 0'>
     <ul class='list'>
-        <li v-for='(item, index) in row.children' :key='item.id' :data-id='item.id' :data-index='index' :data-parent-id='row.id' style='margin-bottom: 8px;'>
-          <span style=' min-height: 80px; background: #e79bff; color: #fff;' >{{item.name}}</span>
+        <li v-for='(item, index) in row.children' :key='item.id' :data-id='item.id' :data-index='index' :data-parent-id='row.id' class='list-item' style='margin-bottom: 8px; padding-top: 20px; padding-bottom: 20px; gap: 10px;'>
+        <svg width="16px" height="16px" viewBox="0 0 0.3 0.3" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.11 0.092a0.022 0.022 0 1 0 0 -0.045 0.022 0.022 0 0 0 0 0.045m0.08 0a0.022 0.022 0 1 0 0 -0.045 0.022 0.022 0 0 0 0 0.045M0.212 0.15a0.022 0.022 0 1 1 -0.045 0 0.022 0.022 0 0 1 0.045 0M0.11 0.173a0.022 0.022 0 1 0 0 -0.045 0.022 0.022 0 0 0 0 0.045m0.103 0.058a0.022 0.022 0 1 1 -0.045 0 0.022 0.022 0 0 1 0.045 0M0.11 0.253a0.022 0.022 0 1 0 0 -0.045 0.022 0.022 0 0 0 0 0.045" fill="#000000"/></svg>
+          <span style='' >{{item.name}}</span>
       </li>
     </ul>
   </div>
@@ -138,7 +142,7 @@ onMounted(() => {
 
 **Code**
 
-```js{4}
+```js
 
 
 ```

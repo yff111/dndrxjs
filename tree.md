@@ -1,13 +1,13 @@
 # Tree
 
 <script setup>
-import { ref, shallowRef, triggerRef, watch, watchEffect, reactive, customRef, onMounted, toRef, computed, defineComponent } from 'vue'
+import { ref, shallowRef, triggerRef, watch, watchEffect, reactive, customRef, onMounted, onUnmounted, toRef, computed, defineComponent } from 'vue'
 import data from './MOCK_DATA.json'
 import './styles.css'
 
 import { filter } from 'rxjs'
 
-import useDragDrop from './src/main'
+import createDragDropObservable from './src/main'
 import addClassesMiddleware  from './src/add-classes'
 import indicatorMiddleware  from './src/indicator'
 import autoScrollMiddleware  from './src/auto-scroll'
@@ -18,8 +18,10 @@ import  Tree  from './src/Tree.vue'
 const root = ref({id: "root", children: data})
 const container = ref(null)
 const collapsed = ref({})
+
 onMounted(() => {
-  useDragDrop(container.value, {
+  const subscription = createDragDropObservable({
+  container: container.value,
   dropPositionFn: ({ dragElement, dropElement }) => {
       const isDropElementParent =  !!dropElement.parentElement.querySelector('ul li')
       const isOwnChild = dragElement.parentElement.contains(dropElement)
@@ -39,24 +41,28 @@ onMounted(() => {
     ({ dragElement, dropElement, dragElements, position}) => {
         const index = parseInt(dropElement.getAttribute('data-index'))
         const dropElementId = dropElement.getAttribute('data-id')
-        const toParentId = dropElement.getAttribute('data-parent-id') || 'root'
+        const dragElementParentId = dropElement.getAttribute('data-parent-id') || 'root'
         const selectedIds = dragElements.map((e) => e.getAttribute('data-id'))
+        console.log(dropElement, dragElements, index)
         if(position == 'in') {
           moveTreeNodesById(root.value, dropElementId, selectedIds, 0)
         } else if (position === 'after'){
-          moveTreeNodesById(root.value, toParentId, selectedIds, index + 1)
+          moveTreeNodesById(root.value, dragElementParentId, selectedIds, index + 1)
         } else if (position === 'before'){
-          moveTreeNodesById(root.value, toParentId, selectedIds, index)
+          moveTreeNodesById(root.value, dragElementParentId, selectedIds, index )
         }
       }
   )
+
+  onUnmounted(()=> subscription.unsubscribe())
+
 })
 </script>
 
 
 **Demo**
 
-<div ref='container' class='checkered' >
+<div ref='container' class='demo' >
 <tree :node='root' v-model='collapsed' :level='0' ></tree>
 </div>
 
@@ -69,7 +75,7 @@ onMounted(() => {
 
 ```ts
 
- useDragDrop(container.value, {
+ createDragDropObservable(container.value, {
   dropPositionFn: ({ dragElement, dropElement }) => {
       const isDropElementParent =  !!dropElement.parentElement.querySelector('ul li')
       const isOwnChild = dragElement.parentElement.contains(dropElement)
@@ -89,14 +95,14 @@ onMounted(() => {
     ({ dragElement, dropElement, dragElements, position}) => {
         const index = parseInt(dropElement.getAttribute('data-index'))
         const dropElementId = dropElement.getAttribute('data-id')
-        const toParentId = dropElement.getAttribute('data-parent-id') || 'root'
+        const dragElementParentId = dropElement.getAttribute('data-parent-id') || 'root'
         const selectedIds = dragElements.map((e) => e.getAttribute('data-id'))
         if(position == 'in') {
           moveTreeNodesById(root.value, dropElementId, selectedIds, 0)
         } else if (position === 'after'){
-          moveTreeNodesById(root.value, toParentId, selectedIds, index + 1)
+          moveTreeNodesById(root.value, dragElementParentId, selectedIds, index + 1)
         } else if (position === 'before'){
-          moveTreeNodesById(root.value, toParentId, selectedIds, index)
+          moveTreeNodesById(root.value, dragElementParentId, selectedIds, index)
         }
       }
   )

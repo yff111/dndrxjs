@@ -5,9 +5,9 @@
 <script setup>
 import { ref, shallowRef, triggerRef, watch, watchEffect, reactive, customRef, onMounted, onUnmounted, toRef, computed, defineComponent } from 'vue'
 import './styles.css'
-// import Selecto from "selecto";
 
-import useDragDrop from './src/main'
+
+import createDragDropObservable from './src/main'
 import addClassesMiddleware  from './src/add-classes'
 import indicatorMiddleware  from './src/indicator'
 import autoScrollMiddleware  from './src/auto-scroll'
@@ -19,11 +19,11 @@ const items = ref(COLORS.map(hex => ({id: hex})))
 const container = ref(null)
 
 
-import {useSelectStuff} from './src/select-stuff'
+import { useSelectStuff } from './src/select-stuff'
 
 
 onMounted(() => {
-  useDragDrop(container.value, {
+  const subscription = createDragDropObservable({
     vertical: false,
     dropPositionFn: ({ dragElement, dropElement }) =>  'around',
     getSelectedElements: () => Array.from(container.value.querySelectorAll('.selected'))
@@ -36,7 +36,6 @@ onMounted(() => {
   )
   .subscribe(
     ({type, dragElements, dropElement, position}) => {
-      // console.log(type, position, !!dropElement)
         if(type === 'DragEnd' && !!dropElement){
           const selectedItems = dragElements.map((e) => items.value.find(item => item.id === e.getAttribute('data-id')))
             const index = parseInt(dropElement.getAttribute('data-index'))
@@ -49,11 +48,13 @@ onMounted(() => {
           }
         })
 
-const {destroy } = useSelectStuff(container.value, (selected) => 
-  Array.from(container.value.querySelectorAll('[data-id]')).forEach((el) => !selected.includes(el.getAttribute('data-id')) ? el.classList.remove('selected') : el.classList.add('selected') )
-
-)
-  onUnmounted( ()=> destroy())
+  const { destroy } = useSelectStuff(container.value, (selected) => 
+    Array.from(container.value.querySelectorAll('[data-id]')).forEach((el) => !selected.includes(el.getAttribute('data-id')) ? el.classList.remove('selected') : el.classList.add('selected') )
+  )
+  onUnmounted(()=> {
+    destroy()
+    subscription.unsubscribe()
+  })
 
 })
 
@@ -61,7 +62,8 @@ const {destroy } = useSelectStuff(container.value, (selected) =>
 const items2 = ref(COLORS.map(hex => ({id: hex})))
 const container2 = ref(null)
 onMounted(() => {
-  useDragDrop(container2.value, {
+  const subscription = createDragDropObservable({
+    container: container2.value,
     vertical: false,
     dropPositionFn: ({ dragElement, dropElement }) =>  'in'
      })
@@ -83,6 +85,8 @@ onMounted(() => {
         }
       })
 
+  onUnmounted(()=> subscription.unsubscribe())
+
 })
 
 
@@ -94,9 +98,9 @@ onMounted(() => {
 
 #### Sort
 <br>
-<div class='checkered'>
-<div ref='container' style='display: flex;  flex-wrap: wrap; position: relative; gap: 6px'>
-    <div v-for="(item, index) in items" draggable="false" style='width: calc((100% / 10) - 6px);  height: 55px;  padding: 5px; font-size: 11px; font-weight: bold; line-height: 1.25; cursor: grab; border-radius: 4px;  display: flex; color: #fff; text-align: center; align-items: center; justify-content: center;   background: #eee; ' :style='{background: item.id}'  :key='item.id' :data-index='index'  :data-id='item.id'  >
+<div class='demo'>
+<div ref='container' style='display: grid; grid: auto-flow/ repeat(10, 1fr); position: relative; gap: 6px;'>
+    <div v-for="(item, index) in items" draggable="false" style=' height: 55px;  padding: 5px; font-size: 11px; font-weight: bold; line-height: 1.25; cursor: grab; border-radius: 4px;  display: flex; color: #fff; text-align: center; align-items: center; justify-content: center;   background: #eee; ' :style='{background: item.id}'  :key='item.id' :data-index='index'  :data-id='item.id'  >
    <span>{{item.id}}</span></div>
 </div>
 </div>
@@ -105,10 +109,10 @@ onMounted(() => {
 
 #### Swap
 <br>
-<div class='checkered'>
+<div class='demo'>
 
-<div ref='container2' style='display: flex;  flex-wrap: wrap; position: relative; gap: 6px'>
-    <div v-for="(item, index) in items2" draggable="false" style='width: calc((100% / 10) - 6px);  height: 55px;  padding: 5px; font-size: 11px; font-weight: bold; line-height: 1.25; cursor: grab; border-radius: 4px;  display: flex; color: #fff; text-align: center; align-items: center; justify-content: center;  background: #eee; ' :style='{background: item.id}'  :key='item.id' :data-index='index'  :data-id='item.id'  >
+<div ref='container2' style='display: grid; grid: auto-flow/ repeat(10, 1fr); position: relative; gap: 6px;'>
+    <div v-for="(item, index) in items2" draggable="false" style='height: 55px;  padding: 5px; font-size: 11px; font-weight: bold; line-height: 1.25; cursor: grab; border-radius: 4px;  display: flex; color: #fff; text-align: center; align-items: center; justify-content: center;  background: #eee; ' :style='{background: item.id}'  :key='item.id' :data-index='index'  :data-id='item.id'  >
    <span>{{item.id}}</span></div>
 </div>
 </div>

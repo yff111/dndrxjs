@@ -10,23 +10,28 @@ yarn add dnd-rxjs-ts
 
 Import dependency
 
-```js{4}
+```js
 
-import useDragDrop, {addClasses, indicator, autoScroll} from 'dnd-rxjs-ts'
+import createDragDropObservable, { addClasses, indicator, autoScroll} from 'dnd-rxjs-ts'
 
-useDragDrop(containerElement, { 
+const subscription = createDragDropObservable( { 
+  container: containerElement,
   dragElementSelector: "[data-id]",
   dropElementSelector: "[data-id]",
   ...
 }
 )
+// add middleware operators
 .pipe(addClasses(), indicator(), autoScroll())
 .subscribe(({type, dragElement, dropElement, selectedIds, position}) => {
     if(type === "DragOver") {
-      // to things
+      // do things
     } else-if(type === "DragEnd") {
       // transformation **here**
     }
   }
+
+// unsubscribe on u.e. unmount
+
 
 ```

@@ -2,10 +2,10 @@
 
 
 <script setup>
-import { ref, shallowRef, triggerRef, watch, watchEffect, reactive, customRef, onMounted, toRef, computed, defineComponent } from 'vue'
+import { ref, shallowRef, triggerRef, watch, watchEffect, reactive, customRef, onMounted,onUnmounted, toRef, computed, defineComponent } from 'vue'
 import './styles.css'
 
-import useDragDrop from './src/main'
+import createDragDropObservable from './src/main'
 import addClassesMiddleware  from './src/add-classes'
 import indicatorMiddleware  from './src/indicator'
 import autoScrollMiddleware  from './src/auto-scroll'
@@ -19,12 +19,13 @@ const items = ref(COLORS.map(hex => ({id: hex})))
 const container = ref(null)
 
 onMounted(() => {
-  useDragDrop(container.value, {
-  vertical: false,
-  dropPositionFn: ({ dragElement, dropElement }) =>  'around',
-     }).pipe(
+  const subscription = createDragDropObservable({
+      container: container.value,
+      vertical: false,
+      dropPositionFn: ({ dragElement, dropElement }) =>  'around',
+    }).pipe(
       addClassesMiddleware(), 
-      indicatorMiddleware({offset: 4 }), 
+      indicatorMiddleware({offset: 6 }), 
       autoScrollMiddleware(), 
       dragImageMiddleware({minElements: 1})
     ).subscribe(
@@ -40,14 +41,17 @@ onMounted(() => {
         }
       }
     )
+
+    onUnmounted(()=> subscription.unsubscribe())
+
 })
 </script>
 
 
 **Demo**
 
-<div ref='container' class='checkered' style='overflow: scroll; max-height: 420px; padding: 6px; margin: -6px;  position: relative;'>
-  <div  style='display: flex; flex-wrap: wrap; gap: 8px; width: calc((180px + 8px) * 10);'>
+<div ref='container' class='demo' style='overflow: scroll; max-height: 420px; padding: 12px;   position: relative;'>
+  <div  style='display: flex; flex-wrap: wrap; gap: 12px; width: calc((180px + 12px) * 10 - 12px);'>
     <div v-for="(item, index) in items" draggable="false"  :key='item.id' :data-index='index' :data-id='item.id' >
       <div style='width: 180px; height: 180px;  padding: 5px; font-size: 13px; border-radius: 4px; display: flex;  text-align: center; align-items: center; justify-content: center; font-weight: bold; color: #fff;' :style='{background: item.id}'><span>{{item.id}}</span></div>
     </div>

@@ -61,6 +61,6 @@ import indicator from "./indicator"
 
 export { autoScroll, dragImage, ghostElement, addClasses, indicator }
 
-import useDragDrop from "./main"
+import createDragDropObservable from "./main"
 
-export default useDragDrop
+export default createDragDropObservable

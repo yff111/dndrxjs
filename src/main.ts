@@ -58,6 +58,7 @@ export const calcPosition = (
   )[allowedPositions]
 
 export const DEFAULTS: Partial<DragDropOptions> = {
+  container: document.body,
   dragElementSelector: "[data-id]",
   dropElementSelector: "[data-id]",
   handleSelector: "[data-id]", // use target selector when no handle selector was provided
@@ -70,16 +71,14 @@ export const DEFAULTS: Partial<DragDropOptions> = {
     !el.closest("button:not([data-id]), a:not([data-id]), input, textarea"),
 }
 
-export const useDragDrop = (
-  container: HTMLElement,
-  options: DragDropOptionsOptional,
-) => {
+export const createDragDropObservable = (options: DragDropOptionsOptional) => {
   const optionsExtended = { ...DEFAULTS, ...options } as DragDropOptions
   if (!optionsExtended.handleSelector) {
     optionsExtended.handleSelector = optionsExtended.dragElementSelector
   }
 
   const {
+    container,
     vertical,
     getElementId,
     dropPositionFn,
@@ -205,11 +204,7 @@ export const useDragDrop = (
       return createPayload(
         "DragStart",
         event,
-        (console.log(
-          "getCombinedSelectedElements",
-          getCombinedSelectedElements(dragElement),
-        ),
-        getCombinedSelectedElements(dragElement)),
+        getCombinedSelectedElements(dragElement),
         getClosestScrollContainer(dragElement),
       )
     }),
@@ -280,7 +275,6 @@ export const useDragDrop = (
       // if (e.dataTransfer?.dropEffect === "none") {
       //   currentDropElement = null
       // }
-      console.log("drag end")
       e.preventDefault()
       setAttributesTo(dragElementSelector, "draggable", "false")
       return createPayload(
@@ -311,4 +305,4 @@ export const useDragDrop = (
   )
 }
 
-export default useDragDrop
+export default createDragDropObservable
