@@ -8,7 +8,7 @@ import createDragDropObservable, {
   indicator,
   autoScroll,
   moveTreeNodesById,
-} from "../dist/"
+} from "../src/"
 import { TreeNode } from "../src"
 import MOCK_TREE from "./data/MOCK_TREE.json"
 const container = ref(null)

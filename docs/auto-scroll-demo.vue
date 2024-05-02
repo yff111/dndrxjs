@@ -6,7 +6,7 @@ import createDragDropObservable, {
   indicator,
   autoScroll,
   reorderItems,
-} from "../dist/"
+} from "../src/"
 import COLORS from "./data/MOCK_DATA_COLORS.json"
 
 const items = ref(COLORS.map((hex) => ({ id: hex })))

@@ -7,7 +7,7 @@ import createDragDropObservable, {
   addClasses,
   indicator,
   autoScroll,
-} from "../dist/"
+} from "../src/"
 import { swapElements } from "../dist/utils"
 import COLORS from "./data/MOCK_DATA_COLORS.json"
 

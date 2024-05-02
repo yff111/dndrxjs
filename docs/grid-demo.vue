@@ -8,7 +8,7 @@ import createDragDropObservable, {
   indicator,
   autoScroll,
   reorderItems,
-} from "../dist/"
+} from "../src/"
 import { useSelectStuff } from "./select-stuff"
 import COLORS from "./data/MOCK_DATA_COLORS.json"
 
