@@ -8,7 +8,7 @@ import createDragDropObservable, {
   indicator,
   autoScroll,
 } from "../src/"
-import { swapElements } from "../dist/utils"
+import { swapElements } from "../src/utils"
 import COLORS from "./data/MOCK_DATA_COLORS.json"
 
 const items = ref(COLORS.map((hex) => ({ id: hex })))
