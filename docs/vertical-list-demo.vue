@@ -7,7 +7,7 @@ import createDragDropObservable, {
   indicator,
   autoScroll,
   reorderItems,
-} from "../dist"
+} from "../src"
 
 const items = ref(data)
 const container = ref(null)
