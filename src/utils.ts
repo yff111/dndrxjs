@@ -1,8 +1,8 @@
 import { GetElementIdFn, GetRectFn, Rect } from "./types"
 
-export type TreeNode<T> = {
+export type TreeNode<T = any> = {
   id: string
-  data: T
+  data?: T
   parentId?: string
   children: TreeNode<T>[]
 }

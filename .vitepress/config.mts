@@ -2,8 +2,9 @@ import { defineConfig } from "vitepress"
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "dnd-rxjs-ts",
+  title: "dndrxjs",
   description: "low level drag & drop library based on rxjs",
+  srcDir: "./docs/",
   base: "/dnd-rxjs-ts/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -17,14 +18,14 @@ export default defineConfig({
       {
         text: "Examples",
         items: [
-          { text: "List", link: "/vertical-list" },
+          { text: "Auto-Scroll", link: "/auto-scroll" },
           { text: "Tree", link: "/tree" },
           { text: "Grid", link: "/grid" },
+          { text: "Multiple Lists", link: "/multiple-lists" },
+          { text: "Vertical List", link: "/vertical-list" },
           { text: "Horizontal List", link: "/horizontal-list" },
           // { text: "Ghost Image", link: "/ghost-image" },
           // { text: "Custom Drag Image", link: "/drag-image" },
-          { text: "Auto-Scroll", link: "/auto-scroll" },
-          { text: "Multiple Lists", link: "/multiple-lists" },
         ],
       },
     ],

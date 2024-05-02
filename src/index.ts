@@ -4,6 +4,7 @@ import {
   getScrollY,
   getClosestScrollContainer,
 } from "./utils"
+
 export { getDistance, getScrollX, getScrollY, getClosestScrollContainer }
 
 import {

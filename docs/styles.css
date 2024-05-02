@@ -76,6 +76,7 @@ ul.tree > li > span:hover {
   width: 100%;
   display: flex;
   gap: 5px;
+  cursor: grab;
   align-items: center;
   background: #fff;
   color: #000;
@@ -95,7 +96,7 @@ li {
 .list-move, /* apply transition to moving elements */
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.2s cubic-bezier(0.57, 0.03, 0.51, 0.94);
+  transition: all 0.1s cubic-bezier(0.57, 0.03, 0.51, 0.94);
 }
 
 .list-enter-from,
@@ -121,6 +122,7 @@ li {
   overscroll-behavior: contain;
   padding: 12px;
   border-radius: 5px;
+  background-color: #fff;
   background-image: linear-gradient(
       45deg,
       var(--squareColor) 25%,

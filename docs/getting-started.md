@@ -35,3 +35,11 @@ const subscription = createDragDropObservable( {
 
 
 ```
+
+
+
+::: code-group
+
+<<< ../src/types.ts{ts}
+
+::: 

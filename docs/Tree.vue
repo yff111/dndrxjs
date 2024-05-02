@@ -22,27 +22,7 @@ const collapsed = defineModel({})
         @click="child.children.length > 0 && toggle(child.id)"
       >
         <button v-if="child.children.length > 0">
-          <svg
-            version="1.1"
-            id="Layer_1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 14 14"
-            xml:space="preserve"
-            width="14"
-            height="14"
-          >
-            <path
-              style="
-                fill: none;
-                stroke: currentColor;
-                stroke-width: 1.5;
-                stroke-miterlimit: 10;
-              "
-              points="12.25,5 23.25,16 12.25,27 "
-              d="m5.359 2.188 4.813 4.813 -4.813 4.813"
-            />
-          </svg>
+          <img src="/chevron.svg" />
         </button>
         <svg
           v-if="child.children.length > 0"
@@ -96,18 +76,18 @@ const collapsed = defineModel({})
             stroke-linejoin="round"
           />
         </svg>
-        {{ child.name }}
-        <span v-if="child.children.length"
-          >({{ child.children.length }})</span
-        ></span
-      >
+        <slot :child="child"> </slot>
+      </span>
       <tree
         v-model="collapsed"
         v-if="!collapsed[child.id] && child.children && child.children.length"
         :node="child"
         :level="level + 1"
         :parent="child.id"
-      ></tree>
+        v-slot="{ child }"
+      >
+        <slot :child="child"> </slot>
+      </tree>
     </li>
   </ul>
 </template>

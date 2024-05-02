@@ -1,79 +1,79 @@
 [
-  { "id": "1", "name": "Lecidella Lichen", "allowed": true, "children": [] },
+  { "id": "1", "data": "Lecidella Lichen", "allowed": true, "children": [] },
   {
     "id": "2",
-    "name": "Richardson's Calliergon Moss",
+    "data": "Richardson's Calliergon Moss",
     "allowed": true,
     "children": [
       {
         "id": "98",
-        "name": "Bactrospora Lichen",
+        "data": "Bactrospora Lichen",
         "allowed": false,
         "children": [
-          { "id": "57", "name": "Asthmaweed", "allowed": true, "children": [] },
+          { "id": "57", "data": "Asthmaweed", "allowed": true, "children": [] },
           {
             "id": "58",
-            "name": "Island Mountain Mahogany",
+            "data": "Island Mountain Mahogany",
             "allowed": true,
             "children": []
           }
         ]
       },
-      { "id": "99", "name": "Suksdorfia", "allowed": true, "children": [] },
+      { "id": "99", "data": "Suksdorfia", "allowed": true, "children": [] },
       {
         "id": "100",
-        "name": "Cercipo",
+        "data": "Cercipo",
         "allowed": true,
         "children": [
           {
             "id": "35",
-            "name": "Largeleaf Phlox",
+            "data": "Largeleaf Phlox",
             "allowed": true,
             "children": []
           },
           {
             "id": "36",
-            "name": "Laurel Amarillo",
+            "data": "Laurel Amarillo",
             "allowed": true,
             "children": []
           },
           {
             "id": "37",
-            "name": "Bruised Lichen",
+            "data": "Bruised Lichen",
             "allowed": false,
             "children": [
               {
                 "id": "88",
-                "name": "White Box",
+                "data": "White Box",
                 "allowed": true,
                 "children": [
                   {
                     "id": "89",
-                    "name": "Rimmed Lichen",
+                    "data": "Rimmed Lichen",
                     "allowed": true,
                     "children": []
                   },
                   {
                     "id": "90",
-                    "name": "Pacific Silverweed",
+                    "data": "Pacific Silverweed",
                     "allowed": true,
                     "children": []
                   },
                   {
                     "id": "91",
-                    "name": "Narrowleaf Crimson Clover",
+                    "data": "Narrowleaf Crimson Clover",
                     "allowed": true,
                     "children": []
                   },
                   {
                     "id": "92",
-                    "name": "Swartz's Flatsedge",
+                    "data": "Swartz's Flatsedge",
                     "allowed": true,
                     "children": []
                   },
                   {
                     "id": "93",
-                    "name": "Curcuma",
+                    "data": "Curcuma",
                     "allowed": false,
                     "children": []
                   }
@@ -82,57 +82,57 @@
 
               {
                 "id": "94",
-                "name": "Hall's Woolly Sunflower",
+                "data": "Hall's Woolly Sunflower",
                 "allowed": true,
                 "children": []
               },
               {
                 "id": "95",
-                "name": "Threadleaf Crowfoot",
+                "data": "Threadleaf Crowfoot",
                 "allowed": true,
                 "children": []
               },
               {
                 "id": "96",
-                "name": "Clubmoss",
+                "data": "Clubmoss",
                 "allowed": true,
                 "children": []
               }
             ]
           },
-          { "id": "38", "name": "Grama", "allowed": true, "children": [] },
+          { "id": "38", "data": "Grama", "allowed": true, "children": [] },
           {
             "id": "39",
-            "name": "Chess-apple",
+            "data": "Chess-apple",
             "allowed": true,
             "children": [
               {
                 "id": "59",
-                "name": "Kohala False Ohelo",
+                "data": "Kohala False Ohelo",
                 "allowed": false,
                 "children": [
                   {
                     "id": "60",
-                    "name": "Velvet Lichen",
+                    "data": "Velvet Lichen",
                     "allowed": true,
                     "children": []
                   },
                   {
                     "id": "61",
-                    "name": "Largehead Sedge",
+                    "data": "Largehead Sedge",
                     "allowed": true,
                     "children": []
                   },
                   {
                     "id": "62",
-                    "name": "Small Limestone Moss",
+                    "data": "Small Limestone Moss",
                     "allowed": true,
                     "children": []
                   },
 
                   {
                     "id": "70",
-                    "name": "Canelo Lady's Tresses",
+                    "data": "Canelo Lady's Tresses",
                     "allowed": true,
                     "children": []
                   }
@@ -141,108 +141,108 @@
 
               {
                 "id": "71",
-                "name": "Little River Canyon Onion",
+                "data": "Little River Canyon Onion",
                 "allowed": true,
                 "children": []
               },
               {
                 "id": "72",
-                "name": "Paulownia",
+                "data": "Paulownia",
                 "allowed": true,
                 "children": []
               },
               {
                 "id": "73",
-                "name": "Nigella",
+                "data": "Nigella",
                 "allowed": false,
                 "children": []
               },
               {
                 "id": "74",
-                "name": "Tunbridge Filmy Fern",
+                "data": "Tunbridge Filmy Fern",
                 "allowed": true,
                 "children": []
               },
               {
                 "id": "75",
-                "name": "Dimple Lichen",
+                "data": "Dimple Lichen",
                 "allowed": false,
                 "children": []
               },
               {
                 "id": "76",
-                "name": "Lanceleaf Ticktrefoil",
+                "data": "Lanceleaf Ticktrefoil",
                 "allowed": true,
                 "children": []
               },
               {
                 "id": "77",
-                "name": "Ornduff's Goldfields",
+                "data": "Ornduff's Goldfields",
                 "allowed": true,
                 "children": []
               },
               {
                 "id": "78",
-                "name": "Thoroughwort",
+                "data": "Thoroughwort",
                 "allowed": true,
                 "children": []
               },
               {
                 "id": "79",
-                "name": "Howard's Evening Primrose",
+                "data": "Howard's Evening Primrose",
                 "allowed": true,
                 "children": []
               },
               {
                 "id": "80",
-                "name": "Torrey's Blue Eyed Mary",
+                "data": "Torrey's Blue Eyed Mary",
                 "allowed": true,
                 "children": [
                   {
                     "id": "85",
-                    "name": "Broom-like Ragwort",
+                    "data": "Broom-like Ragwort",
                     "allowed": false,
                     "children": []
                   },
                   {
                     "id": "86",
-                    "name": "Vitt's Candle Snuffer Moss",
+                    "data": "Vitt's Candle Snuffer Moss",
                     "allowed": true,
                     "children": []
                   },
                   {
                     "id": "87",
-                    "name": "Palmer's Monardella",
+                    "data": "Palmer's Monardella",
                     "allowed": true,
                     "children": []
                   },
 
                   {
                     "id": "97",
-                    "name": "Crandall's Beardtongue",
+                    "data": "Crandall's Beardtongue",
                     "allowed": true,
                     "children": [
                       {
                         "id": "3",
-                        "name": "White Deadnettle",
+                        "data": "White Deadnettle",
                         "allowed": true,
                         "children": []
                       },
                       {
                         "id": "4",
-                        "name": "Latin American Mock Vervain",
+                        "data": "Latin American Mock Vervain",
                         "allowed": false,
                         "children": []
                       },
                       {
                         "id": "5",
-                        "name": "Whitehead",
+                        "data": "Whitehead",
                         "allowed": true,
                         "children": []
                       },
                       {
                         "id": "6",
-                        "name": "Field Paspalum",
+                        "data": "Field Paspalum",
                         "allowed": true,
                         "children": []
                       }
@@ -259,37 +259,37 @@
 
   {
     "id": "7",
-    "name": "Porcupine River Thimbleweed",
+    "data": "Porcupine River Thimbleweed",
     "allowed": true,
     "children": [
       {
         "id": "8",
-        "name": "Desert Wirelettuce",
+        "data": "Desert Wirelettuce",
         "allowed": true,
         "children": []
       },
-      { "id": "9", "name": "Whitetop", "allowed": true, "children": [] },
+      { "id": "9", "data": "Whitetop", "allowed": true, "children": [] },
       {
         "id": "10",
-        "name": "Rough Pricklypoppy",
+        "data": "Rough Pricklypoppy",
         "allowed": true,
         "children": [
           {
             "id": "11",
-            "name": "Roughhairy Maiden Fern",
+            "data": "Roughhairy Maiden Fern",
             "allowed": false,
             "children": []
           },
           {
             "id": "12",
-            "name": "Priest Valley Spineflower",
+            "data": "Priest Valley Spineflower",
             "allowed": true,
             "children": []
           },
-          { "id": "13", "name": "Talinopsis", "allowed": true, "children": [] },
+          { "id": "13", "data": "Talinopsis", "allowed": true, "children": [] },
           {
             "id": "14",
-            "name": "Orthodontium Moss",
+            "data": "Orthodontium Moss",
             "allowed": true,
             "children": []
           }
@@ -300,162 +300,162 @@
 
   {
     "id": "15",
-    "name": "Calkins' Wart Lichen",
+    "data": "Calkins' Wart Lichen",
     "allowed": true,
     "children": [
-      { "id": "63", "name": "Laurel Oak", "allowed": true, "children": [] },
-      { "id": "64", "name": "Butterfly Palm", "allowed": true, "children": [] },
+      { "id": "63", "data": "Laurel Oak", "allowed": true, "children": [] },
+      { "id": "64", "data": "Butterfly Palm", "allowed": true, "children": [] },
       {
         "id": "65",
-        "name": "Gray's Beaksedge",
+        "data": "Gray's Beaksedge",
         "allowed": true,
         "children": []
       },
-      { "id": "66", "name": "Haha", "allowed": true, "children": [] },
+      { "id": "66", "data": "Haha", "allowed": true, "children": [] },
       {
         "id": "67",
-        "name": "Sharpleaf Twinpod",
+        "data": "Sharpleaf Twinpod",
         "allowed": true,
         "children": []
       },
       {
         "id": "68",
-        "name": "Scamman's Oxytrope",
+        "data": "Scamman's Oxytrope",
         "allowed": true,
         "children": []
       },
-      { "id": "69", "name": "Addersmeat", "allowed": true, "children": [] }
+      { "id": "69", "data": "Addersmeat", "allowed": true, "children": [] }
     ]
   },
-  { "id": "16", "name": "Devil Cholla", "allowed": true, "children": [] },
-  { "id": "17", "name": "Forest Clermontia", "allowed": true, "children": [] },
+  { "id": "16", "data": "Devil Cholla", "allowed": true, "children": [] },
+  { "id": "17", "data": "Forest Clermontia", "allowed": true, "children": [] },
 
   {
     "id": "29",
-    "name": "Panamint Mountain Lupine",
+    "data": "Panamint Mountain Lupine",
     "allowed": true,
     "children": []
   },
-  { "id": "30", "name": "Mixed Jointfir", "allowed": true, "children": [] },
+  { "id": "30", "data": "Mixed Jointfir", "allowed": true, "children": [] },
   {
     "id": "31",
-    "name": "Leafy Wildparsley",
+    "data": "Leafy Wildparsley",
     "allowed": true,
     "children": [
       {
         "id": "56",
-        "name": "Omphalora",
+        "data": "Omphalora",
         "allowed": true,
         "children": [
-          { "id": "81", "name": "Ginseng", "allowed": true, "children": [] },
+          { "id": "81", "data": "Ginseng", "allowed": true, "children": [] },
           {
             "id": "82",
-            "name": "Redwood Keckiella",
+            "data": "Redwood Keckiella",
             "allowed": false,
             "children": []
           },
           {
             "id": "83",
-            "name": "Hairy Snakefern",
+            "data": "Hairy Snakefern",
             "allowed": true,
             "children": []
           },
-          { "id": "84", "name": "Beach Pea", "allowed": false, "children": [] }
+          { "id": "84", "data": "Beach Pea", "allowed": false, "children": [] }
         ]
       }
     ]
   },
   {
     "id": "32",
-    "name": "San Miguel Milkvetch",
+    "data": "San Miguel Milkvetch",
     "allowed": true,
     "children": []
   },
   {
     "id": "33",
-    "name": "Pingpong-ball Cactus",
+    "data": "Pingpong-ball Cactus",
     "allowed": true,
     "children": []
   },
   {
     "id": "34",
-    "name": "Lavender Oldfield Aster",
+    "data": "Lavender Oldfield Aster",
     "allowed": true,
     "children": []
   },
 
   {
     "id": "40",
-    "name": "Brandegee's Clarkia",
+    "data": "Brandegee's Clarkia",
     "allowed": true,
     "children": []
   },
   {
     "id": "41",
-    "name": "Largeleaf Rose Gentian",
+    "data": "Largeleaf Rose Gentian",
     "allowed": true,
     "children": []
   },
-  { "id": "42", "name": "Dirinaria Lichen", "allowed": false, "children": [] },
-  { "id": "43", "name": "Bastard Cherry", "allowed": true, "children": [] },
+  { "id": "42", "data": "Dirinaria Lichen", "allowed": false, "children": [] },
+  { "id": "43", "data": "Bastard Cherry", "allowed": true, "children": [] },
   {
     "id": "44",
-    "name": "Cylindric Navel Lichen",
+    "data": "Cylindric Navel Lichen",
     "allowed": true,
     "children": []
   },
   {
     "id": "45",
-    "name": "Falfurrias Milkvine",
+    "data": "Falfurrias Milkvine",
     "allowed": true,
     "children": []
   },
-  { "id": "46", "name": "Snakeroot", "allowed": true, "children": [] },
+  { "id": "46", "data": "Snakeroot", "allowed": true, "children": [] },
   {
     "id": "47",
-    "name": "Eared Indian Plantain",
+    "data": "Eared Indian Plantain",
     "allowed": true,
     "children": []
   },
   {
     "id": "48",
-    "name": "San Benito Monardella",
+    "data": "San Benito Monardella",
     "allowed": true,
     "children": []
   },
 
   {
     "id": "52",
-    "name": "Goldenmane Tickseed",
+    "data": "Goldenmane Tickseed",
     "allowed": true,
     "children": [
       {
         "id": "53",
-        "name": "Woolly Paperflower",
+        "data": "Woolly Paperflower",
         "allowed": true,
         "children": []
       },
-      { "id": "54", "name": "Alpine Aster", "allowed": true, "children": [] },
+      { "id": "54", "data": "Alpine Aster", "allowed": true, "children": [] },
       {
         "id": "55",
-        "name": "Dwarf Euonymus",
+        "data": "Dwarf Euonymus",
         "allowed": true,
         "children": [
           {
             "id": "49",
-            "name": "Trans-pecos Morning-glory",
+            "data": "Trans-pecos Morning-glory",
             "allowed": true,
             "children": []
           },
           {
             "id": "50",
-            "name": "Diffuse Dot Lichen",
+            "data": "Diffuse Dot Lichen",
             "allowed": true,
             "children": []
           },
           {
             "id": "51",
-            "name": "Carrotleaf Horkelia",
+            "data": "Carrotleaf Horkelia",
             "allowed": true,
             "children": []
           }
