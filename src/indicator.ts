@@ -63,7 +63,7 @@ export const DEFAULTS: IndicatorMiddlewareOptions = {
 }
 
 const indicatorMiddleware: DragDropMiddlewareOperator<
-  Partial<IndicatorMiddlewareOptions>
+  IndicatorMiddlewareOptions
 > = (options?) => {
   const { getIndicatorStyleFn, indicatorClasses, offset } = options
     ? { ...DEFAULTS, ...options }

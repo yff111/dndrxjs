@@ -19,7 +19,7 @@ export const DEFAULTS: AutoScrollMiddlewareOptions = {
 }
 
 const autoScrollMiddleware: DragDropMiddlewareOperator<
-  Partial<AutoScrollMiddlewareOptions>
+  AutoScrollMiddlewareOptions
 > = (options?) => {
   const { interval, steps, threshold } = options
     ? { ...DEFAULTS, ...options }

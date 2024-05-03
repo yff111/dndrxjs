@@ -54,26 +54,23 @@ export type DragDropOptions = {
   onBeforeDragStart?: OnBeforeDragStartFn
 }
 
-export type DropPositionFn = (payload: {
-  dragElement: Element
-  dropElement: Element
-}) => DropPositionRules
-
-
 export type DropPosition = "before" | "after" | "in" | "none"
 export type DropPositionRules = DropPosition | "around" | "all" | "notAfter"
-
-export type GetSelectedElementsFn = () => HTMLElement[]
-export type GetElementIdFn = (element: HTMLElement) => string
-export type OnDragStartFn = (dragElement: HTMLElement) => any
-export type OnBeforeDragStartFn = (dragElement: HTMLElement) => boolean
-
 export type DragDropEventType =
   | "BeforeDragStart"
   | "DragStart"
   | "DragOver"
   | "DragEnd"
   | "DragAbort"
+
+export type GetSelectedElementsFn = () => HTMLElement[]
+export type GetElementIdFn = (element: HTMLElement) => string
+export type OnDragStartFn = (dragElement: HTMLElement) => any
+export type OnBeforeDragStartFn = (dragElement: HTMLElement) => boolean
+export type DropPositionFn = (payload: {
+  dragElement: Element
+  dropElement: Element
+}) => DropPositionRules
 
 export type DragDropPayload = {
   type: DragDropEventType
@@ -91,8 +88,8 @@ export type DragDropPayload = {
  */
 
 import { Observable } from "rxjs"
-export type DragDropMiddlewareOperator<T = any> = (
-  options?: T,
+export type DragDropMiddlewareOperator<T = undefined> = (
+  options?: Partial<T>,
 ) => (source: Observable<DragDropPayload>) => Observable<DragDropPayload>
 
 export type DragDropMiddlewareHookMap = Record<DragDropEventType, () => any>

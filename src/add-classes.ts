@@ -52,7 +52,7 @@ export const DEFAULTS: AddClassesMiddlewareOptions = {
   activeContainerClass: "active",
 }
 const addClassesMiddleware: DragDropMiddlewareOperator<
-  Partial<AddClassesMiddlewareOptions>
+  AddClassesMiddlewareOptions
 > = (options?) => {
   const { dragClass, dropClass, dragOverClass, activeContainerClass } = options
     ? { ...DEFAULTS, ...options }
