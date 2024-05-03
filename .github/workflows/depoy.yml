@@ -38,15 +38,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: yarn # or pnpm / yarn
+          cache: yarn
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Install rxjs
-        run: yarn add rxjs # or pnpm install / yarn install / bun install
+        run: yarn add rxjs
+      - name: Build package
+        run: yarn build
       - name: Install dependencies
-        run: yarn install # or pnpm install / yarn install / bun install
+        run: yarn install
       - name: Build with VitePress
-        run: npm run docs:build # or pnpm docs:build / yarn docs:build / bun run docs:build
+        run: npm run docs:build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
