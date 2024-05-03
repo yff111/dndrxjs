@@ -1,6 +1,0 @@
----
-outline: deep
----
-
-# Ghost Image
-

@@ -1,21 +1,17 @@
 # Getting Started
 
+<br> 
 
-Add Package 
+#### 1. Add package 
 
-```terminal
+```sh
 yarn add dndrxjs
 
 ```
 
 
-Instantiate
+#### 2. Import and create observable
 
 <<< getting-started-snippet.ts{ts}
 
 
-::: code-group
-
-<<< ../src/types.ts{ts}
-
-::: 

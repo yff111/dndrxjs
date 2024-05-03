@@ -15,7 +15,6 @@
 
 
 
-
 ::: code-group
 
 <<< vertical-list-demo.vue{vue}

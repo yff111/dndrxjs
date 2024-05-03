@@ -1,7 +1,15 @@
 :root {
-  --vp-c-brand-1: #ec5f9c;
-  --vp-c-brand-2: #ec5f9c;
-  --vp-button-brand-bg: #ec5f9c;
+  --vp-c-brand-1: #ed448d;
+  --vp-c-brand-2: #ed448d;
+  --vp-c-text-1: #222;
+  --vp-button-brand-bg: #ed448d;
   --vp-sidebar-bg-color: transparent;
-  --vp-c-divider: transparent;
+  /* --vp-c-divider: transparent; */
+  --vp-nav-logo-height: 32px;
+}
+.dark {
+  --vp-c-text-1: #fff;
+}
+.title {
+  font-weight: 700 !important;
 }

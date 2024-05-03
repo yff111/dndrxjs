@@ -21,11 +21,13 @@ const subscription = createDragDropObservable({
     indicator(),
     // lets you add a custom drag image that follows the mouse cursor
     dragImage(),
-    // adds auto-scroll behavior when
+    // adds auto-scroll behavior inside the closest scrollable container
     autoScroll(),
   )
   .subscribe(({ type, dragElements, dropElement, position }) => {
-    if (type === "DragOver") {
+    if (type === "DragStart") {
+      // do things on DragStart
+    } else if (type === "DragOver") {
       // do things on DragOver
     } else if (type === "DragEnd") {
       // do list transformation on "DragEnd"

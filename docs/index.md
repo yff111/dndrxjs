@@ -3,9 +3,9 @@ layout: home
 
 hero:
   name: "dndrxjs"
-  text: "Drag & Drop with Rxjs"
+  text: "drag & drop with rxjs"
   image: "logo.png"
-  tagline: "Low-level modular drag & drop library based on Rxjs."
+  tagline: "Low-level modular drag & drop library based on rxjs."
   actions:
     - theme: brand
       text: Getting Started

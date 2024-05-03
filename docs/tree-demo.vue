@@ -12,7 +12,7 @@ import createDragDropObservable, {
 } from "dndrxjs"
 
 import data from "./data/MOCK_DATA.json"
-import Tree from "./Tree.vue"
+import Tree from "./components/Tree.vue"
 
 const root = ref<TreeNode<string>>({
   id: "root",
@@ -28,7 +28,6 @@ onMounted(() => {
       const isDropElementParent =
         !!dropElement.parentElement?.querySelector("ul li")
       const isOwnChild = dragElement.parentElement!.contains(dropElement)
-      // const isDropElementNested = !!dropElement.getAttribute("data-parent-id")
       return isOwnChild ? "none" : isDropElementParent ? "notAfter" : "all"
     },
   })

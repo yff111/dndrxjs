@@ -7,23 +7,31 @@ export default defineConfig({
   srcDir: "./docs/",
   base: "/dndrxjs/",
   themeConfig: {
+    logo: "/logo-small.svg",
+
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: "Home", link: "/" },
-      { text: "Docs", link: "/getting-started" },
+      { text: "Docs", link: "/installation" },
     ],
 
     sidebar: [
-      { text: "Getting Started", link: "/getting-started" },
+      {
+        text: "Getting Started",
+        items: [
+          { text: "Installation", link: "/installation" },
+          { text: "Types", link: "/types" },
+        ],
+      },
       {
         text: "Examples",
         items: [
-          { text: "Auto-Scroll", link: "/auto-scroll" },
+          { text: "Horizontal List", link: "/horizontal-list" },
           { text: "Tree", link: "/tree" },
           { text: "Grid", link: "/grid" },
           { text: "Multiple Lists", link: "/multiple-lists" },
           { text: "Vertical List", link: "/vertical-list" },
-          { text: "Horizontal List", link: "/horizontal-list" },
+          { text: "Auto-Scroll", link: "/auto-scroll" },
           // { text: "Ghost Image", link: "/ghost-image" },
           // { text: "Custom Drag Image", link: "/drag-image" },
         ],

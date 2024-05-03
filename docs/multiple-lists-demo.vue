@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from "vue"
 import "./styles.css"
-
+import { ref, onMounted, onUnmounted } from "vue"
 import createDragDropObservable, {
   dragImage,
   addClasses,
