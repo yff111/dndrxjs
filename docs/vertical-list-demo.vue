@@ -1,21 +1,21 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted } from "vue"
-import data from "./data/MOCK_DATA_1000.json"
 import createDragDropObservable, {
   dragImage,
   addClasses,
   indicator,
   autoScroll,
   reorderItems,
-} from "../src"
+} from "dnd-rxjs-ts"
+import data from "./data/MOCK_DATA_1000.json"
 
-const items = ref(data)
-const container = ref(null)
+const items = ref<{ name: string; id: string }[]>(data)
+const container = ref<HTMLElement | null>(null)
 
 onMounted(() => {
   const subscription = createDragDropObservable({
     container: container.value!,
-    dropPositionFn: ({ dragElement, dropElement }) => "around",
+    dropPositionFn: () => "around",
   })
     .pipe(
       addClasses(),
@@ -26,8 +26,9 @@ onMounted(() => {
     .subscribe(({ type, dragElements, dropElement, position }) => {
       if (!!dropElement && type === "DragEnd") {
         const index = parseInt(dropElement.getAttribute("data-index")!)
-        const selectedItems = dragElements.map((e) =>
-          items.value.find((item) => item.id === e.getAttribute("data-id")),
+        const selectedItems = dragElements.map(
+          (e) =>
+            items.value.find((item) => item.id === e.getAttribute("data-id"))!,
         )
         if (position === "after") {
           items.value = reorderItems(items.value, selectedItems, index + 1)

@@ -1,4 +1,4 @@
-import { Observable, fromEvent, tap } from "rxjs"
+import { Observable, filter, fromEvent, tap } from "rxjs"
 import { fromHTML } from "./utils"
 import {
   DragDropMiddlewareHookMap,
@@ -22,23 +22,22 @@ export const defaultUpdateContainerStyleFn = (
   )
 
 export interface DragImageMiddlewareOptions {
-  updateContainerStyle?: (
-    element: HTMLElement,
-    top: number,
-    left: number,
-  ) => any
-  updateElement?: (selectedElements: HTMLElement[]) => HTMLElement
-  minElements?: number
+  updateContainerStyle: (element: HTMLElement, top: number, left: number) => any
+  updateElement: (selectedElements: HTMLElement[]) => HTMLElement
+  minElements: number
+}
+export const DEFAULTS: DragImageMiddlewareOptions = {
+  updateElement: defaultUpdateElementFn,
+  updateContainerStyle: defaultUpdateContainerStyleFn,
+  minElements: 0,
 }
 const dragImageMiddleware: DragDropMiddlewareOperator<
-  DragImageMiddlewareOptions
-> = (options) => {
+  Partial<DragImageMiddlewareOptions>
+> = (options?) => {
   const customImageContainer = document.createElement("div")
-  const {
-    updateElement = defaultUpdateElementFn,
-    updateContainerStyle = defaultUpdateContainerStyleFn,
-    minElements = 0,
-  } = options || {}
+  const { updateElement, updateContainerStyle, minElements } = options
+    ? { ...DEFAULTS, ...options }
+    : DEFAULTS
   let subscription: any = null
 
   const mousemove$ = fromEvent<DragEvent>(document, "dragover")
@@ -61,20 +60,17 @@ const dragImageMiddleware: DragDropMiddlewareOperator<
   document.body.appendChild(img)
   return (source: Observable<DragDropPayload>) =>
     source.pipe(
+      filter(({ dragElements }) => dragElements.length === minElements),
       tap(({ type, originalEvent, dragElements }) =>
         (
           ({
             DragStart: () => {
-              if (dragElements.length === minElements) {
-                return
-              }
               // set dummy drag Image
               ;(originalEvent as DragEvent).dataTransfer?.setDragImage(
                 img,
                 0,
                 0,
               )
-              console.log("dragstart --", originalEvent)
               start()
               customImageContainer.innerHTML = ""
               customImageContainer.appendChild(updateElement(dragElements))

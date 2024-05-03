@@ -17,6 +17,12 @@ export type GetIndicatorStyleFn = (
   offset: number,
 ) => () => string
 
+export type IndicatorMiddlewareOptions = {
+  getIndicatorStyleFn: GetIndicatorStyleFn
+  indicatorClasses: IndicatorClasses
+  offset: number
+}
+
 const defaultGetIndicatorStyleFn = (
   x: number,
   y: number,
@@ -41,6 +47,7 @@ const defaultGetIndicatorStyleFn = (
   })[position]
 
 export type IndicatorClasses = Record<DropPosition | "all", string>
+
 export const defaultIndicatorClasses: IndicatorClasses = {
   all: "indicator",
   after: "indicator-after",
@@ -48,16 +55,19 @@ export const defaultIndicatorClasses: IndicatorClasses = {
   before: "indicator-before",
   none: "",
 }
-const indicatorMiddleware: DragDropMiddlewareOperator = (options: {
-  getIndicatorStyleFn: GetIndicatorStyleFn
-  indicatorClasses: IndicatorClasses
-  offset: number
-}) => {
-  const {
-    getIndicatorStyleFn = defaultGetIndicatorStyleFn,
-    indicatorClasses = defaultIndicatorClasses,
-    offset = 0,
-  } = options || {}
+
+export const DEFAULTS: IndicatorMiddlewareOptions = {
+  getIndicatorStyleFn: defaultGetIndicatorStyleFn,
+  indicatorClasses: defaultIndicatorClasses,
+  offset: 0,
+}
+
+const indicatorMiddleware: DragDropMiddlewareOperator<
+  Partial<IndicatorMiddlewareOptions>
+> = (options?) => {
+  const { getIndicatorStyleFn, indicatorClasses, offset } = options
+    ? { ...DEFAULTS, ...options }
+    : DEFAULTS
   let containerRect: { x: number; y: number } = { x: 0, y: 0 }
   const indicatorElement = document.createElement("div")
   const updateIndicator = (

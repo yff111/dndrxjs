@@ -7,15 +7,23 @@ import {
 } from "./types"
 import { getScrollX, getScrollY } from "./utils"
 export interface AutoScrollMiddlewareOptions {
-  interval?: number
-  steps?: number
-  threshold?: number
+  interval: number
+  steps: number
+  threshold: number
 }
 
-const autoScrollMiddleware: DragDropMiddlewareOperator = (
-  options: AutoScrollMiddlewareOptions = {},
-) => {
-  const { interval = 8, steps = 4, threshold = 100 } = options
+export const DEFAULTS: AutoScrollMiddlewareOptions = {
+  interval: 8,
+  steps: 4,
+  threshold: 100,
+}
+
+const autoScrollMiddleware: DragDropMiddlewareOperator<
+  Partial<AutoScrollMiddlewareOptions>
+> = (options?) => {
+  const { interval, steps, threshold } = options
+    ? { ...DEFAULTS, ...options }
+    : DEFAULTS
   let scrollInterval: any
   let currentScrollContainer: HTMLElement | Window = window
 

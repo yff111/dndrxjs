@@ -45,19 +45,19 @@ export const addClassWhenAddedToDom = (
   return observer
 }
 
-const addClassesMiddleware: DragDropMiddlewareOperator = (
-  {
-    dragClass,
-    dropClass,
-    dragOverClass,
-    activeContainerClass,
-  }: AddClassesMiddlewareOptions = {
-    dragClass: "drag",
-    dragOverClass: "dragOver",
-    dropClass: "drop",
-    activeContainerClass: "active",
-  },
-) => {
+export const DEFAULTS: AddClassesMiddlewareOptions = {
+  dragClass: "drag",
+  dragOverClass: "dragOver",
+  dropClass: "drop",
+  activeContainerClass: "active",
+}
+const addClassesMiddleware: DragDropMiddlewareOperator<
+  Partial<AddClassesMiddlewareOptions>
+> = (options?) => {
+  const { dragClass, dropClass, dragOverClass, activeContainerClass } = options
+    ? { ...DEFAULTS, ...options }
+    : DEFAULTS
+
   const clear = (scrollContainer?: HTMLElement | Window) => {
     if (scrollContainer instanceof HTMLElement) {
       scrollContainer.classList.remove(activeContainerClass)

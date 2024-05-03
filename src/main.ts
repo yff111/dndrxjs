@@ -18,7 +18,6 @@ import {
 import {
   DropPositionRules,
   DropPosition,
-  DragDropOptionsOptional,
   DragDropOptions,
   DragDropPayload,
   DragDropEventType,
@@ -57,7 +56,7 @@ export const calcPosition = (
     >
   )[allowedPositions]
 
-export const DEFAULTS: Partial<DragDropOptions> = {
+export const DEFAULTS: DragDropOptions = {
   container: document.body,
   dragElementSelector: "[data-id]",
   dropElementSelector: "[data-id]",
@@ -67,12 +66,17 @@ export const DEFAULTS: Partial<DragDropOptions> = {
   vertical: true,
   dragOverThrottle: 20,
   threshold: 0.3,
+  enableRectCaching: false,
   onBeforeDragStart: (el: HTMLElement) =>
     !el.closest("button:not([data-id]), a:not([data-id]), input, textarea"),
 }
 
-export const createDragDropObservable = (options: DragDropOptionsOptional) => {
-  const optionsExtended = { ...DEFAULTS, ...options } as DragDropOptions
+export const createDragDropObservable = (
+  options?: Partial<DragDropOptions>,
+) => {
+  const optionsExtended = options
+    ? { ...DEFAULTS, ...options }
+    : { ...DEFAULTS }
   if (!optionsExtended.handleSelector) {
     optionsExtended.handleSelector = optionsExtended.dragElementSelector
   }

@@ -12,7 +12,10 @@
     "noEmit": true,
     "outDir": "dist",
     "resolveJsonModule": true,
-
+    "paths": {
+      "dnd-rxjs-ts": ["./src/"],
+    },
     "types": ["vitest/globals"]
+
   }
 }

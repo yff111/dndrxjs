@@ -7,8 +7,8 @@ import createDragDropObservable, {
   indicator,
   autoScroll,
   moveTreeNodesById,
-} from "../src/"
-import { TreeNode } from "../src"
+} from "dnd-rxjs-ts"
+import { TreeNode } from "dnd-rxjs-ts"
 
 import data from "./data/MOCK_DATA.json"
 const root = ref<TreeNode<string>>({ id: "root", children: data })
@@ -29,7 +29,7 @@ onMounted(() => {
     .subscribe(({ type, dragElements, dropElement, position }) => {
       if (!!dropElement && type === "DragEnd") {
         const index = parseInt(dropElement.getAttribute("data-index")!)
-        const selectedIds = dragElements.map((e) => e.getAttribute("data-id"))
+        const selectedIds = dragElements.map((e) => e.getAttribute("data-id")!)
         if (position === "after") {
           moveTreeNodesById(root.value, "root", selectedIds, index + 1)
         } else if (position === "before") {
