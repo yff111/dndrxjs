@@ -26,7 +26,6 @@ onMounted(() => {
       dragImage({ minElements: 0 }),
     )
     .subscribe(({ type, dragElements, dropElement, position }) => {
-      console.log("GridDemoSwap", type)
       if (type === "DragEnd" && !!dropElement) {
         const index1 = parseInt(dropElement.getAttribute("data-index")!)
         const index2 = parseInt(dragElements[0].getAttribute("data-index")!)

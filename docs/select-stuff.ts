@@ -94,7 +94,6 @@ export const useSelectStuff = (
   const onClickContainer = (e: MouseEvent) => {
     const { element, id } = getStuffFromMouseEvent(e)
     if (element && id) {
-      console.log("modifiersState", modifiersState)
       toggleSelect(id)
     }
   }

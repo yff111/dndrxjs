@@ -1,3 +1,4 @@
+import { Observable, map, pairwise, tap } from "rxjs"
 import { isWindow } from "./utils"
 import {
   DragDropMiddlewareHookMap,
@@ -5,7 +6,6 @@ import {
   GetElementIdFn,
   DragDropPayload,
 } from "./types"
-import { Observable, map, pairwise, tap } from "rxjs"
 
 export type AddClassesMiddlewareOptions = {
   dragClass: string
