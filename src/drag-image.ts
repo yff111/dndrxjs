@@ -1,4 +1,4 @@
-import { Observable, filter, fromEvent, tap } from "rxjs"
+import { Observable, fromEvent, tap } from "rxjs"
 import { fromHTML } from "./utils"
 import {
   DragDropMiddlewareHookMap,
@@ -34,11 +34,12 @@ export const DEFAULTS: DragImageMiddlewareOptions = {
 const dragImageMiddleware: DragDropMiddlewareOperator<
   Partial<DragImageMiddlewareOptions>
 > = (options?) => {
-  const customImageContainer = document.createElement("div")
   const { updateElement, updateContainerStyle, minElements } = options
     ? { ...DEFAULTS, ...options }
     : DEFAULTS
+
   let subscription: any = null
+  const customImageContainer = document.createElement("div")
 
   const mousemove$ = fromEvent<DragEvent>(document, "dragover")
   const update = (event: DragEvent) =>
@@ -60,11 +61,13 @@ const dragImageMiddleware: DragDropMiddlewareOperator<
   document.body.appendChild(img)
   return (source: Observable<DragDropPayload>) =>
     source.pipe(
-      filter(({ dragElements }) => dragElements.length === minElements),
       tap(({ type, originalEvent, dragElements }) =>
         (
           ({
             DragStart: () => {
+              if (dragElements.length === minElements) {
+                return
+              }
               // set dummy drag Image
               ;(originalEvent as DragEvent).dataTransfer?.setDragImage(
                 img,
