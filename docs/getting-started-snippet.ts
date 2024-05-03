@@ -3,7 +3,7 @@ import createDragDropObservable, {
   indicator,
   autoScroll,
   dragImage,
-} from "dnd-rxjs-ts"
+} from "dndrxjs"
 
 const subscription = createDragDropObservable({
   container: document.querySelector(".some-container-element") as HTMLElement,

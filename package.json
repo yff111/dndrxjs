@@ -1,10 +1,10 @@
 {
-  "name": "dnd-rxjs-ts",
+  "name": "dndrxjs",
   "version": "0.0.16",
   "description": "Drag & Drop rxjs ts library – low level, modular, performant.",
   "author": "yff111",
   "license": "MIT",
-  "repository": "https://github.com/yff111/dnd-rxjs-ts.git",
+  "repository": "https://github.com/yff111/dndrxjs.git",
   "publishConfig": {
     "access": "public",
     "@yff111:registry": "https://npm.pkg.github.com"

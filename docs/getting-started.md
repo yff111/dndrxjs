@@ -4,7 +4,7 @@
 Add Package 
 
 ```terminal
-yarn add dnd-rxjs-ts
+yarn add dndrxjs
 
 ```
 

@@ -5,7 +5,7 @@ export default defineConfig({
   title: "dndrxjs",
   description: "low level drag & drop library based on rxjs",
   srcDir: "./docs/",
-  base: "/dnd-rxjs-ts/",
+  base: "/dndrxjs/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -30,7 +30,7 @@ export default defineConfig({
       },
     ],
     socialLinks: [
-      { icon: "github", link: "https://github.com/yff111/dnd-rxjs-ts/" },
+      { icon: "github", link: "https://github.com/yff111/dndrxjs/" },
     ],
   },
 })

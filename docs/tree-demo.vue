@@ -9,7 +9,7 @@ import createDragDropObservable, {
   autoScroll,
   TreeNode,
   moveTreeNodesById,
-} from "dnd-rxjs-ts"
+} from "dndrxjs"
 
 import data from "./data/MOCK_DATA.json"
 import Tree from "./Tree.vue"

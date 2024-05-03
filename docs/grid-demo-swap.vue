@@ -7,7 +7,7 @@ import createDragDropObservable, {
   addClasses,
   indicator,
   autoScroll,
-} from "dnd-rxjs-ts"
+} from "dndrxjs"
 import { swapElements } from "../src/utils"
 import COLORS from "./data/MOCK_DATA_COLORS.json"
 

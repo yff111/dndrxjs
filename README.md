@@ -1,12 +1,12 @@
 
-# dnd-rxjs-ts
+# dndrxjs
  
 simple, low level and modular drag & drop library based on rxjs
 
 
 **NOTE: lib in progress – things might change, also "ghost-image"-middleware currently not stable.**
 
-[Examples](https://yff111.github.io/dnd-rxjs-ts)
+[Examples](https://yff111.github.io/dndrxjs)
 
 # Features 
 

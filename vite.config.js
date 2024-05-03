@@ -5,7 +5,7 @@ import path from "path"
 export default defineConfig({
   resolve: {
     alias: {
-      "dnd-rxjs-ts": path.resolve(__dirname, "./src"),
+      dndrxjs: path.resolve(__dirname, "./src"),
     },
   },
 })

@@ -6,7 +6,7 @@ import createDragDropObservable, {
   indicator,
   autoScroll,
   reorderItems,
-} from "dnd-rxjs-ts"
+} from "dndrxjs"
 import data from "./data/MOCK_DATA_1000.json"
 
 const items = ref<{ name: string; id: string }[]>(data)

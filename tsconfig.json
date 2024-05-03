@@ -13,7 +13,7 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "paths": {
-      "dnd-rxjs-ts": ["./src/"],
+      "dndrxjs": ["./src/"],
     },
     "types": ["vitest/globals"]
 

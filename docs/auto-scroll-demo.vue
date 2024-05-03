@@ -6,7 +6,7 @@ import createDragDropObservable, {
   indicator,
   autoScroll,
   reorderItems,
-} from "dnd-rxjs-ts"
+} from "dndrxjs"
 import COLORS from "./data/MOCK_DATA_COLORS.json"
 
 const items = ref(COLORS.map((hex) => ({ id: hex })))

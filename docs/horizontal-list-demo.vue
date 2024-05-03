@@ -7,8 +7,8 @@ import createDragDropObservable, {
   indicator,
   autoScroll,
   moveTreeNodesById,
-} from "dnd-rxjs-ts"
-import { TreeNode } from "dnd-rxjs-ts"
+} from "dndrxjs"
+import { TreeNode } from "dndrxjs"
 
 import data from "./data/MOCK_DATA.json"
 const root = ref<TreeNode<string>>({ id: "root", children: data })
