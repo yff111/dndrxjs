@@ -2,7 +2,7 @@
 
 
 <script setup>
-  import './styles.css'
+  import 'dndrxjs/dist/styles.css'
   import { defineClientComponent } from 'vitepress'
 
   const HorizontalListDemo = defineClientComponent(() => import('./horizontal-list-demo.vue'))
@@ -20,3 +20,4 @@
 <<< horizontal-list-demo.vue{vue}
 
 ::: 
+

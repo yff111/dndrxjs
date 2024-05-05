@@ -1,7 +1,7 @@
 # Vertical List
 
 <script setup>
-  import './styles.css'
+  import 'dndrxjs/dist/styles.css'
   import { defineClientComponent } from 'vitepress'
 
   const VerticalListDemo = defineClientComponent(() => import('./vertical-list-demo.vue'))

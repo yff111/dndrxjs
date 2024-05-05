@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import "./styles.css"
+
+
 import { ref, onMounted, onUnmounted } from "vue"
 import createDragDropObservable, {
   dragImage,
@@ -9,6 +10,7 @@ import createDragDropObservable, {
   moveTreeNodesById,
 } from "dndrxjs"
 import { TreeNode } from "dndrxjs"
+import "dndrxjs/dist/styles.css"
 
 import data from "./data/MOCK_DATA.json"
 const root = ref<TreeNode<string>>({ id: "root", children: data })
@@ -75,3 +77,21 @@ onMounted(() => {
     </transition-group>
   </div>
 </template>
+
+<style>
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.1s cubic-bezier(0.57, 0.03, 0.51, 0.94);
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.list-leave-active {
+  position: absolute;
+}
+</style>

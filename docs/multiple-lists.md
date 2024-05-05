@@ -1,7 +1,7 @@
 # Multiple Lists 
 
 <script setup>
-import './styles.css'
+import 'dndrxjs/dist/styles.css'
   import { defineClientComponent } from 'vitepress'
 
   const MultipleListsDemo = defineClientComponent(() => {

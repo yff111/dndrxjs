@@ -5,13 +5,18 @@ import createDragDropObservable, {
   dragImage,
 } from "dndrxjs"
 
+/**
+ * Import styles optionally
+ */
+import "dndrxjs/dist/styles.css"
+
 const subscription = createDragDropObservable({
   container: document.querySelector(".some-container-element") as HTMLElement,
   dragElementSelector: "[data-id]",
   dropElementSelector: "[data-id]",
   handleSelector: ".handle",
   dropPositionFn: ({ dragElements, dropElement }) => "around",
-  // ... more DragDropOptions
+  // ... more DragDropOptions @see `DragDropOptions`
 })
   // add optional middleware operators
   .pipe(
@@ -19,7 +24,7 @@ const subscription = createDragDropObservable({
     addClasses(),
     // adds drag drop indicator element while dragging
     indicator(),
-    // lets you add a custom drag image that follows the mouse cursor
+    // adds custom drag image that follows the mouse cursor
     dragImage(),
     // adds auto-scroll behavior inside the closest scrollable container
     autoScroll(),

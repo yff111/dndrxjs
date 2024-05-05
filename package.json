@@ -36,12 +36,18 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "exports": {
-    "require": "./dist/index.js",
-    "import": "./dist/index.mjs"
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    },
+    "./dist/styles.css": {
+      "import": "./dist/styles.css",
+      "require": "./dist/styles.css"
+    }
   },
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build-fast": "tsup",
+    "build-fast": "tsup && copyfiles -f src/styles.css dist",
     "build": "npm run build-fast -- --dts-resolve",
     "test": "vitest run",
     "prepublishOnly": "npm run build",
@@ -52,13 +58,14 @@
   },
   "devDependencies": {
     "@egoist/prettier-config": "1.0.0",
+    "bumpp": "^9.4.1",
+    "copyfiles": "^2.4.1",
     "install-peers": "^1.0.4",
     "prettier": "3.2.5",
     "rxjs": "^7.8.1",
     "tsup": "8.0.2",
     "typescript": "5.4.5",
     "vitepress": "^1.1.4",
-    "bumpp": "^9.4.1",
     "vitest": "1.5.3"
   },
   "peerDependencies": {

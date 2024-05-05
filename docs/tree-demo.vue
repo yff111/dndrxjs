@@ -72,7 +72,11 @@ onMounted(() => {
 <template>
   <div ref="container" class="demo">
     <Tree :node="root" v-model="collapsed" :level="0" v-slot="{ child }">
-      {{ child.data }}
+      <div>
+        <div>
+          {{ child.data }}
+        </div>
+      </div>
       <span v-if="child.children.length">({{ child.children.length }})</span>
     </Tree>
   </div>

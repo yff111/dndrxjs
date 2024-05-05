@@ -132,6 +132,7 @@ export const getRectCached: GetRectFn = (
   scrollContainer: HTMLElement,
 ) => {
   const id = getElementIdLocal(element)
+
   return (
     boundingRectCache[id!] ||
     (boundingRectCache[id!] = getRelativeRect(element, scrollContainer))

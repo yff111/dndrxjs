@@ -44,14 +44,16 @@ export type DragDropOptions = {
   threshold: number
   /**
    * If enabled getBoundingClientRect() call on dropElements will be cached
-   * for each drag operation.
+   * for each drag operation. Defaults to `false`.
    */
   enableRectCaching: boolean
   /**
    * Method that is called on mousedown and should return a boolean that
    * indicates whether the Drag & Drop operation should proceed.
+   * Defaults to:
+   * (el) => !el.closest("button:not([data-id]), a:not([data-id]), input, textarea")
    */
-  onBeforeDragStart?: OnBeforeDragStartFn
+  onBeforeDragStart: OnBeforeDragStartFn
 }
 
 export type DropPosition = "before" | "after" | "in" | "none"

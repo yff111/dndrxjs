@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import "./styles.css"
+import "dndrxjs/dist/styles.css"
 
 import { ref, onMounted, onUnmounted } from "vue"
 import createDragDropObservable, {

@@ -1,0 +1,35 @@
+/* Drag target selector */
+[data-id] {
+  cursor: grab;
+}
+
+/* Drag element class */
+.drag {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+/* Drag element class */
+.dragover {
+  opacity: 0.8;
+  cursor: grabbing;
+}
+
+/* Drop element class */
+.drop {
+  animation: drop 0.35s ease;
+}
+
+@keyframes drop {
+  0% {
+    box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0);
+  }
+}
+
+/* Selected element class */
+.selected {
+  box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0.2);
+}

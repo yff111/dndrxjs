@@ -6,6 +6,10 @@ export default defineConfig({
   description: "low level drag & drop library based on rxjs",
   srcDir: "./docs/",
   base: "/dndrxjs/",
+  head: [
+    ["link", { rel: "shortcut icon", href: "favicon.ico" }],
+    ["meta", { property: "og:type", content: "website" }],
+  ],
   themeConfig: {
     logo: "/logo-small.svg",
 
@@ -26,11 +30,11 @@ export default defineConfig({
       {
         text: "Examples",
         items: [
-          { text: "Horizontal List", link: "/horizontal-list" },
           { text: "Tree", link: "/tree" },
+          { text: "Vertical List", link: "/vertical-list" },
+          { text: "Horizontal List", link: "/horizontal-list" },
           { text: "Grid", link: "/grid" },
           { text: "Multiple Lists", link: "/multiple-lists" },
-          { text: "Vertical List", link: "/vertical-list" },
           { text: "Auto-Scroll", link: "/auto-scroll" },
           // { text: "Ghost Image", link: "/ghost-image" },
           // { text: "Custom Drag Image", link: "/drag-image" },

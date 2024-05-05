@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: Getting Started
-      link: /getting-started
+      link: /installation
     - theme: alt
       text: Examples
       link: /tree
