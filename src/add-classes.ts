@@ -47,7 +47,7 @@ export const addClassWhenAddedToDom = (
 
 export const DEFAULTS: AddClassesMiddlewareOptions = {
   dragClass: "drag",
-  dragOverClass: "dragOver",
+  dragOverClass: "dragover",
   dropClass: "drop",
   activeContainerClass: "active",
 }
@@ -95,7 +95,7 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
               clearDragOverClass(dropElement!)
               dropElement?.classList.add(dragOverClass)
             },
-            DragStart: () => {
+            BeforeDragStart: () => {
               if (scrollContainer instanceof HTMLElement) {
                 scrollContainer.classList.add(activeContainerClass)
               }
