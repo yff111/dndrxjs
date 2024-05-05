@@ -98,6 +98,11 @@ export const createDragDropObservable = (
   let property = vertical ? "offsetY" : ("offsetX" as keyof DragEvent)
   let currentPayload: DragDropPayload
 
+  // removes pointer-events on children of drop-targets so offsetY and offsetX
+  // in dragover event will be absolute
+  const styleNode = document.createElement("style")
+  styleNode.innerText = `${dropElementSelector} * {pointer-events: none;}`
+
   const getCombinedSelectedElements = (currentElement: HTMLElement) =>
     getSelectedElements
       ? [currentElement].reduce((acc, item) => {
@@ -195,6 +200,8 @@ export const createDragDropObservable = (
     ),
     // do not proceed if dragElementSelector does not in target element
     filter(([, dragElement]) => !!dragElement),
+    // add style node
+    tap(() => document.head.appendChild(styleNode)),
     map(([event, dragElement]) => {
       if (window.getSelection()?.type === "Range") {
         event.preventDefault()
@@ -274,22 +281,27 @@ export const createDragDropObservable = (
    * DragEnd
    */
   const dragEnd$ = fromEvent<DragEvent>(document.body, "dragend").pipe(
-    map((e: DragEvent) => {
+    tap((e: DragEvent) => {
+      e.preventDefault()
       // @TODO: this does not work in FF
       // if (e.dataTransfer?.dropEffect === "none") {
       //   currentDropElement = null
       // }
-      e.preventDefault()
+
+      // clean up
+      styleNode.remove()
       setAttributesTo(dragElementSelector, "draggable", "false")
-      return createPayload(
+    }),
+    map((e: DragEvent) =>
+      createPayload(
         "DragEnd",
         e,
         currentPayload.dragElements,
         currentPayload.container,
         currentPayload.dropElement,
         currentPayload.position,
-      )
-    }),
+      ),
+    ),
   )
 
   /**
