@@ -98,10 +98,12 @@ export const createDragDropObservable = (
   let property = vertical ? "offsetY" : ("offsetX" as keyof DragEvent)
   let currentPayload: DragDropPayload
 
-  // removes pointer-events on children of drop-targets so offsetY and offsetX
-  // in dragover event will be absolute
+  /**
+   * removes pointer-events on children of drop-targets so offsetY and offsetX
+   * in dragover event will be absolute
+   */
   const styleNode = document.createElement("style")
-  styleNode.innerText = `${dropElementSelector} * {pointer-events: none;}`
+  styleNode.innerText = `${dropElementSelector}:not(:active) * {pointer-events: none;}`
 
   const getCombinedSelectedElements = (currentElement: HTMLElement) =>
     getSelectedElements
