@@ -81,3 +81,48 @@ onMounted(() => {
     </Tree>
   </div>
 </template>
+
+<style>
+ul.tree {
+  list-style: none;
+  padding-left: 0;
+  margin: 0 !important;
+}
+
+ul.tree > li > span > button {
+  position: absolute;
+  left: 5px;
+}
+ul.tree > li.hasChildren > span {
+  font-weight: bold;
+}
+ul.tree > li > span > button {
+  transform: rotate(90deg);
+}
+ul.tree > li.collapsed > span > button {
+  transform: rotate(0deg);
+}
+ul.tree > li > span {
+  position: relative;
+}
+ul.tree li {
+  margin: 0;
+  list-style: none;
+}
+
+ul.tree > li > span {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  cursor: grab;
+  border-radius: 5px;
+  padding: 5px 12px 5px 25px !important;
+  /* color: var(--vp-c-text-1); */
+}
+ul.tree > li > span:hover {
+  background: #f5f5f5;
+}
+ul.tree ul.tree {
+  padding-left: 20px;
+}
+</style>

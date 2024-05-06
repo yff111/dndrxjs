@@ -14,45 +14,15 @@
   font-weight: 700 !important;
 }
 
-ul.tree,
 ul.list {
   list-style: none;
   padding-left: 0;
   margin: 0 !important;
 }
 
-ul.tree > li > span > button {
-  position: absolute;
-  left: 5px;
-}
-ul.tree > li.hasChildren > span {
-  font-weight: bold;
-}
-ul.tree > li > span > button {
-  transform: rotate(90deg);
-}
-ul.tree > li.collapsed > span > button {
-  transform: rotate(0deg);
-}
-ul.tree > li > span {
-  position: relative;
-}
-ul.tree li,
 ul.list li {
   margin: 0;
   list-style: none;
-}
-
-ul.tree > li > span {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  border-radius: 5px;
-  padding: 5px 12px 5px 25px !important;
-  /* color: var(--vp-c-text-1); */
-}
-ul.tree > li > span:hover {
-  background: #f5f5f5;
 }
 
 .list-item {
@@ -67,9 +37,8 @@ ul.tree > li > span:hover {
   border-radius: 5px;
   padding: 8px 10px;
 }
-
-ul.tree ul.tree {
-  padding-left: 20px;
+.list-item img {
+  pointer-events: none;
 }
 
 :root {

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import "dndrxjs/dist/styles.css"
 import { ref, onMounted, onUnmounted } from "vue"
 import createDragDropObservable, {
   dragImage,
@@ -30,7 +29,7 @@ onMounted(() => {
       addClasses(),
       indicator({ offset: 0 }),
       autoScroll(),
-      dragImage({ minElements: 0 }),
+      dragImage({ minElements: 1 }),
     )
     .subscribe(({ type, dropElement, dragElements, position }) => {
       if (!!dropElement && type === "DragEnd") {

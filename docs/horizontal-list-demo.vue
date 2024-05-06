@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-
-
 import { ref, onMounted, onUnmounted } from "vue"
 import createDragDropObservable, {
   dragImage,
@@ -10,7 +8,6 @@ import createDragDropObservable, {
   moveTreeNodesById,
 } from "dndrxjs"
 import { TreeNode } from "dndrxjs"
-import "dndrxjs/dist/styles.css"
 
 import data from "./data/MOCK_DATA.json"
 const root = ref<TreeNode<string>>({ id: "root", children: data })
