@@ -15,13 +15,14 @@ const container = ref<HTMLElement | null>(null)
 onMounted(() => {
   const subscription = createDragDropObservable({
     container: container.value!,
+    handleSelector: ".handle",
     dropPositionFn: () => "around",
   })
     .pipe(
       addClasses(),
       indicator({ offset: 2 }),
       autoScroll(),
-      dragImage({ minElements: 0 }),
+      dragImage({ minElements: 1 }),
     )
     .subscribe(({ type, dragElements, dropElement, position }) => {
       if (!!dropElement && type === "DragEnd") {
@@ -54,9 +55,17 @@ onMounted(() => {
         :data-id="item.id"
         :data-index="index"
         class="list-item"
-        style="margin-bottom: 4px"
+        style="margin-bottom: 4px; cursor: default"
       >
-        <img src="/handle.svg" />
+        <div
+          class="handle"
+          style="
+            cursor: grab;
+            width: 16px;
+            height: 16px;
+            background: url(handle.svg);
+          "
+        ></div>
         <span>{{ item.name }}</span>
       </li>
     </ul>

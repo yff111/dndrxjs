@@ -103,7 +103,7 @@ export const createDragDropObservable = (
    * in dragover event will be absolute
    */
   const styleNode = document.createElement("style")
-  styleNode.innerText = `${dropElementSelector}:not(:active) * {pointer-events: none;}`
+  styleNode.innerText = `${dropElementSelector} *:not(${handleSelector}) { pointer-events: none;}`
 
   const getCombinedSelectedElements = (currentElement: HTMLElement) =>
     getSelectedElements
