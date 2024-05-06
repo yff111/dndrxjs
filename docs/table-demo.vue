@@ -76,3 +76,12 @@ onMounted(() => {
     </table>
   </div>
 </template>
+
+<style type="text/css">
+[data-id] {
+  transition: box-shadow 0.1s ease !important;
+}
+[data-selected="true"] {
+  box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0.2) !important;
+}
+</style>

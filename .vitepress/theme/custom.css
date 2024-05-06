@@ -4,9 +4,10 @@
   --vp-c-text-1: #222;
   --vp-button-brand-bg: #ed448d;
   --vp-sidebar-bg-color: transparent;
-  /* --vp-c-divider: transparent; */
   --vp-nav-logo-height: 32px;
+  accent-color: #000;
 }
+
 .dark {
   --vp-c-text-1: #fff;
 }
