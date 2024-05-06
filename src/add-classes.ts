@@ -95,7 +95,7 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
               clearDragOverClass(dropElement!)
               dropElement?.classList.add(dragOverClass)
             },
-            BeforeDragStart: () => {
+            DragStart: () => {
               if (scrollContainer instanceof HTMLElement) {
                 scrollContainer.classList.add(activeContainerClass)
               }
