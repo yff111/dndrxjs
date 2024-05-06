@@ -175,7 +175,7 @@ export const createDragDropObservable = (
       return createPayload(
         "BeforeDragStart",
         e,
-        [dragElement],
+        getCombinedSelectedElements(dragElement),
         getClosestScrollContainer(dragElement),
       )
     }),
