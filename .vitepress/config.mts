@@ -34,6 +34,7 @@ export default defineConfig({
           { text: "Vertical List", link: "/vertical-list" },
           { text: "Horizontal List", link: "/horizontal-list" },
           { text: "Grid", link: "/grid" },
+          { text: "Table", link: "/table" },
           { text: "Multiple Lists", link: "/multiple-lists" },
           { text: "Auto-Scroll", link: "/auto-scroll" },
           // { text: "Ghost Image", link: "/ghost-image" },

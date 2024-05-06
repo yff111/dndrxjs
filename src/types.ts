@@ -54,6 +54,12 @@ export type DragDropOptions = {
    * (el) => !el.closest("button:not([data-id]), a:not([data-id]), input, textarea")
    */
   onBeforeDragStart: OnBeforeDragStartFn
+  /**
+   * Method to create style-tag contents that will be added to the DOM during the
+   * drag & drop operation. Primarily used to set pointer-events of drop element
+   * children to 'none' to get correct offset values from dragover event.
+   */
+  createStyleNode: (dropElementSelector: string) => string
 }
 
 export type DropPosition = "before" | "after" | "in" | "none"

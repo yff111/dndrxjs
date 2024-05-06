@@ -67,6 +67,8 @@ export const DEFAULTS: DragDropOptions = {
   dragOverThrottle: 20,
   threshold: 0.3,
   enableRectCaching: false,
+  createStyleNode: (dropElementSelector: string) =>
+    `${dropElementSelector}:not(tr) * { pointer-events: none;} tr${dropElementSelector} td * { pointer-events: none;}`,
   onBeforeDragStart: (el: HTMLElement) =>
     !el.closest("button:not([data-id]), a:not([data-id]), input, textarea"),
 }
@@ -93,6 +95,7 @@ export const createDragDropObservable = (
     threshold,
     getSelectedElements,
     dropElementSelector,
+    createStyleNode,
   } = optionsExtended
 
   let property = vertical ? "offsetY" : ("offsetX" as keyof DragEvent)
@@ -103,7 +106,7 @@ export const createDragDropObservable = (
    * in dragover event will be absolute
    */
   const styleNode = document.createElement("style")
-  styleNode.innerText = `${dropElementSelector} *:not(${handleSelector}) { pointer-events: none;}`
+  styleNode.innerText = createStyleNode(dropElementSelector)
 
   const getCombinedSelectedElements = (currentElement: HTMLElement) =>
     getSelectedElements
