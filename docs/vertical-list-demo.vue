@@ -15,7 +15,6 @@ const container = ref<HTMLElement | null>(null)
 onMounted(() => {
   const subscription = createDragDropObservable({
     container: container.value!,
-    handleSelector: ".handle",
     dropPositionFn: () => "around",
   })
     .pipe(
@@ -55,17 +54,9 @@ onMounted(() => {
         :data-id="item.id"
         :data-index="index"
         class="list-item"
-        style="margin-bottom: 4px; cursor: default"
+        style="margin-bottom: 4px"
       >
-        <div
-          class="handle"
-          style="
-            cursor: grab;
-            width: 16px;
-            height: 16px;
-            background: url(handle.svg);
-          "
-        ></div>
+        <img src="/handle.svg" />
         <span>{{ item.name }}</span>
       </li>
     </ul>

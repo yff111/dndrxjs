@@ -1,7 +1,10 @@
 /* Added to drag element on mousedown */
 .drag {
   opacity: 0.5;
-  cursor: grabbing;
+}
+.drag,
+.drag * {
+  cursor: grabbing !important;
 }
 
 /* Added to potential drop element while dragging over */

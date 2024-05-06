@@ -59,7 +59,11 @@ export type DragDropOptions = {
    * drag & drop operation. Primarily used to set pointer-events of drop element
    * children to 'none' to get correct offset values from dragover event.
    */
-  createStyleNode: (dropElementSelector: string) => string
+  createStyleNode: (
+    dropElementSelector: string,
+    dragElementSelector: string,
+    handleSelector: string,
+  ) => string
 }
 
 export type DropPosition = "before" | "after" | "in" | "none"
@@ -69,7 +73,7 @@ export type DragDropEventType =
   | "DragStart"
   | "DragOver"
   | "DragEnd"
-  | "DragAbort"
+  | "DragAbort" // currently not fired
 
 export type GetSelectedElementsFn = () => HTMLElement[]
 export type GetElementIdFn = (element: HTMLElement) => string

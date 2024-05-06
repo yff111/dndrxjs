@@ -67,8 +67,12 @@ export const DEFAULTS: DragDropOptions = {
   dragOverThrottle: 20,
   threshold: 0.3,
   enableRectCaching: false,
-  createStyleNode: (dropElementSelector: string) =>
-    `${dropElementSelector}:not(tr) * { pointer-events: none;} tr${dropElementSelector} td * { pointer-events: none;}`,
+  createStyleNode: (
+    dropElementSelector: string,
+    dragElementSelector: string,
+    handleSelector: string,
+  ) =>
+    `${dropElementSelector}:not(tr) * { pointer-events: none;} tr${dropElementSelector} td * { pointer-events: none;}  ${dropElementSelector}, ${dragElementSelector}, ${handleSelector} {pointer-events: all!important;}`,
   onBeforeDragStart: (el: HTMLElement) =>
     !el.closest("button:not([data-id]), a:not([data-id]), input, textarea"),
 }
@@ -106,7 +110,11 @@ export const createDragDropObservable = (
    * in dragover event will be absolute
    */
   const styleNode = document.createElement("style")
-  styleNode.innerText = createStyleNode(dropElementSelector)
+  styleNode.innerText = createStyleNode(
+    dropElementSelector,
+    dragElementSelector,
+    handleSelector,
+  )
 
   const getCombinedSelectedElements = (currentElement: HTMLElement) =>
     getSelectedElements
@@ -285,19 +293,21 @@ export const createDragDropObservable = (
   /**
    * DragEnd
    */
-  const dragEnd$ = fromEvent<DragEvent>(document.body, "dragend").pipe(
-    tap((e: DragEvent) => {
+  const dragEnd$ = merge(
+    fromEvent<DragEvent>(document.body, "dragend"),
+    fromEvent<MouseEvent>(document.body, "mouseup"),
+  ).pipe(
+    tap((e: DragEvent | MouseEvent) => {
       e.preventDefault()
       // @TODO: this does not work in FF
       // if (e.dataTransfer?.dropEffect === "none") {
       //   currentDropElement = null
       // }
-
       // clean up
       styleNode.remove()
       setAttributesTo(dragElementSelector, "draggable", "false")
     }),
-    map((e: DragEvent) =>
+    map((e: DragEvent | MouseEvent) =>
       createPayload(
         "DragEnd",
         e,
@@ -321,6 +331,7 @@ export const createDragDropObservable = (
         dragEnd$.pipe(take(1)),
       ),
     ),
+
     // store payload
     tap((payload) => (currentPayload = payload)),
   )
