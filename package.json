@@ -1,6 +1,6 @@
 {
   "name": "dndrxjs",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Drag & Drop rxjs ts library – low level, modular, performant.",
   "author": "yff111",
   "license": "MIT",
@@ -47,8 +47,9 @@
   },
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build-fast": "tsup && copyfiles -f src/styles.css dist",
-    "build": "npm run build-fast -- --dts-resolve",
+    "build-fast": "tsup",
+    "copy-styles": "copyfiles -f src/styles.css dist",
+    "build": "npm run build-fast -- --dts-resolve && npm run copy-styles",
     "test": "vitest run",
     "prepublishOnly": "npm run build",
     "release": "bumpp && npm publish",
