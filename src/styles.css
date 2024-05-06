@@ -3,19 +3,19 @@
   cursor: grab;
 }
 
-/* Drag element class */
+/* Added to drag element on mousedown */
 .drag {
   opacity: 0.5;
   cursor: grabbing;
 }
 
-/* Drag element class */
+/* Added to potential drop element while dragging over */
 .dragover {
   opacity: 0.8;
   cursor: grabbing;
 }
 
-/* Drop element class */
+/* Added to drag element on drop */
 .drop {
   animation: drop 0.35s ease;
 }
