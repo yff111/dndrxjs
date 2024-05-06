@@ -96,6 +96,7 @@ export const useSelectStuff = (
     if (element && id) {
       toggleSelect(id)
     }
+    window.getSelection()?.empty()
   }
   container.addEventListener("click", onClickContainer)
 
