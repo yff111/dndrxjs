@@ -1,13 +1,14 @@
 {
   "name": "dndrxjs",
   "version": "0.0.25",
-  "description": "Drag & Drop rxjs ts library – low level, modular, performant.",
+  "description": "Drag & Drop with RxJS – low level, modular, performant.",
   "author": "yff111",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yff111/dndrxjs.git"
   },
+  "homepage": "https://yff111.github.io/dndrxjs/",
   "publishConfig": {
     "access": "public",
     "@yff111:registry": "https://npm.pkg.github.com"
