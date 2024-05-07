@@ -41,7 +41,7 @@ for a more sophisticated solution consider: https://github.com/atlassian/pragmat
 
 ## License
 
-[MIT](./LICENSE) License © 2023-PRESENT [Stephan Reich](https://github.com/yff111)
+[MIT](https://github.com/yff111/dndrxjs/blob/main/LICENSE) License © 2023-PRESENT [Stephan Reich](https://github.com/yff111)
 
 
 [npm-version-src]: https://img.shields.io/npm/v/dndrxjs?style=flat&colorA=080f12&colorB=1fa669
