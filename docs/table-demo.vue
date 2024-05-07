@@ -15,10 +15,10 @@ const checked = ref<Record<string, boolean>>({})
 onMounted(() => {
   const subscription = createDragDropObservable({
     container: container.value!,
-    handleSelector: ".handle",
-    dropPositionFn: () => "around",
+    handleSelector: ".handle", // [!code highlight:3]
     getSelectedElements: () =>
       Array.from(container.value!.querySelectorAll(`[data-selected="true"]`)),
+    dropPositionFn: () => "around",
   })
     .pipe(
       addClasses(),
@@ -53,16 +53,15 @@ onMounted(() => {
           :key="item.id"
           :data-id="item.id"
           :data-index="index"
-          style="cursor: default"
+          style="cursor: pointer"
           :data-selected="checked[item.id]"
+          @click="checked[item.id] = !checked[item.id]"
         >
-          <td style="width: 0px">
-            <div class="handle" style="cursor: grab">
-              <img
-                src="/handle.svg"
-                style="pointer-events: none; max-width: 20px"
-              />
-            </div>
+          <td class="handle" style="width: 0; cursor: grab">
+            <img
+              src="/handle.svg"
+              style="pointer-events: none; max-width: 20px"
+            />
           </td>
           <td style="width: 0px">
             <input type="checkbox" v-model="checked[item.id]" />
@@ -81,7 +80,10 @@ onMounted(() => {
 [data-id] {
   transition: box-shadow 0.1s ease !important;
 }
-[data-selected="true"] {
-  box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0.2) !important;
+.demo table td {
+  background: #fff;
+}
+tr[data-selected="true"] td {
+  background: #eee !important;
 }
 </style>

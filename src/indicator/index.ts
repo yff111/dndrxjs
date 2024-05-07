@@ -1,27 +1,12 @@
-import { getRelativeRect, isWindow } from "./utils"
+import { getRelativeRect, isWindow } from "../utils"
 import {
   DragDropPayload,
   DragDropMiddlewareHookMap,
   DragDropMiddlewareOperator,
   DropPosition,
-} from "./types"
+} from "../types"
 import { Observable, tap } from "rxjs"
-
-export type GetIndicatorStyleFn = (
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  position: DropPosition,
-  vertical: boolean,
-  offset: number,
-) => () => string
-
-export type IndicatorMiddlewareOptions = {
-  getIndicatorStyleFn: GetIndicatorStyleFn
-  indicatorClasses: IndicatorClasses
-  offset: number
-}
+import { IndicatorClasses, IndicatorMiddlewareOptions } from "./types"
 
 const defaultGetIndicatorStyleFn = (
   x: number,
@@ -45,8 +30,6 @@ const defaultGetIndicatorStyleFn = (
         : `width: 2px; height:${height}px; top:${y}px; left:${x - 1 - offset}px; background: currentColor; pointer-events: none; position: absolute;`,
     none: () => "",
   })[position]
-
-export type IndicatorClasses = Record<DropPosition | "all", string>
 
 export const defaultIndicatorClasses: IndicatorClasses = {
   all: "indicator",

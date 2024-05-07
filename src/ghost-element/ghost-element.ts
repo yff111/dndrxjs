@@ -3,7 +3,7 @@ import {
   DragDropMiddlewareHookMap,
   DragDropPayload,
   DragDropMiddlewareOperator,
-} from "./types"
+} from "../types"
 
 const ghostElementMiddleware: DragDropMiddlewareOperator = () => {
   const ghostElement = document.createElement("div")

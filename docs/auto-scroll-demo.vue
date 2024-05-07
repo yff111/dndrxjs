@@ -21,8 +21,8 @@ onMounted(() => {
     .pipe(
       addClasses(),
       indicator({ offset: 6 }),
-      autoScroll(),
       dragImage({ minElements: 1 }),
+      autoScroll({ threshold: 120 }), // [!code highlight]
     )
     .subscribe(({ type, dragElements, dropElement, position }) => {
       if (!!dropElement && type === "DragEnd") {

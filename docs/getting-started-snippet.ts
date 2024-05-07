@@ -15,7 +15,7 @@ const subscription = createDragDropObservable({
   dragElementSelector: "[data-id]",
   dropElementSelector: "[data-id]",
   handleSelector: ".handle",
-  dropPositionFn: ({ dragElements, dropElement }) => "around",
+  dropPositionFn: ({ dragElement, dropElement }) => "around",
   // ... more DragDropOptions @see `DragDropOptions`
 })
   // add optional middleware operators

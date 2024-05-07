@@ -39,17 +39,22 @@
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
       "import": "./dist/index.mjs"
+    },
+    "./auto-scroll": {
+      "require": "./dist/auto-scroll.js",
+      "import": "./dist/auto-scroll.mjs"
     },
     "./dist/styles.css": {
       "import": "./dist/styles.css",
       "require": "./dist/styles.css"
     }
   },
-  "types": "./dist/index.d.ts",
   "scripts": {
     "build-fast": "tsup",
     "copy-styles": "copyfiles -f src/styles.css dist",

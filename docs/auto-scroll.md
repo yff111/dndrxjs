@@ -1,5 +1,6 @@
 # Auto Scroll
 
+This middleware adds auto-scroll functionality.
 
 <script setup>
   import 'dndrxjs/dist/styles.css'
@@ -17,8 +18,8 @@
 
 
 
-::: code-group
+<<< ../src/auto-scroll/types.ts{ts}
+
 
 <<< auto-scroll-demo.vue{vue}
 
-::: 

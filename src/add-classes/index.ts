@@ -1,18 +1,12 @@
 import { Observable, map, pairwise, tap } from "rxjs"
-import { isWindow } from "./utils"
+import { isWindow } from "../utils"
 import {
   DragDropMiddlewareHookMap,
   DragDropMiddlewareOperator,
   GetElementIdFn,
   DragDropPayload,
-} from "./types"
-
-export type AddClassesMiddlewareOptions = {
-  dragClass: string
-  dropClass: string
-  dragOverClass: string
-  activeContainerClass: string
-}
+} from "../types"
+import { AddClassesMiddlewareOptions } from "./types"
 
 export const addClassWhenAddedToDom = (
   selectedElements: HTMLElement[],

@@ -1,10 +1,11 @@
 import { Observable, fromEvent, tap } from "rxjs"
-import { fromHTML } from "./utils"
+import { fromHTML } from "../utils"
 import {
   DragDropMiddlewareHookMap,
   DragDropPayload,
   DragDropMiddlewareOperator,
-} from "./types"
+} from "../types"
+import { DragImageMiddlewareOptions } from "./types"
 
 export const defaultUpdateElementFn = (selectedElements: HTMLElement[]) =>
   fromHTML(
@@ -21,11 +22,6 @@ export const defaultUpdateContainerStyleFn = (
     `position: fixed; z-index: 9999; top: ${top}px; left:${left}px; pointer-events: none;`,
   )
 
-export interface DragImageMiddlewareOptions {
-  updateContainerStyle: (element: HTMLElement, top: number, left: number) => any
-  updateElement: (selectedElements: HTMLElement[]) => HTMLElement
-  minElements: number
-}
 export const DEFAULTS: DragImageMiddlewareOptions = {
   updateElement: defaultUpdateElementFn,
   updateContainerStyle: defaultUpdateContainerStyleFn,

@@ -4,13 +4,9 @@ import {
   DragDropPayload,
   DragDropMiddlewareOperator,
   Rect,
-} from "./types"
-import { getScrollX, getScrollY } from "./utils"
-export interface AutoScrollMiddlewareOptions {
-  interval: number
-  steps: number
-  threshold: number
-}
+} from "../types"
+import { getScrollX, getScrollY } from "../utils"
+import { AutoScrollMiddlewareOptions } from "./types"
 
 export const DEFAULTS: AutoScrollMiddlewareOptions = {
   interval: 8,

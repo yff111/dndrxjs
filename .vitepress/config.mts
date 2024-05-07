@@ -20,13 +20,9 @@ export default defineConfig({
     ],
 
     sidebar: [
-      {
-        text: "Getting Started",
-        items: [
-          { text: "Installation", link: "/installation" },
-          { text: "Types", link: "/types" },
-        ],
-      },
+      { text: "Information", link: "/information" },
+      { text: "Installation", link: "/installation" },
+      { text: "Types", link: "/types" },
       {
         text: "Examples",
         items: [
@@ -36,9 +32,16 @@ export default defineConfig({
           { text: "Grid", link: "/grid" },
           { text: "Table", link: "/table" },
           { text: "Multiple Lists", link: "/multiple-lists" },
+        ],
+      },
+      {
+        text: "Middleware",
+        items: [
           { text: "Auto-Scroll", link: "/auto-scroll" },
-          // { text: "Ghost Image", link: "/ghost-image" },
-          // { text: "Custom Drag Image", link: "/drag-image" },
+          { text: "Indicator", link: "/indicator" },
+          { text: "Add CSS Classes", link: "/add-classes" },
+          { text: "Drag Image", link: "/drag-image" },
+          { text: "Ghost Element", link: "/ghost-element" },
         ],
       },
     ],
