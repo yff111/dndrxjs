@@ -1,11 +1,11 @@
+<div align="center"><img src="https://yff111.github.io/dndrxjs/logo.png" height="320px" width="320px" aria-label="dndrxjs logo"></div>
+
 # dndrxjs
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![bundle][bundle-src]][bundle-href]
  
-
-**NOTE: lib in progress – things might change, also "ghost-image"-middleware currently not stable.**
 
 [Documentation](https://yff111.github.io/dndrxjs)
 
@@ -18,9 +18,9 @@ A simple, low level and modular drag & drop library that provides all Drag & Dro
 - 🌐 **Framework-agnostic:** only typescript and RxJS, no framework involved
 - 📊 **Performant:** large-list support due to event-throttling, event-delegation and rect-caching
 - 🖱️ **Auto-scrolling**
-- 👻 **Custom Drag Image**
-- 👻 **Custom Indicators**
-- 👻 **Custom Placeholders**
+- 🍭 **Custom Drag Image**
+- 🍓 **Custom Indicator**
+- 🍰 **Custom Placeholder**
 - 🫖 **Drag handle etc.**
 
 ### Quick overview
