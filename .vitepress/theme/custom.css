@@ -37,6 +37,7 @@ ul.list li {
   border: 1px solid #eee;
   border-radius: 5px;
   padding: 8px 10px;
+  margin-bottom: 4px !important;
 }
 .list-item img {
   pointer-events: none;

@@ -31,3 +31,21 @@
 .selected {
   box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0.2);
 }
+
+/* Placholder element class */
+.placeholder {
+  height: 40px;
+  border-radius: 4px;
+  background-image: linear-gradient(
+    45deg,
+    transparent 37.5%,
+    #000 37.5%,
+    #000 50%,
+    transparent 50%,
+    transparent 87.5%,
+    #000 87.5%,
+    #000 100%
+  );
+  background-size: 5.66px 5.66px;
+  opacity: 0.2;
+}

@@ -13,14 +13,30 @@
 A simple, low level and modular drag & drop library that provides all Drag & Drop Events as a single [RxJS-Observable](https://rxjs.dev/guide/observable).
 
 ### Features 
-
 - 🧩 **Plugin-architecture:** use the features you need 
 - 🛠 **Extensible:** write your own middleware 
 - 🌐 **Framework-agnostic:** only typescript and RxJS, no framework involved
 - 📊 **Performant:** large-list support due to event-throttling, event-delegation and rect-caching
 - 🖱️ **Auto-scrolling**
-- 👻 **Custom ghost-image**
+- 👻 **Custom Drag Image**
+- 👻 **Custom Indicators**
+- 👻 **Custom Placeholders**
 - 🫖 **Drag handle etc.**
+
+### Quick overview
+
+```ts
+createDragDropObservable(
+// add options to customize positioning rules, selectors, event-throttling etc.
+)
+.pipe(
+// add middlewares for indicators, css-classes, auto-scrolling etc.
+)
+.subscribe((payload: DragDropPayload) => {
+// handle relevant drag & drop-events (dragstart, dragover, dragend)
+})
+
+```
 
 ### Caveats
 
@@ -29,6 +45,7 @@ A simple, low level and modular drag & drop library that provides all Drag & Dro
 - RxJS dependency
 
 for a more sophisticated solution consider: https://github.com/atlassian/pragmatic-drag-and-drop
+
 
 
 ### Links

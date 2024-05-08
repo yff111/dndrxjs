@@ -1,4 +1,0 @@
-# Ghost Element
-
-
-...

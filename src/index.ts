@@ -56,11 +56,11 @@ export {
 
 import autoScroll from "./auto-scroll"
 import dragImage from "./drag-image/drag-image"
-import ghostElement from "./ghost-element/ghost-element"
+import placeholder from "./placeholder"
 import addClasses from "./add-classes"
 import indicator from "./indicator"
 
-export { autoScroll, dragImage, ghostElement, addClasses, indicator }
+export { autoScroll, dragImage, placeholder, addClasses, indicator }
 
 import createDragDropObservable from "./main"
 
