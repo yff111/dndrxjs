@@ -58,7 +58,8 @@
   "scripts": {
     "build-fast": "tsup",
     "copy-styles": "copyfiles -f src/styles.css dist",
-    "build": "npm run build-fast -- --dts-resolve && npm run copy-styles",
+    "embed-readme": "embedme README.md",
+    "build": "npm run build-fast -- --dts-resolve && npm run embed-readme  &&  npm run copy-styles",
     "test": "vitest run",
     "prepublishOnly": "npm run build",
     "release": "bumpp && npm publish",
@@ -70,6 +71,7 @@
     "@egoist/prettier-config": "1.0.0",
     "bumpp": "^9.4.1",
     "copyfiles": "^2.4.1",
+    "embedme": "^1.22.1",
     "install-peers": "^1.0.4",
     "prettier": "3.2.5",
     "rxjs": "^7.8.1",

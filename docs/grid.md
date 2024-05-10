@@ -4,19 +4,17 @@
 
 <script setup>
 
-  import 'dndrxjs/dist/styles.css'
-  import { defineClientComponent } from 'vitepress'
+import 'dndrxjs/dist/styles.css'
+import { defineClientComponent } from 'vitepress'
 
-  const GridDemo = defineClientComponent(() => {
-    return import('./grid-demo.vue')
-  })
-  const GridDemoSwap = defineClientComponent(() => {
-    return import('./grid-demo-swap.vue')
-  })
+const GridDemo = defineClientComponent(() => {
+  return import('./grid-demo.vue')
+})
+const GridDemoSwap = defineClientComponent(() => {
+  return import('./grid-demo-swap.vue')
+})
 
   
-
-
 </script>
 
 <br>
@@ -46,3 +44,9 @@ Select multiple items by pressing `shift` or `alt`/`cmd`.
 <br>
 <GridDemoSwap></GridDemoSwap>
 
+
+::: code-group
+
+<<< grid-demo-swap.vue{vue}
+
+::: 

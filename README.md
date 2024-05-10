@@ -10,11 +10,10 @@
 [Documentation](https://yff111.github.io/dndrxjs)
 
 
-A simple, low level and modular drag & drop library that provides all Drag & Drop Events as a single [RxJS-Observable](https://rxjs.dev/guide/observable).
+Simple, low level and modular drag & drop library that provides all Drag & Drop Events as a single [RxJS-Observable](https://rxjs.dev/guide/observable).
 
 ### Features 
-- 🧩 **Plugin-architecture:** use the features you need 
-- 🛠 **Extensible:** write your own middleware 
+- 🧩 **Extensible:** use only the features you need
 - 🌐 **Framework-agnostic:** only typescript and RxJS, no framework involved
 - 📊 **Performant:** large-list support due to event-throttling, event-delegation and rect-caching
 - 🖱️ **Auto-scrolling**
@@ -23,26 +22,53 @@ A simple, low level and modular drag & drop library that provides all Drag & Dro
 - 🍰 **Custom Placeholder**
 - 🫖 **Drag handle etc.**
 
-### Quick overview
+### How to use
 
 ```ts
-createDragDropObservable(
-// add options to customize positioning rules, selectors, event-throttling etc.
-)
-.pipe(
-// add middlewares for indicators, css-classes, auto-scrolling etc.
-)
-.subscribe((payload: DragDropPayload) => {
-// handle relevant drag & drop-events (dragstart, dragover, dragend)
+// docs/getting-started-snippet.ts
+
+import createDragDropObservable, {
+  addClasses,
+  indicator,
+  autoScroll,
+  dragImage,
+} from "dndrxjs"
+
+// provides a few basic styles for drop-animations etc.
+import "dndrxjs/dist/styles.css"
+
+const subscription = createDragDropObservable({
+  // draggable element selector
+  dragElementSelector: "[data-id]",
+  // method that determines the drop-position
+  dropPositionFn: ({ dragElement, dropElement }) => "around",
+  // for more options @see `DragDropOptions`
 })
+  .pipe(
+    // adds css classes to drag-, drop- and container-elements
+    addClasses(),
+    // adds drop position indicator while dragging
+    indicator(),
+    // adds custom drag image that follows the mouse cursor
+    dragImage(),
+    // adds auto-scroll behavior inside the closest scrollable container
+    autoScroll(),
+  )
+  .subscribe(({ type, dragElements, dropElement, position }) => {
+    if (type === "DragEnd") {
+      // do list transformation on "DragEnd"
+    }
+  })
+
+// unsubscribe when component is unmounted to remove all event-listeners
+subscription.unsubscribe()
 
 ```
 
 ### Caveats
 
-- no fancy stuff
 - no touch-support due to native drag events 
-- RxJS dependency
+- RxJS dependency 
 
 for a more sophisticated solution consider: https://github.com/atlassian/pragmatic-drag-and-drop
 
