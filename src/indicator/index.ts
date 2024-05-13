@@ -55,7 +55,7 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
   const indicatorElement = document.createElement("div")
   const updateIndicator = (
     target: HTMLElement,
-    container: HTMLElement | Window,
+    container: HTMLElement,
     position: DropPosition,
     vertical: boolean,
   ) => {
@@ -107,7 +107,7 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
               }
               updateIndicator(
                 dropElement!,
-                scrollContainer,
+                isWindow(scrollContainer) ? document.body : scrollContainer,
                 position!,
                 !!options.vertical,
               )
