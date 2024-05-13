@@ -29,13 +29,14 @@
 
 /* Selected element class */
 .selected {
-  box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0.2);
+  box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0.1);
 }
 
 /* Placholder element class */
 .placeholder {
-  height: 40px;
   border-radius: 8px;
-  border: 2px dashed #000;
+  outline: 2px dashed #000;
   background: transparent;
+  pointer-events: none !important;
+  z-index: 1;
 }

@@ -13,14 +13,14 @@
 Simple, low level and modular drag & drop library that provides all Drag & Drop Events as a single [RxJS-Observable](https://rxjs.dev/guide/observable).
 
 ### Features 
-- 🧩 **Extensible:** use only the features you need
+
+- 🧰 **Versatile:** covers most Drag & Drop use-cases (multiple lists, horizontal lists, trees & nesting, tables etc.)
 - 🌐 **Framework-agnostic:** only typescript and RxJS, no framework involved
-- 📊 **Performant:** large-list support due to event-throttling, event-delegation and rect-caching
+- 📊 **Performant:** large-list support due to event-throttling, event-delegation and rect-caching 
 - 🖱️ **Auto-scrolling**
 - 🍭 **Custom Drag Image**
-- 🍓 **Custom Indicator**
-- 🍰 **Custom Placeholder**
-- 🫖 **Drag handle etc.**
+- 🍓 **Custom Indicator or Placeholder**
+- 🧩 **Modular:** use only the features you need
 
 ### How to use
 

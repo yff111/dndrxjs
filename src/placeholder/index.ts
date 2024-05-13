@@ -6,61 +6,69 @@ import {
 } from "../types"
 import { PlaceholderMiddlewareOptions } from "./types"
 
+export const createSimplePlaceholder = (dragElements: HTMLElement[]) => {
+  const tagName = dragElements[0].tagName
+  const placeholderElement = document.createElement(tagName)
+  placeholderElement.style.height = `${dragElements[0]!.getBoundingClientRect().height}px`
+  return [placeholderElement]
+}
+export const createClonedPlaceholder = (dragElements: HTMLElement[]) => {
+  const placeholderElements = dragElements.map(
+    (el) => el.cloneNode(true) as HTMLElement,
+  )
+  placeholderElements.forEach((el) => {
+    el.classList.add("placeholder")
+    el.removeAttribute("data-id")
+  })
+  return placeholderElements.splice(0, 1)
+}
+
 export const DEFAULTS: PlaceholderMiddlewareOptions = {
-  tagName: "div",
-  className: "placeholder",
-  applyHeight: true,
+  createElement: createClonedPlaceholder,
 }
 
 const placeholderElementMiddleware: DragDropMiddlewareOperator<
   PlaceholderMiddlewareOptions
 > = (options) => {
-  const { tagName, className, applyHeight } = options
-    ? { ...DEFAULTS, ...options }
-    : DEFAULTS
+  const { createElement } = options ? { ...DEFAULTS, ...options } : DEFAULTS
 
-  const placeholderElement = document.createElement(tagName)
-  placeholderElement.setAttribute("class", className)
+  let placeholderElements: HTMLElement[]
 
   return (source: Observable<DragDropPayload>) =>
     source.pipe(
       tap(({ type, position, dragElements, dropElement }) =>
         (
           ({
-            DragOver: () => {
-              console.log("dropElement", dropElement)
-              dragElements[0].style.display = "none"
-              if (position === "before") {
-                dropElement?.parentNode?.insertBefore(
-                  placeholderElement,
-                  dropElement,
-                )
-              } else if (position === "after") {
-                dropElement?.parentNode?.insertBefore(
-                  placeholderElement,
-                  dropElement.nextSibling,
-                )
-              }
+            BeforeDragStart: () => {
+              placeholderElements = createElement(dragElements)
             },
             DragStart: () => {
-              // placeholderElement.setAttribute(
-              //   "class",
-              //   dropElement?.getAttribute("class") || "",
-              // )
-              if (applyHeight) {
-                placeholderElement.style.height = `${dragElements[0]!.getBoundingClientRect().height}px`
-              }
-
               // @TODO: explain timeout
               setTimeout(() => {
-                placeholderElement.classList.add("placeholder")
-                dropElement!.before(placeholderElement)
-                dropElement!.style.display = "none"
-              }, 0)
+                dragElements?.forEach((el) => (el.style.display = "none"))
+              })
+            },
+            DragOver: () => {
+              if (position === "before") {
+                placeholderElements
+                  .reverse()
+                  .forEach((el) =>
+                    dropElement?.parentNode?.insertBefore(el, dropElement),
+                  )
+              } else if (position === "after") {
+                placeholderElements
+                  .reverse()
+                  .forEach((el) =>
+                    dropElement?.parentNode?.insertBefore(
+                      el,
+                      dropElement.nextSibling,
+                    ),
+                  )
+              }
             },
             DragEnd: () => {
-              placeholderElement?.remove?.()
-              dragElements[0].style.display = ""
+              placeholderElements?.forEach((el) => el.remove?.())
+              dragElements?.forEach((el) => (el.style.display = ""))
             },
           }) as DragDropMiddlewareHookMap
         )[type]?.(),
