@@ -33,7 +33,7 @@ const placeholderElementMiddleware: DragDropMiddlewareOperator<
   const { createElement } = options ? { ...DEFAULTS, ...options } : DEFAULTS
 
   let placeholderElements: HTMLElement[]
-
+  let dragStart = false
   return (source: Observable<DragDropPayload>) =>
     source.pipe(
       tap(({ type, position, dragElements, dropElement }) =>
@@ -43,12 +43,15 @@ const placeholderElementMiddleware: DragDropMiddlewareOperator<
               placeholderElements = createElement(dragElements)
             },
             DragStart: () => {
-              // @TODO: explain timeout
-              setTimeout(() => {
-                dragElements?.forEach((el) => (el.style.display = "none"))
-              })
+              dragStart = true
             },
             DragOver: () => {
+              if (dragStart) {
+                dragStart = false
+                // hide drag elements only after dragStart once
+                dragElements?.forEach((el) => (el.style.display = "none"))
+              }
+              dragStart = true
               if (position === "before") {
                 placeholderElements
                   .reverse()
