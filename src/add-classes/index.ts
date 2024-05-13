@@ -14,6 +14,7 @@ export const addClassWhenAddedToDom = (
   cssClass: string,
   getElementId: GetElementIdFn,
   container: HTMLElement = document.body,
+  timeout: number = 100,
 ) => {
   const selectedElementIds = selectedElements.map(getElementId)
   const observer = new MutationObserver((mutations) =>
@@ -25,17 +26,27 @@ export const addClassWhenAddedToDom = (
             : // check for matching child nodes if parent did not match
               (Array.from(node.querySelectorAll(selector)) as HTMLElement[])
           // match selected elements with added nodes
-          newNodes.forEach(
-            (n) =>
-              selectedElementIds.includes(getElementId(n)) &&
-              n.classList.add(cssClass),
-          )
+          newNodes.forEach((n) => {
+            if (selectedElementIds.includes(getElementId(n))) {
+              n.addEventListener(
+                "animationend",
+                () => n.classList.remove(cssClass),
+                { once: true },
+              )
+              n.classList.add(cssClass)
+            }
+          })
         }
         observer.disconnect()
       }),
     ),
   )
   observer.observe(container, { childList: true, subtree: true })
+
+  // auto remove observer after timeout
+  if (timeout) {
+    setTimeout(() => observer.disconnect(), timeout)
+  }
   return observer
 }
 
