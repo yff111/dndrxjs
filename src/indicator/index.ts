@@ -97,7 +97,9 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
         (
           ({
             DragStart: () => {
-              addIndicatorToElement(scrollContainer!)
+              addIndicatorToElement(
+                isWindow(scrollContainer) ? document.body : scrollContainer,
+              )
               indicatorElement.style.display = "none"
             },
             DragOver: () => {
