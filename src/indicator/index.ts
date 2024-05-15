@@ -54,12 +54,12 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
   let containerRect: { x: number; y: number } = { x: 0, y: 0 }
   const indicatorElement = document.createElement("div")
   const updateIndicator = (
-    target: HTMLElement,
-    container: HTMLElement,
+    dropElement: HTMLElement,
+    container: HTMLElement | Window,
     position: DropPosition,
     vertical: boolean,
   ) => {
-    const { x, y, width, height } = getRelativeRect(target, container)
+    const { x, y, width, height } = getRelativeRect(dropElement, container)
     const styleAsString = getIndicatorStyleFn(
       x - containerRect.x,
       y - containerRect.y,
@@ -84,6 +84,7 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
   const addIndicatorToElement = (element: HTMLElement | Window) => {
     currentScrollContainer = element
     if (isWindow(element)) {
+      containerRect = { x: 0, y: 0 }
       document.body.appendChild(indicatorElement)
     } else {
       containerRect = element!.getBoundingClientRect()
@@ -97,9 +98,7 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
         (
           ({
             DragStart: () => {
-              addIndicatorToElement(
-                isWindow(scrollContainer) ? document.body : scrollContainer,
-              )
+              addIndicatorToElement(scrollContainer!)
               indicatorElement.style.display = "none"
             },
             DragOver: () => {
@@ -109,7 +108,7 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
               }
               updateIndicator(
                 dropElement!,
-                isWindow(scrollContainer) ? document.body : scrollContainer,
+                scrollContainer!,
                 position!,
                 !!options.vertical,
               )
