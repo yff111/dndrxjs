@@ -1,6 +1,6 @@
 # Auto Scroll
 
-This middleware adds auto-scroll functionality.
+Adds horizontal and vertical auto-scrolling for the closest scrollable container element.
 
 <script setup>
   import 'dndrxjs/dist/styles.css'
