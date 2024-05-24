@@ -14,13 +14,13 @@ Simple, low level and modular drag & drop library that provides all Drag & Drop 
 
 ### Features 
 
-- 🧰 **Versatile:** covers most drag & drop use cases (multiple lists, horizontal lists, trees & nesting, tables etc.)
-- 🌐 **Framework agnostic:** only typescript and RxJS, no framework involved
-- 📊 **Performant:** large-list support due to event-throttling, event-delegation and rect-caching 
-- 🖱️ **Auto-scrolling**
-- 🍭 **Custom Drag Image**
-- 🍓 **Custom Indicator or Placeholder**
-- 🧩 **Modular:** use only the features you need
+- 🧰 **versatile:** covers most drag & drop use cases (multiple lists, horizontal lists, trees & nesting, tables etc.)
+- 🌐 **framework agnostic:** only typescript and RxJS, no framework involved
+- 📊 **performant:** large-list support due to event-throttling, event-delegation and rect-caching 
+- 🖱️ **auto-scrolling**
+- 🍭 **custom drag image**
+- 🍓 **custom indicator or placeholder**: 
+- 🧩 **modular:** use only the features you need
 
 ### How to use
 
