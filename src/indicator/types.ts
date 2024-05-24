@@ -2,17 +2,14 @@ import { DropPosition } from "../types"
 
 export type IndicatorMiddlewareOptions = {
   /**
-   * Method that creates the indicator element.
-   */
-  getIndicatorStyleFn: GetIndicatorStyleFn
-  /**
-   * Defaults to: 
+   * Defaults to:
    * {
-   *  all: "indicator",
+   *  initial: "indicator",
+   *  vertical: "indicator-vertical",
+   *  horizontal: "indicator-vertical",
    *  after: "indicator-after",
    *  in: "indicator-in",
    *  before: "indicator-before",
-   *  none: "",
    * }
    */
   indicatorClasses: IndicatorClasses
@@ -32,4 +29,7 @@ export type GetIndicatorStyleFn = (
   offset: number,
 ) => () => string
 
-export type IndicatorClasses = Record<DropPosition | "all", string>
+export type IndicatorClasses = Record<
+  DropPosition | "initial" | "vertical" | "horizontal",
+  string
+>

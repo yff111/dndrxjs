@@ -20,7 +20,7 @@ export type DragDropOptions = {
    */
   handleSelector: string
   /**
-   * A method that returns the allowed drop positions that are allowed for a
+   * A method that returns the allowed drop positions that are for a
    * potential drop element.
    */
   dropPositionFn: DropPositionFn

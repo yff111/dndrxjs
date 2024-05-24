@@ -13,11 +13,75 @@
   cursor: grabbing;
 }
 
+/* Indicator */
+
+.indicator {
+  background: currentColor;
+  pointer-events: none;
+  position: absolute;
+  display: none;
+}
+
+.indicator-in,
+.indicator-before,
+.indicator-after {
+  display: block;
+}
+.indicator-in {
+  width: var(--indicator-w);
+  height: var(--indicator-h);
+  top: var(--indicator-y);
+  left: var(--indicator-x);
+  border: 2.5px dashed currentColor;
+  border-radius: 6px;
+  background: transparent;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.indicator-after.indicator-vertical {
+  width: var(--indicator-w);
+  height: 2px;
+  top: calc(
+    var(--indicator-y) + var(--indicator-h) - 1px + var(--indicator-offset)
+  );
+  left: var(--indicator-x);
+}
+.indicator-after.indicator-horizontal {
+  height: var(--indicator-h);
+  width: 2px;
+  top: var(--indicator-y);
+  left: calc(
+    var(--indicator-x) + var(--indicator-w) - 1px + var(--indicator-offset)
+  );
+}
+.indicator-before.indicator-horizontal {
+  width: 2px;
+  height: var(--indicator-h);
+  left: calc(var(--indicator-x) - 1px - var(--indicator-offset));
+  top: var(--indicator-y);
+}
+.indicator-before.indicator-vertical {
+  width: var(--indicator-w);
+  height: 2px;
+  top: calc(var(--indicator-y) - 1px - var(--indicator-offset));
+  left: var(--indicator-x);
+}
+
+/* Drag Image */
+.drag-image {
+  background: black;
+  padding: 2px 8px;
+  color: white;
+  margin: 10px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 10px;
+}
 /* Added to drag element on drop */
 .drop {
   animation: drop 0.35s ease;
 }
-
 @keyframes drop {
   0% {
     box-shadow: inset -200px -200px 0px 200px rgba(0, 0, 0, 0.3);
