@@ -7,12 +7,14 @@ import {
 } from "../types"
 import { DragImageMiddlewareOptions } from "./types"
 
+//#region defaults
 export const defaultUpdateElementFn = (selectedElements: HTMLElement[]) =>
   fromHTML(
-    `<div style="background: black; padding: 2px 8px; color: white; margin: 10px; font-size: 13px; font-weight: bold; border-radius: 10px;">${selectedElements.length} Element(s)</div>`,
+    `<div class='drag-image'>${selectedElements.length} Element(s)</div>`,
   )
+//#endregion defaults
 
-export const defaultUpdateContainerStyleFn = (
+export const updateContainerStyle = (
   element: HTMLElement,
   top: number,
   left: number,
@@ -24,13 +26,12 @@ export const defaultUpdateContainerStyleFn = (
 
 export const DEFAULTS: DragImageMiddlewareOptions = {
   updateElement: defaultUpdateElementFn,
-  updateContainerStyle: defaultUpdateContainerStyleFn,
   minElements: 0,
 }
 const dragImageMiddleware: DragDropMiddlewareOperator<
   Partial<DragImageMiddlewareOptions>
 > = (options?) => {
-  const { updateElement, updateContainerStyle, minElements } = options
+  const { updateElement, minElements } = options
     ? { ...DEFAULTS, ...options }
     : DEFAULTS
 

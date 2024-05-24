@@ -55,7 +55,7 @@ export {
 }
 
 import autoScroll from "./auto-scroll"
-import dragImage from "./drag-image/drag-image"
+import dragImage from "./drag-image"
 import placeholder from "./placeholder"
 import addClasses from "./add-classes"
 import indicator from "./indicator"
