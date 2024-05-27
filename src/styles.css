@@ -1,6 +1,7 @@
 /* Added to drag element on mousedown */
-.drag {
-  opacity: 0.5;
+.drag,
+[data-id]:active {
+  opacity: 0.8;
 }
 .drag,
 .drag * {

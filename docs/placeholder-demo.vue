@@ -8,7 +8,6 @@ import createDragDropObservable, {
   reorderItems,
 } from "dndrxjs"
 import data from "./data/MOCK_DATA_1000.json"
-import { useSelectStuff } from "./select-stuff"
 
 const items = ref<{ name: string; id: string }[]>(data.splice(0, 20))
 const container = ref<HTMLElement | null>(null)

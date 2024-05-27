@@ -67,9 +67,9 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
     if (scrollContainer instanceof HTMLElement) {
       scrollContainer.classList.remove(activeContainerClass)
     }
-    document.body
-      .querySelectorAll("." + dragClass)
-      .forEach((e: Element) => e.classList.remove(dragClass))
+    document.body.querySelectorAll(` .${dragClass}`).forEach((e: Element) => {
+      e.classList.remove(dragClass)
+    })
   }
 
   const clearDragOverClass = (currentDropElement?: HTMLElement) =>
@@ -100,11 +100,13 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
               clearDragOverClass(dropElement!)
               dropElement?.classList.add(dragOverClass)
             },
+            DragStart: () => {
+              dragElements.forEach((el) => el.classList.add(dragClass))
+            },
             BeforeDragStart: () => {
               if (scrollContainer instanceof HTMLElement) {
                 scrollContainer.classList.add(activeContainerClass)
               }
-              dragElements.forEach((el) => el.classList.add(dragClass))
               dragElements.forEach((e) => e.classList.remove(dropClass))
             },
             DragEnd: () => {
