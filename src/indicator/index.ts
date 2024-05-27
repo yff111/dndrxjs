@@ -8,8 +8,6 @@ import {
 import { Observable, tap } from "rxjs"
 import { IndicatorClasses, IndicatorMiddlewareOptions } from "./types"
 
-
-
 export const defaultIndicatorClasses: IndicatorClasses = {
   initial: "indicator",
   vertical: "indicator-vertical",
@@ -51,9 +49,7 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
       --indicator-offset: ${offset}px;
     }
     `
-    console.log("updateIndicator", styleNode.innerHTML)
 
-    // indicatorElement.setAttribute("style", styleAsString)
     indicatorElement.setAttribute(
       "class",
       `${indicatorClasses["initial"]} ${indicatorClasses[position]} ${indicatorClasses[vertical ? "vertical" : "horizontal"]}`,
@@ -84,8 +80,8 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
           ({
             DragStart: () => {
               document.head.appendChild(styleNode)
+              styleNode.innerHTML = ""
               addIndicatorToElement(scrollContainer!)
-              // indicatorElement.style.display = "none"
             },
             DragOver: () => {
               if (currentScrollContainer !== scrollContainer) {
