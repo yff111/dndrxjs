@@ -36,11 +36,11 @@ export default defineConfig({
       {
         text: "Middleware",
         items: [
-          { text: "Auto-Scroll", link: "/auto-scroll" },
           { text: "Placeholder", link: "/placeholder" },
           { text: "Indicator", link: "/indicator" },
-          { text: "Add CSS Classes", link: "/add-classes" },
           { text: "Drag Image", link: "/drag-image" },
+          { text: "Auto-Scroll", link: "/auto-scroll" },
+          { text: "Add CSS Classes", link: "/add-classes" },
         ],
       },
     ],

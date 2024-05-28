@@ -7,10 +7,9 @@ import createDragDropObservable, {
   autoScroll,
   reorderItems,
 } from "dndrxjs"
-import data from "./data/mock-data-persons.json"
-import { fromHTML } from "../src/utils"
+import data from "./data/MOCK_DATA_1000.json"
 
-const items = ref<{ name: string; avatar: string; id: string }[]>(data)
+const items = ref<{ name: string; id: string }[]>(data)
 const container = ref<HTMLElement | null>(null)
 const checked = ref<Record<string, boolean>>({})
 
@@ -24,25 +23,19 @@ onMounted(() => {
   })
     .pipe(
       addClasses(),
-      indicator({ offset: 2 }),
-      autoScroll(),
-      dragImage({
-        minElements: 0,
-        updateElement: (selectedElements) => {
-          const item =
-            items.value[
-              parseInt(selectedElements[0].getAttribute("data-index")!)
-            ]
-          return fromHTML(
-            `<div class='custom-drag-image' data-num='${selectedElements.length}'>
-              <img class="avatar" src="${item.avatar}" />
-              <span>
-                ${item.name}
-               <span>
-              </div>`,
-          )
+      indicator({
+        offset: 2,
+        indicatorClasses: {
+          initial: "custom-indicator",
+          vertical: "custom-indicator-vertical",
+          horizontal: "custom-indicator-horizontal",
+          after: "custom-indicator-after",
+          in: "custom-indicator-in",
+          before: "custom-indicator-before",
         },
       }),
+      autoScroll(),
+      dragImage(),
     )
     .subscribe(({ type, dragElements, dropElement, position }) => {
       if (!!dropElement && type === "DragEnd") {
@@ -82,7 +75,6 @@ onMounted(() => {
       >
         <img src="/handle.svg" />
         <input type="checkbox" v-model="checked[item.id]" />
-        <img class="avatar" :src="item.avatar" />
         <span>{{ item.name }}</span>
       </li>
     </ul>
@@ -90,49 +82,58 @@ onMounted(() => {
 </template>
 
 <style type="text/css">
-[data-selected="true"] {
-  background: #eee !important;
-}
-.avatar {
-  border-radius: 30px;
-  overflow: hidden;
-  width: 20px;
-}
-
-.custom-drag-image:not([data-num="1"]):after {
-  content: attr(data-num);
+.custom-indicator {
+  color: purple;
+  background: currentColor;
+  pointer-events: none;
   position: absolute;
-  display: block;
-  background: black;
-  border-radius: 30px;
-  color: #fff;
-  min-width: 20px;
-  line-height: 1;
-  padding: 4px 3px;
-  text-align: center;
-  top: -10px;
-  font-size: 12px;
-  right: 10px;
+  display: none;
 }
 
-.custom-drag-image {
-  position: relative;
-  background: #fff;
-  padding: 6px 10px;
-  margin: 10px;
-  display: flex;
-  box-shadow: 3px 3px 38px -15px rgba(0, 0, 0, 0.75);
-  gap: 6px;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: bold;
-  border-radius: 6px;
+.custom-indicator-before,
+.custom-indicator-after {
+  display: block;
 }
-.custom-drag-image span {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  max-width: 120px;
+
+.custom-indicator-after:before,
+.custom-indicator-before:before {
+  width: 10px;
+  height: 10px;
+  content: "";
+  display: block;
+  border: 2px solid currentColor;
+  border-radius: 10px;
+  position: absolute;
+  left: -10px;
+  top: -4.5px;
+}
+
+.custom-indicator-after.custom-indicator-vertical {
+  width: var(--indicator-w);
+  height: 2px;
+  top: calc(
+    var(--indicator-y) + var(--indicator-h) - 1px + var(--indicator-offset)
+  );
+  left: var(--indicator-x);
+}
+.custom-indicator-after.custom-indicator-horizontal {
+  height: var(--indicator-h);
+  width: 2px;
+  top: var(--indicator-y);
+  left: calc(
+    var(--indicator-x) + var(--indicator-w) - 1px + var(--indicator-offset)
+  );
+}
+.custom-indicator-before.custom-indicator-horizontal {
+  width: 2px;
+  height: var(--indicator-h);
+  left: calc(var(--indicator-x) - 1px - var(--indicator-offset));
+  top: var(--indicator-y);
+}
+.custom-indicator-before.custom-indicator-vertical {
+  width: var(--indicator-w);
+  height: 2px;
+  top: calc(var(--indicator-y) - 1px - var(--indicator-offset));
+  left: var(--indicator-x);
 }
 </style>
