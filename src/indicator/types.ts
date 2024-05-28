@@ -29,7 +29,6 @@ export type GetIndicatorStyleFn = (
   offset: number,
 ) => () => string
 
-export type IndicatorClasses = Record<
-  DropPosition | "initial" | "vertical" | "horizontal",
-  string
+export type IndicatorClasses = Partial<
+  Record<DropPosition | "initial" | "vertical" | "horizontal", string>
 >

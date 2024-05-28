@@ -15,7 +15,6 @@ export const defaultIndicatorClasses: IndicatorClasses = {
   after: "indicator-after",
   in: "indicator-in",
   before: "indicator-before",
-  none: "",
 }
 
 export const DEFAULTS: IndicatorMiddlewareOptions = {
@@ -49,7 +48,6 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
       --indicator-offset: ${offset}px;
     }
     `
-
     indicatorElement.setAttribute(
       "class",
       `${indicatorClasses["initial"]} ${indicatorClasses[position]} ${indicatorClasses[vertical ? "vertical" : "horizontal"]}`,
