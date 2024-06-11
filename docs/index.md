@@ -5,7 +5,7 @@ hero:
   name: "dndrxjs"
   text: "drag & drop with rxjs"
   image: "logo.png"
-  tagline: "Low-level modular drag & drop library powered powered by RxJS."
+  tagline: "Low-level modular drag & drop library powered by RxJS."
   actions:
     - theme: brand
       text: Getting Started
