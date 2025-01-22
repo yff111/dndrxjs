@@ -30,8 +30,9 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
     : DEFAULTS
   let containerRect: { x: number; y: number } = { x: 0, y: 0 }
   const indicatorElement = document.createElement("div")
+  indicatorElement.setAttribute("class", `${indicatorClasses["initial"]}`)
   const styleNode = document.createElement("style")
-
+   
   const updateIndicator = (
     dropElement: HTMLElement,
     container: HTMLElement | Window,
@@ -39,7 +40,7 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
     vertical: boolean,
   ) => {
     const { x, y, width, height } = getRelativeRect(dropElement, container)
-
+    
     styleNode.innerHTML = `:root{
       --indicator-x: ${x - containerRect.x}px; 
       --indicator-y: ${y - containerRect.y}px;
