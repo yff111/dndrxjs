@@ -1,22 +1,22 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from "vue"
-
 import createDragDropObservable, {
-  dragImage,
   addClasses,
-  indicator,
   autoScroll,
-} from "dndrxjs"
-import { swapElements } from "../src/utils"
-import COLORS from "./data/MOCK_DATA_COLORS.json"
+  dragImage,
+  indicator,
+} from 'dndrxjs'
 
-const items = ref(COLORS.map((hex) => ({ id: hex })))
+import { onMounted, onUnmounted, ref } from 'vue'
+import { swapElements } from '../src/utils'
+import COLORS from './data/MOCK_DATA_COLORS.json'
+
+const items = ref(COLORS.map(hex => ({ id: hex })))
 const container = ref<HTMLElement | null>(null)
 onMounted(() => {
   const subscription = createDragDropObservable({
     container: container.value!,
     vertical: false,
-    dropPositionFn: ({ dragElement, dropElement }) => "in",
+    dropPositionFn: ({ dragElement, dropElement }) => 'in',
   })
     .pipe(
       addClasses(),
@@ -25,10 +25,10 @@ onMounted(() => {
       dragImage({ minElements: 0 }),
     )
     .subscribe(({ type, dragElements, dropElement, position }) => {
-      if (type === "DragEnd" && !!dropElement) {
-        const index1 = parseInt(dropElement.getAttribute("data-index")!)
-        const index2 = parseInt(dragElements[0].getAttribute("data-index")!)
-        if (position === "in") {
+      if (type === 'DragEnd' && !!dropElement) {
+        const index1 = Number.parseInt(dropElement.getAttribute('data-index')!)
+        const index2 = Number.parseInt(dragElements[0].getAttribute('data-index')!)
+        if (position === 'in') {
           swapElements(items.value, index1, index2)
         }
       }
@@ -51,6 +51,7 @@ onMounted(() => {
     >
       <div
         v-for="(item, index) in items"
+        :key="item.id"
         draggable="false"
         style="
           height: 55px;
@@ -68,7 +69,6 @@ onMounted(() => {
           background: #eee;
         "
         :style="{ background: item.id }"
-        :key="item.id"
         :data-index="index"
         :data-id="item.id"
       >

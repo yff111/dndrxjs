@@ -1,7 +1,5 @@
 # Grid
 
-
-
 <script setup>
 
 import 'dndrxjs/dist/styles.css'
@@ -14,7 +12,6 @@ const GridDemoSwap = defineClientComponent(() => {
   return import('./grid-demo-swap.vue')
 })
 
-  
 </script>
 
 <br>
@@ -22,8 +19,6 @@ const GridDemoSwap = defineClientComponent(() => {
 
 #### Sort
 <br>
-
-
 
 <GridDemo></GridDemo>
 
@@ -35,8 +30,7 @@ Select multiple items by pressing `shift` or `alt`/`cmd`.
 
 <<< grid-demo.vue{vue}
 
-::: 
-
+:::
 
 <br><br>
 
@@ -44,9 +38,8 @@ Select multiple items by pressing `shift` or `alt`/`cmd`.
 <br>
 <GridDemoSwap></GridDemoSwap>
 
-
 ::: code-group
 
 <<< grid-demo-swap.vue{vue}
 
-::: 
+:::

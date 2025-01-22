@@ -1,67 +1,64 @@
+import addClasses from './add-classes'
+
+import autoScroll from './auto-scroll'
+
+import dragImage from './drag-image'
+
+import indicator from './indicator'
+import createDragDropObservable from './main'
+import placeholder from './placeholder'
 import {
+  DragDropEventType,
+  DragDropMiddlewareOperator,
+  DragDropOptions,
+  DragDropPayload,
+  DropPosition,
+  DropPositionFn,
+  DropPositionRules,
+  GetElementIdFn,
+  GetRectFn,
+  GetSelectedElementsFn,
+  OnBeforeDragStartFn,
+  OnDragStartFn,
+  Rect,
+} from './types'
+import {
+  getClosestScrollContainer,
   getDistance,
   getScrollX,
   getScrollY,
-  getClosestScrollContainer,
-} from "./utils"
-
-export { getDistance, getScrollX, getScrollY, getClosestScrollContainer }
-
-import {
-  TreeNode,
-  TreeNodeFlat,
+  moveItemsToArrayMutate,
   moveTreeNodesById,
   reorderItems,
-  moveItemsToArrayMutate,
-} from "./utils"
-export {
   TreeNode,
   TreeNodeFlat,
+} from './utils'
+
+export { getClosestScrollContainer, getDistance, getScrollX, getScrollY }
+export {
+  moveItemsToArrayMutate,
   moveTreeNodesById,
   reorderItems,
-  moveItemsToArrayMutate,
+  TreeNode,
+  TreeNodeFlat,
 }
-
-import {
-  DropPosition,
-  DropPositionRules,
-  DropPositionFn,
-  Rect,
-  GetSelectedElementsFn,
-  GetElementIdFn,
-  OnDragStartFn,
-  DragDropMiddlewareOperator,
-  OnBeforeDragStartFn,
-  DragDropOptions,
-  DragDropPayload,
-  GetRectFn,
-  DragDropEventType,
-} from "./types"
 
 export {
-  DragDropPayload,
   DragDropEventType,
-  DropPosition,
-  DropPositionRules,
-  DropPositionFn,
-  Rect,
   DragDropMiddlewareOperator,
-  GetSelectedElementsFn,
-  GetElementIdFn,
-  OnDragStartFn,
-  OnBeforeDragStartFn,
   DragDropOptions,
+  DragDropPayload,
+  DropPosition,
+  DropPositionFn,
+  DropPositionRules,
+  GetElementIdFn,
   GetRectFn,
+  GetSelectedElementsFn,
+  OnBeforeDragStartFn,
+  OnDragStartFn,
+  Rect,
 }
 
-import autoScroll from "./auto-scroll"
-import dragImage from "./drag-image"
-import placeholder from "./placeholder"
-import addClasses from "./add-classes"
-import indicator from "./indicator"
-
-export { autoScroll, dragImage, placeholder, addClasses, indicator }
-
-import createDragDropObservable from "./main"
+export { addClasses, autoScroll, dragImage, indicator, placeholder }
 
 export default createDragDropObservable

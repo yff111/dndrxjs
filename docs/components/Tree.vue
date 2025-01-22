@@ -1,11 +1,11 @@
 <script setup>
 const props = defineProps({ node: Object, parent: String, level: Number })
-const toggle = (id) => (collapsed.value[id] = !collapsed.value[id])
+const toggle = id => (collapsed.value[id] = !collapsed.value[id])
 const collapsed = defineModel({})
 </script>
 
 <template>
-  <ul class="tree" v-if="node.children && node.children.length > 0">
+  <ul v-if="node.children && node.children.length > 0" class="tree">
     <li
       v-for="(child, index) in node.children"
       :key="child.id"
@@ -22,7 +22,7 @@ const collapsed = defineModel({})
         @click="child.children.length > 0 && toggle(child.id)"
       >
         <button v-if="child.children.length > 0">
-          <img src="/chevron.svg" />
+          <img src="/chevron.svg">
         </button>
         <svg
           v-if="child.children.length > 0"
@@ -76,17 +76,17 @@ const collapsed = defineModel({})
             stroke-linejoin="round"
           />
         </svg>
-        <slot :child="child"> </slot>
+        <slot :child="child" />
       </span>
       <tree
-        v-model="collapsed"
         v-if="!collapsed[child.id] && child.children && child.children.length"
+        v-slot="{ child }"
+        v-model="collapsed"
         :node="child"
         :level="level + 1"
         :parent="child.id"
-        v-slot="{ child }"
       >
-        <slot :child="child"> </slot>
+        <slot :child="child" />
       </tree>
     </li>
   </ul>

@@ -1,4 +1,4 @@
-export type AddClassesMiddlewareOptions = {
+export interface AddClassesMiddlewareOptions {
   /**
    * Class-name added to element while being dragged
    *

@@ -1,7 +1,5 @@
 # Information
 
-<br> 
-
+<br>
 
 <!--@include: ../README.md{11,}-->
-

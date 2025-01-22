@@ -2,7 +2,7 @@
 
 <template>
   <div class="demo">
-    <slot></slot>
+    <slot />
   </div>
 </template>
 

@@ -12,11 +12,9 @@ Uses a clone of the currently dragged element as indicator for the drop-position
   const PlaceholderDemo = defineClientComponent(() => import('./placeholder-demo.vue'))
 </script>
 
-
 **Demo**
 
 <PlaceholderDemo></PlaceholderDemo>
-
 
 <<< ../src/placeholder/types.ts{ts}
 

@@ -14,7 +14,6 @@ hero:
       text: Examples
       link: /tree
 
-
 features:
   - icon: 🎉
     title: Simple, fun and functional...
@@ -23,7 +22,6 @@ features:
     title: Feature rich
     details: Auto-scrolling, custom drag-images, custom indicators or placeholders, multiple-lists, nesting...
   - icon: 🚤
-    title: Flexible 
+    title: Flexible
     details: Use with any framework; use only the features you need.
 ---
-

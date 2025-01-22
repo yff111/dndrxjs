@@ -7,16 +7,12 @@
   const VerticalListDemo = defineClientComponent(() => import('./vertical-list-demo.vue'))
 </script>
 
-
 **Demo**
 
-
 <VerticalListDemo></VerticalListDemo>
-
-
 
 ::: code-group
 
 <<< vertical-list-demo.vue{vue}
 
-::: 
+:::

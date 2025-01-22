@@ -1,27 +1,27 @@
 <script lang="ts" setup>
-import "dndrxjs/dist/styles.css"
-
-import { ref, onMounted, onUnmounted } from "vue"
 import createDragDropObservable, {
-  dragImage,
   addClasses,
-  indicator,
   autoScroll,
+  dragImage,
+  indicator,
   reorderItems,
-} from "dndrxjs"
-import { useSelectStuff } from "./select-stuff"
-import COLORS from "./data/MOCK_DATA_COLORS.json"
+} from 'dndrxjs'
 
-const items = ref(COLORS.map((hex) => ({ id: hex })))
+import { onMounted, onUnmounted, ref } from 'vue'
+import COLORS from './data/MOCK_DATA_COLORS.json'
+import { useSelectStuff } from './select-stuff'
+import 'dndrxjs/dist/styles.css'
+
+const items = ref(COLORS.map(hex => ({ id: hex })))
 const container = ref<HTMLElement | null>(null)
 
 onMounted(() => {
   const subscription = createDragDropObservable({
     vertical: false,
     container: container.value!,
-    dropPositionFn: ({ dragElement, dropElement }) => "around",
+    dropPositionFn: ({ dragElement, dropElement }) => 'around',
     getSelectedElements: () =>
-      Array.from(container.value!.querySelectorAll(".selected")),
+      Array.from(container.value!.querySelectorAll('.selected')),
   })
     .pipe(
       addClasses(),
@@ -30,27 +30,27 @@ onMounted(() => {
       dragImage({ minElements: 1 }),
     )
     .subscribe(({ type, dragElements, dropElement, position }) => {
-      if (type === "DragEnd" && !!dropElement) {
+      if (type === 'DragEnd' && !!dropElement) {
         const selectedItems = dragElements.map(
-          (e) =>
-            items.value.find((item) => item.id === e.getAttribute("data-id"))!,
+          e =>
+            items.value.find(item => item.id === e.getAttribute('data-id'))!,
         )
-        const index = parseInt(dropElement.getAttribute("data-index")!)
-        if (position === "after") {
+        const index = Number.parseInt(dropElement.getAttribute('data-index')!)
+        if (position === 'after') {
           items.value = reorderItems(items.value, selectedItems, index + 1)
-        } else if (position === "before") {
+        }
+        else if (position === 'before') {
           items.value = reorderItems(items.value, selectedItems, index)
         }
       }
     })
 
-  const { destroy } = useSelectStuff(container.value!, (selected) =>
-    Array.from(container.value!.querySelectorAll("[data-id]")).forEach((el) =>
-      !selected.includes(el.getAttribute("data-id")!)
-        ? el.classList.remove("selected")
-        : el.classList.add("selected"),
-    ),
-  )
+  const { destroy } = useSelectStuff(container.value!, selected =>
+    Array.from(container.value!.querySelectorAll('[data-id]')).forEach(el =>
+      !selected.includes(el.getAttribute('data-id')!)
+        ? el.classList.remove('selected')
+        : el.classList.add('selected'),
+    ))
   onUnmounted(() => {
     destroy()
     subscription.unsubscribe()
@@ -71,6 +71,7 @@ onMounted(() => {
     >
       <div
         v-for="(item, index) in items"
+        :key="item.id"
         draggable="false"
         style="
           height: 55px;
@@ -88,7 +89,6 @@ onMounted(() => {
           background: #eee;
         "
         :style="{ background: item.id }"
-        :key="item.id"
         :data-index="index"
         :data-id="item.id"
       >

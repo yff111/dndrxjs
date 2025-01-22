@@ -2,7 +2,6 @@
 
 Adds an absolute positioned element to indicate the drop position of the element.
 
-
 <script setup>
 
 import 'dndrxjs/dist/styles.css'
@@ -12,7 +11,6 @@ const IndicatorDemo = defineClientComponent(() => {
   return import('./indicator-demo.vue')
 })
 
-  
 </script>
 
 <br>
@@ -20,8 +18,6 @@ const IndicatorDemo = defineClientComponent(() => {
 
 #### Demo
 <br>
-
-
 
 <IndicatorDemo></IndicatorDemo>
 <<< indicator-demo.vue{vue}

@@ -1,14 +1,16 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from "vue"
+import type { TreeNode,
+} from 'dndrxjs'
 import createDragDropObservable, {
-  dragImage,
   addClasses,
-  indicator,
   autoScroll,
+  dragImage,
+  indicator,
   moveTreeNodesById,
-} from "dndrxjs"
-import { TreeNode } from "dndrxjs"
-import MOCK_TREE from "./data/MOCK_TREE.json"
+} from 'dndrxjs'
+import { onMounted, onUnmounted, ref } from 'vue'
+import MOCK_TREE from './data/MOCK_TREE.json'
+
 const container = ref(null)
 
 const root = ref<TreeNode<string>>(MOCK_TREE)
@@ -16,13 +18,13 @@ const root = ref<TreeNode<string>>(MOCK_TREE)
 onMounted(() => {
   const subscription = createDragDropObservable({
     container: container.value!,
-    handleSelector: "[data-id]:not([data-has-children])",
+    handleSelector: '[data-id]:not([data-has-children])',
     dragOverThrottle: 10,
     dropPositionFn: ({ dragElement, dropElement }) => {
-      const isDropElementParent =
-        dropElement.getAttribute("data-parent-id") === null
+      const isDropElementParent
+        = dropElement.getAttribute('data-parent-id') === null
       const isOwnChild = dropElement.contains(dragElement)
-      return isOwnChild ? "in" : isDropElementParent ? "in" : "around"
+      return isOwnChild ? 'in' : isDropElementParent ? 'in' : 'around'
     },
   })
     .pipe(
@@ -32,23 +34,25 @@ onMounted(() => {
       dragImage({ minElements: 1 }),
     )
     .subscribe(({ type, dropElement, dragElements, position }) => {
-      if (!!dropElement && type === "DragEnd") {
-        const index = parseInt(dropElement.getAttribute("data-index")!)
-        const dropElementId = dropElement.getAttribute("data-id")!
-        const dropElementParentId =
-          dropElement.getAttribute("data-parent-id") || "root"
-        const selectedIds = dragElements.map((e) => e.getAttribute("data-id")!)
+      if (!!dropElement && type === 'DragEnd') {
+        const index = Number.parseInt(dropElement.getAttribute('data-index')!)
+        const dropElementId = dropElement.getAttribute('data-id')!
+        const dropElementParentId
+          = dropElement.getAttribute('data-parent-id') || 'root'
+        const selectedIds = dragElements.map(e => e.getAttribute('data-id')!)
 
-        if (position == "in") {
+        if (position === 'in') {
           moveTreeNodesById(root.value, dropElementId, selectedIds, 0)
-        } else if (position === "after") {
+        }
+        else if (position === 'after') {
           moveTreeNodesById(
             root.value,
             dropElementParentId,
             selectedIds,
             index + 1,
           )
-        } else if (position === "before") {
+        }
+        else if (position === 'before') {
           moveTreeNodesById(root.value, dropElementParentId, selectedIds, index)
         }
       }
@@ -66,6 +70,7 @@ onMounted(() => {
   >
     <div
       v-for="row in root.children"
+      :key="row.id"
       class="demo"
       style="
         overflow-y: auto;
@@ -91,7 +96,7 @@ onMounted(() => {
             class="list-item"
             style="padding-top: 20px; padding-bottom: 20px; gap: 10px"
           >
-            <img src="/handle.svg" />
+            <img src="/handle.svg">
             <span style="">{{ item.data }}</span>
           </span>
         </li>

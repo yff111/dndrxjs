@@ -9,17 +9,12 @@
   })
 </script>
 
-
 **Demo**
 
-
 <TreeDemo></TreeDemo>
-
-
-
 
 ::: code-group
 
 <<< tree-demo.vue{vue}
 
-::: 
+:::

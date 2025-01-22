@@ -2,20 +2,20 @@
   "compilerOptions": {
     "target": "es2020",
     "module": "esnext",
-    "strict": true,
-    "esModuleInterop": true,
     "moduleResolution": "node",
-    "skipLibCheck": true,
-    "noUnusedLocals": true,
-    "noImplicitAny": true,
+    "paths": {
+      "dndrxjs": ["./src/"]
+    },
+    "resolveJsonModule": true,
+    "types": ["vitest/globals"],
     "allowJs": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
     "noEmit": true,
     "outDir": "dist",
-    "resolveJsonModule": true,
-    "paths": {
-      "dndrxjs": ["./src/"],
-    },
-    "types": ["vitest/globals"]
+    "esModuleInterop": true,
+    "skipLibCheck": true
 
   }
 }

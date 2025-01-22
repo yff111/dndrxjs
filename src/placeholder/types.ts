@@ -1,3 +1,3 @@
-export type PlaceholderMiddlewareOptions = {
+export interface PlaceholderMiddlewareOptions {
   createElement: (dragElements: HTMLElement[]) => HTMLElement[]
 }

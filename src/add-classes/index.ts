@@ -1,35 +1,28 @@
-import { Observable, map, pairwise, tap } from "rxjs"
-import { isWindow } from "../utils"
-import {
+import type { Observable } from 'rxjs'
+import type {
   DragDropMiddlewareHookMap,
   DragDropMiddlewareOperator,
-  GetElementIdFn,
   DragDropPayload,
-} from "../types"
-import { AddClassesMiddlewareOptions } from "./types"
+  GetElementIdFn,
+} from '../types'
+import type { AddClassesMiddlewareOptions } from './types'
+import { map, pairwise, tap } from 'rxjs'
+import { isWindow } from '../utils'
 
-export const addClassWhenAddedToDom = (
-  selectedElements: HTMLElement[],
-  selector: string,
-  cssClass: string,
-  getElementId: GetElementIdFn,
-  container: HTMLElement = document.body,
-  timeout: number = 100,
-) => {
+export function addClassWhenAddedToDom(selectedElements: HTMLElement[], selector: string, cssClass: string, getElementId: GetElementIdFn, container: HTMLElement = document.body, timeout: number = 100) {
   const selectedElementIds = selectedElements.map(getElementId)
-  const observer = new MutationObserver((mutations) =>
-    mutations.forEach((mutation) =>
+  const observer = new MutationObserver(mutations =>
+    mutations.forEach(mutation =>
       mutation.addedNodes.forEach((node) => {
         if (node instanceof HTMLElement) {
           const newNodes = node.matches?.(selector)
             ? [node]
-            : // check for matching child nodes if parent did not match
-              (Array.from(node.querySelectorAll(selector)) as HTMLElement[])
+            : (Array.from(node.querySelectorAll(selector)) as HTMLElement[]) // check for matching child nodes if parent did not match
           // match selected elements with added nodes
           newNodes.forEach((n) => {
             if (selectedElementIds.includes(getElementId(n))) {
               n.addEventListener(
-                "animationend",
+                'animationend',
                 () => n.classList.remove(cssClass),
                 { once: true },
               )
@@ -51,10 +44,10 @@ export const addClassWhenAddedToDom = (
 }
 
 export const DEFAULTS: AddClassesMiddlewareOptions = {
-  dragClass: "drag",
-  dragOverClass: "dragover",
-  dropClass: "drop",
-  activeContainerClass: "active",
+  dragClass: 'drag',
+  dragOverClass: 'dragover',
+  dropClass: 'drop',
+  activeContainerClass: 'active',
 }
 const addClassesMiddleware: DragDropMiddlewareOperator<
   AddClassesMiddlewareOptions
@@ -76,7 +69,7 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
     document
       .querySelectorAll(`.${dragOverClass}`)
       .forEach(
-        (e) => e !== currentDropElement && e?.classList.remove(dragOverClass),
+        e => e !== currentDropElement && e?.classList.remove(dragOverClass),
       )
 
   return (source: Observable<DragDropPayload>) =>
@@ -92,7 +85,7 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
           }
         }
       }),
-      map((array) => array[1]),
+      map(array => array[1]),
       tap(({ type, scrollContainer, dragElements, dropElement, options }) =>
         (
           ({
@@ -101,13 +94,13 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
               dropElement?.classList.add(dragOverClass)
             },
             DragStart: () => {
-              dragElements.forEach((el) => el.classList.add(dragClass))
+              dragElements.forEach(el => el.classList.add(dragClass))
             },
             BeforeDragStart: () => {
               if (scrollContainer instanceof HTMLElement) {
                 scrollContainer.classList.add(activeContainerClass)
               }
-              dragElements.forEach((e) => e.classList.remove(dropClass))
+              dragElements.forEach(e => e.classList.remove(dropClass))
             },
             DragEnd: () => {
               clear(scrollContainer)

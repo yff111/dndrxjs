@@ -1,4 +1,4 @@
-# Multiple Lists 
+# Multiple Lists
 
 <script setup>
   import 'dndrxjs/dist/styles.css'
@@ -9,13 +9,9 @@
   })
 </script>
 
-
 **Demo**
 
-
 <MultipleListsDemo></MultipleListsDemo>
-
-
 
 <style>
 .multi-list .active {
@@ -25,9 +21,8 @@
 
 **Demo**
 
-
 ::: code-group
 
 <<< multiple-lists-demo.vue{vue}
 
-::: 
+:::

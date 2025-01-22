@@ -1,24 +1,24 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from "vue"
 import createDragDropObservable, {
-  dragImage,
   addClasses,
-  indicator,
   autoScroll,
+  dragImage,
+  indicator,
   reorderItems,
-} from "dndrxjs"
-import data from "./data/mock-data-persons.json"
-import { fromHTML } from "../src/utils"
+} from 'dndrxjs'
+import { onMounted, onUnmounted, ref } from 'vue'
+import { fromHTML } from '../src/utils'
+import data from './data/mock-data-persons.json'
 
-const items = ref<{ name: string; avatar: string; id: string }[]>(data)
+const items = ref<{ name: string, avatar: string, id: string }[]>(data)
 const container = ref<HTMLElement | null>(null)
 const checked = ref<Record<string, boolean>>({})
 
 onMounted(() => {
-  //#region subscription
+  // #region subscription
   const subscription = createDragDropObservable({
     container: container.value!,
-    dropPositionFn: () => "around",
+    dropPositionFn: () => 'around',
     getSelectedElements: () =>
       Array.from(container.value!.querySelectorAll(`[data-selected="true"]`)),
   })
@@ -29,9 +29,9 @@ onMounted(() => {
       dragImage({
         minElements: 0,
         updateElement: (selectedElements) => {
-          const item =
-            items.value[
-              parseInt(selectedElements[0].getAttribute("data-index")!)
+          const item
+            = items.value[
+              Number.parseInt(selectedElements[0].getAttribute('data-index')!)
             ]
           return fromHTML(
             `<div class='custom-drag-image' data-num='${selectedElements.length}'>
@@ -45,20 +45,21 @@ onMounted(() => {
       }),
     )
     .subscribe(({ type, dragElements, dropElement, position }) => {
-      if (!!dropElement && type === "DragEnd") {
-        const index = parseInt(dropElement.getAttribute("data-index")!)
+      if (!!dropElement && type === 'DragEnd') {
+        const index = Number.parseInt(dropElement.getAttribute('data-index')!)
         const selectedItems = dragElements.map(
-          (e) =>
-            items.value.find((item) => item.id === e.getAttribute("data-id"))!,
+          e =>
+            items.value.find(item => item.id === e.getAttribute('data-id'))!,
         )
-        if (position === "after") {
+        if (position === 'after') {
           items.value = reorderItems(items.value, selectedItems, index + 1)
-        } else if (position === "before") {
+        }
+        else if (position === 'before') {
           items.value = reorderItems(items.value, selectedItems, index)
         }
       }
     })
-  //#endregion subscription
+  // #endregion subscription
   onUnmounted(() => subscription.unsubscribe())
 })
 </script>
@@ -80,9 +81,9 @@ onMounted(() => {
         :data-selected="checked[item.id]"
         @click="checked[item.id] = !checked[item.id]"
       >
-        <img src="/handle.svg" />
-        <input type="checkbox" v-model="checked[item.id]" />
-        <img class="avatar" :src="item.avatar" />
+        <img src="/handle.svg">
+        <input v-model="checked[item.id]" type="checkbox">
+        <img class="avatar" :src="item.avatar">
         <span>{{ item.name }}</span>
       </li>
     </ul>

@@ -1,18 +1,18 @@
 import createDragDropObservable, {
   addClasses,
-  indicator,
   autoScroll,
   dragImage,
-} from "dndrxjs"
+  indicator,
+} from 'dndrxjs'
 
 // provides a few basic styles for drop-animations etc.
-import "dndrxjs/dist/styles.css"
+import 'dndrxjs/dist/styles.css'
 
 const subscription = createDragDropObservable({
   // draggable element selector
-  dragElementSelector: "[data-id]",
+  dragElementSelector: '[data-id]',
   // method that determines the drop-position
-  dropPositionFn: ({ dragElement, dropElement }) => "around",
+  dropPositionFn: ({ dragElement, dropElement }) => 'around',
   // for more options @see `DragDropOptions`
 })
   .pipe(
@@ -26,7 +26,7 @@ const subscription = createDragDropObservable({
     autoScroll(),
   )
   .subscribe(({ type, dragElements, dropElement, position }) => {
-    if (type === "DragEnd") {
+    if (type === 'DragEnd') {
       // do list transformation on "DragEnd"
     }
   })

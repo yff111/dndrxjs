@@ -1,20 +1,21 @@
-import { getRelativeRect, isWindow } from "../utils"
-import {
-  DragDropPayload,
+import type { Observable } from 'rxjs'
+import type {
   DragDropMiddlewareHookMap,
   DragDropMiddlewareOperator,
+  DragDropPayload,
   DropPosition,
-} from "../types"
-import { Observable, tap } from "rxjs"
-import { IndicatorClasses, IndicatorMiddlewareOptions } from "./types"
+} from '../types'
+import type { IndicatorClasses, IndicatorMiddlewareOptions } from './types'
+import { tap } from 'rxjs'
+import { getRelativeRect, isWindow } from '../utils'
 
 export const defaultIndicatorClasses: IndicatorClasses = {
-  initial: "indicator",
-  vertical: "indicator-vertical",
-  horizontal: "indicator-horizontal",
-  after: "indicator-after",
-  in: "indicator-in",
-  before: "indicator-before",
+  initial: 'indicator',
+  vertical: 'indicator-vertical',
+  horizontal: 'indicator-horizontal',
+  after: 'indicator-after',
+  in: 'indicator-in',
+  before: 'indicator-before',
 }
 
 export const DEFAULTS: IndicatorMiddlewareOptions = {
@@ -25,14 +26,14 @@ export const DEFAULTS: IndicatorMiddlewareOptions = {
 const indicatorMiddleware: DragDropMiddlewareOperator<
   IndicatorMiddlewareOptions
 > = (options?) => {
-  const { indicatorClasses, offset } = options
+  const { indicatorClasses, offset } = options || {}
     ? { ...DEFAULTS, ...options }
     : DEFAULTS
-  let containerRect: { x: number; y: number } = { x: 0, y: 0 }
-  const indicatorElement = document.createElement("div")
-  indicatorElement.setAttribute("class", `${indicatorClasses["initial"]}`)
-  const styleNode = document.createElement("style")
-   
+  let containerRect: { x: number, y: number } = { x: 0, y: 0 }
+  const indicatorElement = document.createElement('div')
+  indicatorElement.setAttribute('class', `${indicatorClasses.initial}`)
+  const styleNode = document.createElement('style')
+
   const updateIndicator = (
     dropElement: HTMLElement,
     container: HTMLElement | Window,
@@ -40,7 +41,7 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
     vertical: boolean,
   ) => {
     const { x, y, width, height } = getRelativeRect(dropElement, container)
-    
+
     styleNode.innerHTML = `:root{
       --indicator-x: ${x - containerRect.x}px; 
       --indicator-y: ${y - containerRect.y}px;
@@ -50,8 +51,8 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
     }
     `
     indicatorElement.setAttribute(
-      "class",
-      `${indicatorClasses["initial"]} ${indicatorClasses[position]} ${indicatorClasses[vertical ? "vertical" : "horizontal"]}`,
+      'class',
+      `${indicatorClasses.initial} ${indicatorClasses[position]} ${indicatorClasses[vertical ? 'vertical' : 'horizontal']}`,
     )
   }
 
@@ -66,9 +67,10 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
     if (isWindow(element)) {
       containerRect = { x: 0, y: 0 }
       document.body.appendChild(indicatorElement)
-    } else {
+    }
+    else {
       containerRect = element!.getBoundingClientRect()
-      element!.style.position = "relative"
+      element!.style.position = 'relative'
       element!.appendChild(indicatorElement)
     }
   }
@@ -79,7 +81,7 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
           ({
             DragStart: () => {
               document.head.appendChild(styleNode)
-              styleNode.innerHTML = ""
+              styleNode.innerHTML = ''
               addIndicatorToElement(scrollContainer!)
             },
             DragOver: () => {

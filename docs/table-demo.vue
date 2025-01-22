@@ -1,24 +1,24 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from "vue"
 import createDragDropObservable, {
-  dragImage,
   addClasses,
-  indicator,
   autoScroll,
+  dragImage,
+  indicator,
   reorderItems,
-} from "dndrxjs"
-import data from "./data/MOCK_DATA_1000.json"
+} from 'dndrxjs'
+import { onMounted, onUnmounted, ref } from 'vue'
+import data from './data/MOCK_DATA_1000.json'
 
-const items = ref<{ name: string; id: string }[]>(data.splice(0, 300))
+const items = ref<{ name: string, id: string }[]>(data.splice(0, 300))
 const container = ref<HTMLElement | null>(null)
 const checked = ref<Record<string, boolean>>({})
 onMounted(() => {
   const subscription = createDragDropObservable({
     container: container.value!,
-    handleSelector: ".handle", // [!code highlight:3]
+    handleSelector: '.handle', // [!code highlight:3]
     getSelectedElements: () =>
       Array.from(container.value!.querySelectorAll(`[data-selected="true"]`)),
-    dropPositionFn: () => "around",
+    dropPositionFn: () => 'around',
   })
     .pipe(
       addClasses(),
@@ -27,15 +27,16 @@ onMounted(() => {
       dragImage({ minElements: 1 }),
     )
     .subscribe(({ type, dragElements, dropElement, position }) => {
-      if (!!dropElement && type === "DragEnd") {
-        const index = parseInt(dropElement.getAttribute("data-index")!)
+      if (!!dropElement && type === 'DragEnd') {
+        const index = Number.parseInt(dropElement.getAttribute('data-index')!)
         const selectedItems = dragElements.map(
-          (e) =>
-            items.value.find((item) => item.id === e.getAttribute("data-id"))!,
+          e =>
+            items.value.find(item => item.id === e.getAttribute('data-id'))!,
         )
-        if (position === "after") {
+        if (position === 'after') {
           items.value = reorderItems(items.value, selectedItems, index + 1)
-        } else if (position === "before") {
+        }
+        else if (position === 'before') {
           items.value = reorderItems(items.value, selectedItems, index)
         }
       }
@@ -61,12 +62,14 @@ onMounted(() => {
             <img
               src="/handle.svg"
               style="pointer-events: none; max-width: 20px"
-            />
+            >
           </td>
           <td style="width: 0px">
-            <input type="checkbox" v-model="checked[item.id]" />
+            <input v-model="checked[item.id]" type="checkbox">
           </td>
-          <td style="width: 0px; text-align: center">{{ index + 1 }}</td>
+          <td style="width: 0px; text-align: center">
+            {{ index + 1 }}
+          </td>
           <td>
             <span>{{ item.name }}</span>
           </td>

@@ -1,12 +1,13 @@
-import { Observable, tap } from "rxjs"
-import {
+import type { Observable } from 'rxjs'
+import type {
   DragDropMiddlewareHookMap,
-  DragDropPayload,
   DragDropMiddlewareOperator,
+  DragDropPayload,
   Rect,
-} from "../types"
-import { getScrollX, getScrollY } from "../utils"
-import { AutoScrollMiddlewareOptions } from "./types"
+} from '../types'
+import type { AutoScrollMiddlewareOptions } from './types'
+import { tap } from 'rxjs'
+import { getScrollX, getScrollY } from '../utils'
 
 export const DEFAULTS: AutoScrollMiddlewareOptions = {
   interval: 8,
@@ -23,21 +24,21 @@ const autoScrollMiddleware: DragDropMiddlewareOperator<
   let scrollInterval: any
   let currentScrollContainer: HTMLElement | Window = window
 
-  const scroll = (overlapY: number, overlapX: number) => (
-    clearInterval(scrollInterval),
-    (scrollInterval = setInterval(
+  const scroll = (overlapY: number, overlapX: number) => {
+    clearInterval(scrollInterval)
+    scrollInterval = setInterval(
       () =>
         currentScrollContainer!.scrollTo({
           top: getScrollY(currentScrollContainer!) + overlapY * steps,
           left: getScrollX(currentScrollContainer!) + overlapX * steps,
         }),
       interval,
-    ))
-  )
-
-  const cancelScroll = () => (
-    clearInterval(scrollInterval), (scrollInterval = false)
-  )
+    )
+  }
+  const cancelScroll = () => {
+    clearInterval(scrollInterval)
+    scrollInterval = false
+  }
   let scrollContainerRect: Rect | DOMRect = {
     x: 0,
     y: 0,
@@ -47,8 +48,8 @@ const autoScrollMiddleware: DragDropMiddlewareOperator<
 
   const updateScrollContainer = (element: HTMLElement | Window) => {
     currentScrollContainer = element
-    scrollContainerRect =
-      element instanceof Window
+    scrollContainerRect
+      = element instanceof Window
         ? {
             x: 0,
             y: 0,
@@ -68,24 +69,25 @@ const autoScrollMiddleware: DragDropMiddlewareOperator<
               if (scrollContainer !== currentScrollContainer) {
                 updateScrollContainer(scrollContainer!)
               }
-              const overlapY =
-                originalEvent.clientY - scrollContainerRect.y < threshold
+              const overlapY
+                = originalEvent.clientY - scrollContainerRect.y < threshold
                   ? -1
-                  : originalEvent.clientY - scrollContainerRect.y >
-                      scrollContainerRect.height - threshold
+                  : originalEvent.clientY - scrollContainerRect.y
+                    > scrollContainerRect.height - threshold
                     ? 1
                     : 0
-              const overlapX =
-                originalEvent.clientX - scrollContainerRect.x < threshold
+              const overlapX
+                = originalEvent.clientX - scrollContainerRect.x < threshold
                   ? -1
-                  : originalEvent.clientX - scrollContainerRect.x >
-                      scrollContainerRect.width - threshold
+                  : originalEvent.clientX - scrollContainerRect.x
+                    > scrollContainerRect.width - threshold
                     ? 1
                     : 0
 
               if (overlapY || overlapX) {
                 scroll(overlapY, overlapX)
-              } else {
+              }
+              else {
                 cancelScroll()
               }
             },

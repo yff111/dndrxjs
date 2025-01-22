@@ -1,6 +1,5 @@
 # Table
 
-
 Table Demo with multi-select and custom drag-handle.
 
 <script setup>
@@ -10,16 +9,12 @@ Table Demo with multi-select and custom drag-handle.
   const TableDemo = defineClientComponent(() => import('./table-demo.vue'))
 </script>
 
-
 **Demo**
 
-
 <TableDemo></TableDemo>
-
-
 
 ::: code-group
 
 <<< table-demo.vue{vue}
 
-::: 
+:::

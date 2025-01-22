@@ -1,23 +1,25 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from "vue"
+import type { TreeNode,
+} from 'dndrxjs'
 import createDragDropObservable, {
-  dragImage,
   addClasses,
-  indicator,
   autoScroll,
+  dragImage,
+  indicator,
   moveTreeNodesById,
-} from "dndrxjs"
-import { TreeNode } from "dndrxjs"
+} from 'dndrxjs'
+import { onMounted, onUnmounted, ref } from 'vue'
 
-import data from "./data/MOCK_DATA.json"
-const root = ref<TreeNode<string>>({ id: "root", children: data })
+import data from './data/MOCK_DATA.json'
+
+const root = ref<TreeNode<string>>({ id: 'root', children: data })
 const container = ref<HTMLElement | null>(null)
 
 onMounted(() => {
   const subscription = createDragDropObservable({
     container: container.value!,
     vertical: false, // [!code highlight]
-    dropPositionFn: () => "around",
+    dropPositionFn: () => 'around',
   })
     .pipe(
       addClasses(),
@@ -26,13 +28,14 @@ onMounted(() => {
       dragImage({ minElements: 1 }),
     )
     .subscribe(({ type, dragElements, dropElement, position }) => {
-      if (!!dropElement && type === "DragEnd") {
-        const index = parseInt(dropElement.getAttribute("data-index")!)
-        const selectedIds = dragElements.map((e) => e.getAttribute("data-id")!)
-        if (position === "after") {
-          moveTreeNodesById(root.value, "root", selectedIds, index + 1)
-        } else if (position === "before") {
-          moveTreeNodesById(root.value, "root", selectedIds, index)
+      if (!!dropElement && type === 'DragEnd') {
+        const index = Number.parseInt(dropElement.getAttribute('data-index')!)
+        const selectedIds = dragElements.map(e => e.getAttribute('data-id')!)
+        if (position === 'after') {
+          moveTreeNodesById(root.value, 'root', selectedIds, index + 1)
+        }
+        else if (position === 'before') {
+          moveTreeNodesById(root.value, 'root', selectedIds, index)
         }
       }
     })
@@ -56,8 +59,8 @@ onMounted(() => {
     <transition-group name="list">
       <div
         v-for="(item, index) in root.children"
-        draggable="false"
         :key="item.id"
+        draggable="false"
         :data-index="index"
         :data-id="item.id"
       >
@@ -65,7 +68,7 @@ onMounted(() => {
           class="list-item"
           style="min-width: 0; display: flex; flex-wrap: wrap; height: 100px"
         >
-          <img src="/handle.svg" />
+          <img src="/handle.svg">
           <span style="white-space: nowrap">
             {{ item.data }}
           </span>

@@ -1,6 +1,6 @@
-import { DropPosition } from "../types"
+import type { DropPosition } from '../types'
 
-export type IndicatorMiddlewareOptions = {
+export interface IndicatorMiddlewareOptions {
   /**
    * Defaults to:
    * {
@@ -30,5 +30,5 @@ export type GetIndicatorStyleFn = (
 ) => () => string
 
 export type IndicatorClasses = Partial<
-  Record<DropPosition | "initial" | "vertical" | "horizontal", string>
+  Record<DropPosition | 'initial' | 'vertical' | 'horizontal', string>
 >

@@ -11,15 +11,10 @@ Adds horizontal and vertical auto-scrolling for the closest scrollable container
   })
 </script>
 
-
 **Demo**
 
 <AutoScrollDemo></AutoScrollDemo>
 
-
-
 <<< ../src/auto-scroll/types.ts{ts}
 
-
 <<< auto-scroll-demo.vue{vue}
-

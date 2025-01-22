@@ -1,28 +1,27 @@
-import { Observable, fromEvent, tap } from "rxjs"
-import { fromHTML } from "../utils"
-import {
+import type { Observable } from 'rxjs'
+import type {
   DragDropMiddlewareHookMap,
-  DragDropPayload,
   DragDropMiddlewareOperator,
-} from "../types"
-import { DragImageMiddlewareOptions } from "./types"
+  DragDropPayload,
+} from '../types'
+import type { DragImageMiddlewareOptions } from './types'
+import { fromEvent, tap } from 'rxjs'
+import { fromHTML } from '../utils'
 
-//#region defaults
-export const defaultUpdateElementFn = (selectedElements: HTMLElement[]) =>
-  fromHTML(
+// #region defaults
+export function defaultUpdateElementFn(selectedElements: HTMLElement[]) {
+  return fromHTML(
     `<div class='drag-image'>${selectedElements.length} Element(s)</div>`,
   )
-//#endregion defaults
+}
+// #endregion defaults
 
-export const updateContainerStyle = (
-  element: HTMLElement,
-  top: number,
-  left: number,
-) =>
-  element.setAttribute(
-    "style",
+export function updateContainerStyle(element: HTMLElement, top: number, left: number) {
+  return element.setAttribute(
+    'style',
     `position: fixed; z-index: 9999; top: ${top}px; left:${left}px; pointer-events: none;`,
   )
+}
 
 export const DEFAULTS: DragImageMiddlewareOptions = {
   updateElement: defaultUpdateElementFn,
@@ -36,25 +35,26 @@ const dragImageMiddleware: DragDropMiddlewareOperator<
     : DEFAULTS
 
   let subscription: any = null
-  const customImageContainer = document.createElement("div")
+  const customImageContainer = document.createElement('div')
 
-  const mousemove$ = fromEvent<DragEvent>(document, "dragover")
+  const mousemove$ = fromEvent<DragEvent>(document, 'dragover')
   const update = (event: DragEvent) =>
     updateContainerStyle(customImageContainer, event.clientY, event.clientX)
-
-  const start = () => {
-    document.body.addEventListener("dragend", () => (stop(), false))
-    subscription = mousemove$.subscribe(update)
-  }
 
   const stop = () => {
     subscription?.unsubscribe()
     customImageContainer.remove()
   }
+
+  const start = () => {
+    document.body.addEventListener('dragend', () => stop(), false)
+    subscription = mousemove$.subscribe(update)
+  }
+
   // add dummy drag image
   const img = new Image(1, 1)
-  img.src =
-    "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+  img.src
+    = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
   document.body.appendChild(img)
   return (source: Observable<DragDropPayload>) =>
     source.pipe(
@@ -72,7 +72,7 @@ const dragImageMiddleware: DragDropMiddlewareOperator<
                 0,
               )
               start()
-              customImageContainer.innerHTML = ""
+              customImageContainer.innerHTML = ''
               customImageContainer.appendChild(updateElement(dragElements))
               document.body.appendChild(customImageContainer)
               update(originalEvent as DragEvent)

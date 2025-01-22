@@ -1,22 +1,22 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from "vue"
 import createDragDropObservable, {
-  dragImage,
   addClasses,
-  indicator,
   autoScroll,
+  dragImage,
+  indicator,
   reorderItems,
-} from "dndrxjs"
-import COLORS from "./data/MOCK_DATA_COLORS.json"
+} from 'dndrxjs'
+import { onMounted, onUnmounted, ref } from 'vue'
+import COLORS from './data/MOCK_DATA_COLORS.json'
 
-const items = ref(COLORS.map((hex) => ({ id: hex })))
+const items = ref(COLORS.map(hex => ({ id: hex })))
 const container = ref(null)
 
 onMounted(() => {
   const subscription = createDragDropObservable({
     container: container.value!,
     vertical: false,
-    dropPositionFn: ({ dragElement, dropElement }) => "around",
+    dropPositionFn: ({ dragElement, dropElement }) => 'around',
   })
     .pipe(
       addClasses(),
@@ -25,15 +25,16 @@ onMounted(() => {
       autoScroll({ threshold: 120 }), // [!code highlight]
     )
     .subscribe(({ type, dragElements, dropElement, position }) => {
-      if (!!dropElement && type === "DragEnd") {
-        const index = parseInt(dropElement?.getAttribute("data-index") || "0")
+      if (!!dropElement && type === 'DragEnd') {
+        const index = Number.parseInt(dropElement?.getAttribute('data-index') || '0')
         const selectedItems = dragElements.map(
-          (e) =>
-            items.value.find((item) => item.id === e.getAttribute("data-id"))!,
+          e =>
+            items.value.find(item => item.id === e.getAttribute('data-id'))!,
         )
-        if (position === "after") {
+        if (position === 'after') {
           items.value = reorderItems(items.value, selectedItems, index + 1)
-        } else if (position === "before") {
+        }
+        else if (position === 'before') {
           items.value = reorderItems(items.value, selectedItems, index)
         }
       }
@@ -64,8 +65,8 @@ onMounted(() => {
     >
       <div
         v-for="(item, index) in items"
-        draggable="false"
         :key="item.id"
+        draggable="false"
         :data-index="index"
         :data-id="item.id"
       >
