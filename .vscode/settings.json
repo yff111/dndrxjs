@@ -85,5 +85,11 @@
     "scss",
     "pcss",
     "postcss"
-  ]
+  ],
+  "workbench.colorCustomizations": {
+    "statusBar.background": "#eeffee",
+    "statusBar.debuggingBackground": "#eeffee",
+    "statusBar.noFolderBackground": "#eeffee",
+    "statussBar.prominentBackground": "#eeffee"
+  }
 }

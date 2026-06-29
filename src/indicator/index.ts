@@ -56,22 +56,34 @@ const indicatorMiddleware: DragDropMiddlewareOperator<
     )
   }
 
+  let currentScrollContainer: HTMLElement | Window | null
+  let savedPosition = ''
+
+  const restorePosition = () => {
+    if (currentScrollContainer && !isWindow(currentScrollContainer)) {
+      (currentScrollContainer as HTMLElement).style.position = savedPosition
+    }
+  }
+
   const stop = () => {
     indicatorElement.remove()
     styleNode.remove()
+    restorePosition()
   }
 
-  let currentScrollContainer: HTMLElement | Window | null
   const addIndicatorToElement = (element: HTMLElement | Window) => {
+    // restore position of outgoing container before switching
+    restorePosition()
     currentScrollContainer = element
     if (isWindow(element)) {
       containerRect = { x: 0, y: 0 }
       document.body.appendChild(indicatorElement)
     }
     else {
-      containerRect = element!.getBoundingClientRect()
-      element!.style.position = 'relative'
-      element!.appendChild(indicatorElement)
+      savedPosition = element.style.position
+      containerRect = element.getBoundingClientRect()
+      element.style.position = 'relative'
+      element.appendChild(indicatorElement)
     }
   }
   return (source: Observable<DragDropPayload>) =>

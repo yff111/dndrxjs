@@ -6,7 +6,7 @@ import type {
   GetElementIdFn,
 } from '../types'
 import type { AddClassesMiddlewareOptions } from './types'
-import { map, pairwise, tap } from 'rxjs'
+import { tap } from 'rxjs'
 import { isWindow } from '../utils'
 
 export function addClassWhenAddedToDom(selectedElements: HTMLElement[], selector: string, cssClass: string, getElementId: GetElementIdFn, container: HTMLElement = document.body, timeout: number = 100) {
@@ -72,22 +72,20 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
         e => e !== currentDropElement && e?.classList.remove(dragOverClass),
       )
 
-  return (source: Observable<DragDropPayload>) =>
-    source.pipe(
-      pairwise(),
-      tap(([prev, current]) => {
-        if (current.scrollContainer !== prev.scrollContainer) {
-          if (current.scrollContainer instanceof HTMLElement) {
-            current.scrollContainer.classList.add(activeContainerClass)
+  return (source: Observable<DragDropPayload>) => {
+    let prevScrollContainer: HTMLElement | Window | null = null
+    return source.pipe(
+      tap(({ type, scrollContainer, dragElements, dropElement, options }) => {
+        if (scrollContainer !== prevScrollContainer) {
+          if (scrollContainer instanceof HTMLElement) {
+            scrollContainer.classList.add(activeContainerClass)
           }
-          if (prev.scrollContainer instanceof HTMLElement) {
-            prev.scrollContainer.classList.remove(activeContainerClass)
+          if (prevScrollContainer instanceof HTMLElement) {
+            prevScrollContainer.classList.remove(activeContainerClass)
           }
+          prevScrollContainer = scrollContainer
         }
-      }),
-      map(array => array[1]),
-      tap(({ type, scrollContainer, dragElements, dropElement, options }) =>
-        (
+        ;(
           ({
             DragOver: () => {
               clearDragOverClass(dropElement!)
@@ -97,14 +95,12 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
               dragElements.forEach(el => el.classList.add(dragClass))
             },
             BeforeDragStart: () => {
-              if (scrollContainer instanceof HTMLElement) {
-                scrollContainer.classList.add(activeContainerClass)
-              }
               dragElements.forEach(e => e.classList.remove(dropClass))
             },
             DragEnd: () => {
               clear(scrollContainer)
               clearDragOverClass()
+              prevScrollContainer = null
               addClassWhenAddedToDom(
                 dragElements,
                 options.dragElementSelector!,
@@ -114,8 +110,9 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
               )
             },
           }) as DragDropMiddlewareHookMap
-        )[type]?.(),
-      ),
+        )[type]?.()
+      }),
     )
+  }
 }
 export default addClassesMiddleware

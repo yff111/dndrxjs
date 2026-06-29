@@ -11,35 +11,35 @@ export interface DragDropOptions {
    */
   container: HTMLElement
   /**
-   * Selector of the elements should be dragged.
+   * Selector for the draggable elements.
    * Defaults to `[data-id]`.
    */
   dragElementSelector: string
   /**
-   * Selector of the elements that can serve as drop targets.
+   * Selector for all elements that qualify as drop targets.
    * Defaults to `[data-id]`.
    */
   dropElementSelector: string
   /**
-   * Selector within the drag element that should serve as handle element.
-   * Also defaults to `[data-id]`.
+   * Selector within the drag element that qualifies as handle element.
+   * Defaults to `[data-id]`.
    */
   handleSelector: string
   /**
-   * A method that returns the allowed drop positions that are for a
-   * potential drop element.
+   * A method that returns all potential drop positions that for a
+   * drop element.
    */
   dropPositionFn: DropPositionFn
   // A method that returns all selected item ids in a multiselect situation.
   getSelectedElements?: GetSelectedElementsFn
   /**
-   * A method that retrieves the elements id from the DOM-Element.
+   * A method that retrieves the elements unique ID from the DOM-Element.
    * Defaults to: `(el: HTMLElement) => el.getAttribute("data-id")`
    */
   getElementId: GetElementIdFn
   // Should be false for grids or horizontal lists. Defaults to true.
   vertical: boolean
-  // Throttle timeout for `dragover` events. Defaults to 30ms.
+  // Throttle timeout for `dragover` events. Defaults to 20ms.
   dragOverThrottle: number
   /**
    * The percentage offset of the elements outer edges for determining whether
@@ -50,7 +50,8 @@ export interface DragDropOptions {
   threshold: number
   /**
    * If enabled getBoundingClientRect() call on dropElements will be cached
-   * for each drag operation. Defaults to `false`.
+   * for each drag operation for better performance.
+   * Defaults to `false`.
    */
   enableRectCaching: boolean
   /**

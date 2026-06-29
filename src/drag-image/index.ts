@@ -41,21 +41,23 @@ const dragImageMiddleware: DragDropMiddlewareOperator<
   const update = (event: DragEvent) =>
     updateContainerStyle(customImageContainer, event.clientY, event.clientX)
 
-  const stop = () => {
-    subscription?.unsubscribe()
-    customImageContainer.remove()
-  }
-
-  const start = () => {
-    document.body.addEventListener('dragend', () => stop(), false)
-    subscription = mousemove$.subscribe(update)
-  }
-
-  // add dummy drag image
+  // img is created once per middleware instance but only appended to the DOM
+  // during an active drag and removed in stop() to avoid permanent DOM pollution
   const img = new Image(1, 1)
   img.src
     = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
-  document.body.appendChild(img)
+
+  const stop = () => {
+    subscription?.unsubscribe()
+    customImageContainer.remove()
+    img.remove()
+  }
+
+  const start = () => {
+    document.body.addEventListener('dragend', () => stop(), { once: true })
+    subscription = mousemove$.subscribe(update)
+  }
+
   return (source: Observable<DragDropPayload>) =>
     source.pipe(
       tap(({ type, originalEvent, dragElements }) =>
@@ -65,6 +67,7 @@ const dragImageMiddleware: DragDropMiddlewareOperator<
               if (dragElements.length === minElements) {
                 return
               }
+              document.body.appendChild(img)
               // set dummy drag Image
               ;(originalEvent as DragEvent).dataTransfer?.setDragImage(
                 img,

@@ -4,10 +4,10 @@ import createDragDropObservable, {
   autoScroll,
   dragImage,
   indicator,
+  swapElements,
 } from 'dndrxjs'
 
 import { onMounted, onUnmounted, ref } from 'vue'
-import { swapElements } from '../src/utils'
 import COLORS from './data/MOCK_DATA_COLORS.json'
 
 const items = ref(COLORS.map(hex => ({ id: hex })))

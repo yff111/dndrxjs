@@ -49,10 +49,9 @@ const placeholderElementMiddleware: DragDropMiddlewareOperator<
             DragOver: () => {
               if (dragStart) {
                 dragStart = false
-                // hide drag elements only after dragStart once
+                // hide drag elements only on the first DragOver after DragStart
                 dragElements?.forEach(el => (el.style.display = 'none'))
               }
-              dragStart = true
               if (position === 'before') {
                 placeholderElements
                   .reverse()

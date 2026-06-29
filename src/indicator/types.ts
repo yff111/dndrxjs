@@ -6,7 +6,7 @@ export interface IndicatorMiddlewareOptions {
    * {
    *  initial: "indicator",
    *  vertical: "indicator-vertical",
-   *  horizontal: "indicator-vertical",
+   *  horizontal: "indicator-horizontal",
    *  after: "indicator-after",
    *  in: "indicator-in",
    *  before: "indicator-before",

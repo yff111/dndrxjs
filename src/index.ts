@@ -23,6 +23,7 @@ import {
   Rect,
 } from './types'
 import {
+  fromHTML,
   getClosestScrollContainer,
   getDistance,
   getScrollX,
@@ -30,15 +31,18 @@ import {
   moveItemsToArrayMutate,
   moveTreeNodesById,
   reorderItems,
+  swapElements,
   TreeNode,
   TreeNodeFlat,
 } from './utils'
 
 export { getClosestScrollContainer, getDistance, getScrollX, getScrollY }
 export {
+  fromHTML,
   moveItemsToArrayMutate,
   moveTreeNodesById,
   reorderItems,
+  swapElements,
   TreeNode,
   TreeNodeFlat,
 }

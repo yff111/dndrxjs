@@ -10,7 +10,7 @@ import {
   distinctUntilChanged,
   filter,
   map,
-  mergeMap,
+  switchMap,
   take,
   takeUntil,
   tap,
@@ -74,7 +74,7 @@ export const DEFAULTS: DragDropOptions = {
     !el.closest('button:not([data-id]), a:not([data-id]), input, textarea'),
 }
 
-export function createDragDropObservable(options?: Partial<DragDropOptions>) {
+export function createDragDropObservable(options: Partial<DragDropOptions> = {}) {
   const optionsExtended = options
     ? { ...DEFAULTS, ...options }
     : { ...DEFAULTS }
@@ -206,11 +206,12 @@ export function createDragDropObservable(options?: Partial<DragDropOptions>) {
           HTMLElement,
         ],
     ),
-    // do not proceed if dragElementSelector does not in target element
+    // do not proceed if element was found for dragElementSelector
     filter(([, dragElement]) => !!dragElement),
     // add style node
     tap(() => document.head.appendChild(styleNode)),
     map(([event, dragElement]) => {
+      // empty range selection
       if (window.getSelection()?.type === 'Range') {
         event.preventDefault()
         document.getSelection()?.empty()
@@ -247,8 +248,8 @@ export function createDragDropObservable(options?: Partial<DragDropOptions>) {
           dragEvent,
         ] as [number, HTMLElement, DragEvent],
     ),
-    // only proceed when offset has changed
-    distinctUntilChanged(([offset], [offset2]) => offset === offset2),
+    // only proceed when offset and target element have both not changed
+    distinctUntilChanged(([offset, el], [offset2, el2]) => offset === offset2 && el === el2),
     // only proceed when element exists (was found)
     filter(
       ([, dropElement]: [number, HTMLElement | null, DragEvent]) =>
@@ -298,9 +299,11 @@ export function createDragDropObservable(options?: Partial<DragDropOptions>) {
       // if (e.dataTransfer?.dropEffect === "none") {
       //   currentDropElement = null
       // }
-      // clean up
+
+      // remove styleNode
       styleNode.remove()
-      setAttributesTo(dragElementSelector, 'draggable', 'false')
+      // remove attributes
+      setAttributesTo(dragElementSelector, 'draggable', 'false', container)
     }),
     map((e: DragEvent | MouseEvent) =>
       createPayload(
@@ -318,7 +321,7 @@ export function createDragDropObservable(options?: Partial<DragDropOptions>) {
    * Bringing it all together
    */
   return mousedown$.pipe(
-    mergeMap(mousedown =>
+    switchMap(mousedown =>
       merge(
         of(mousedown), // merge mousedown event to stream
         dragStart$.pipe(take(1)),

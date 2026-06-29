@@ -7,7 +7,7 @@ export default defineConfig({
   srcDir: './docs/',
   base: '/dndrxjs/',
   head: [
-    ['link', { rel: 'shortcut icon', href: 'favicon.ico' }],
+    ['link', { rel: 'shortcut icon', href: '/dndrxjs/favicon.ico' }],
     ['meta', { property: 'og:type', content: 'website' }],
   ],
   themeConfig: {
@@ -25,12 +25,13 @@ export default defineConfig({
       {
         text: 'Examples',
         items: [
-          { text: 'Tree', link: '/tree' },
           { text: 'Vertical List', link: '/vertical-list' },
           { text: 'Horizontal List', link: '/horizontal-list' },
           { text: 'Grid', link: '/grid' },
           { text: 'Table', link: '/table' },
           { text: 'Multiple Lists', link: '/multiple-lists' },
+          { text: 'Tree', link: '/tree' },
+          { text: 'File-Tree', link: '/file-tree' },
         ],
       },
       {

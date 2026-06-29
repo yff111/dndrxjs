@@ -13,15 +13,21 @@ const DragImageDemo = defineClientComponent(() => {
 
 </script>
 
-<br>
-<br>
-
 #### Demo
-<br>
 
 <DragImageDemo></DragImageDemo>
+
+::: code-group
+
 <<< drag-image-demo.vue{vue}
 
+:::
+
 #### Types
+
+::: code-group
+
 <<< ../src/drag-image/types.ts{ts}
 <<< ../src/drag-image/index.ts#defaults{ts}
+
+:::

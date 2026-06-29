@@ -19,8 +19,6 @@
 }
 </style>
 
-**Demo**
-
 ::: code-group
 
 <<< multiple-lists-demo.vue{vue}

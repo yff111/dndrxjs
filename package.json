@@ -18,11 +18,10 @@
     "entry": [
       "src/index.ts",
       "src/main.ts",
-      "src/auto-scroll.ts",
-      "src/drag-image.ts",
-      "src/indicator.ts",
-      "src/add-classes.ts",
-      "src/ghost-element.ts",
+      "src/auto-scroll/index.ts",
+      "src/drag-image/index.ts",
+      "src/indicator/index.ts",
+      "src/add-classes/index.ts",
       "src/utils.ts"
     ],
     "splitting": false,
@@ -41,8 +40,24 @@
       "require": "./dist/index.js"
     },
     "./auto-scroll": {
-      "import": "./dist/auto-scroll.mjs",
-      "require": "./dist/auto-scroll.js"
+      "types": "./dist/auto-scroll/index.d.ts",
+      "import": "./dist/auto-scroll/index.mjs",
+      "require": "./dist/auto-scroll/index.js"
+    },
+    "./indicator": {
+      "types": "./dist/indicator/index.d.ts",
+      "import": "./dist/indicator/index.mjs",
+      "require": "./dist/indicator/index.js"
+    },
+    "./drag-image": {
+      "types": "./dist/drag-image/index.d.ts",
+      "import": "./dist/drag-image/index.mjs",
+      "require": "./dist/drag-image/index.js"
+    },
+    "./add-classes": {
+      "types": "./dist/add-classes/index.d.ts",
+      "import": "./dist/add-classes/index.mjs",
+      "require": "./dist/add-classes/index.js"
     },
     "./dist/styles.css": {
       "import": "./dist/styles.css",
@@ -74,17 +89,17 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@antfu/eslint-config": "^5.4.1",
-    "@faker-js/faker": "^10.0.0",
-    "bumpp": "^10.2.3",
+    "@antfu/eslint-config": "^9.1.0",
+    "@faker-js/faker": "^10.5.0",
+    "bumpp": "^11.1.0",
     "copyfiles": "^2.4.1",
     "embedme": "^1.22.1",
-    "eslint": "^9.36.0",
+    "eslint": "^10.6.0",
     "install-peers": "^1.0.4",
-    "rxjs": "^7.8.2",
-    "tsup": "8.5.0",
-    "typescript": "5.9.2",
+    "rxjs": "^7.8.1",
+    "tsup": "8.5.1",
+    "typescript": "6.0.3",
     "vitepress": "^1.6.4",
-    "vitest": "3.2.4"
+    "vitest": "4.1.9"
   }
 }

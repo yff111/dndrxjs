@@ -49,9 +49,14 @@ export function useSelectStuff(container: HTMLElement, onUpdate: (selected: stri
     Array.from(container.querySelectorAll(`${selector}`) || []).map(getIdFromFn)
 
   const update = () => {
-    Array.from(container.querySelectorAll(selector)).forEach(element =>
-      selected.includes(getIdFromFn(element)),
-    )
+    Array.from(container.querySelectorAll(selector)).forEach((element) => {
+      if (selected.includes(getIdFromFn(element))) {
+        element.setAttribute('data-selected', 'true')
+      }
+      else {
+        element.removeAttribute('data-selected')
+      }
+    })
     onUpdate?.(selected)
   }
   const toggleSelect = (id: string) => {

@@ -13,14 +13,20 @@ const IndicatorDemo = defineClientComponent(() => {
 
 </script>
 
-<br>
-<br>
-
 #### Demo
-<br>
 
 <IndicatorDemo></IndicatorDemo>
+
+::: code-group
+
 <<< indicator-demo.vue{vue}
 
+:::
+
 #### Types
+
+::: code-group
+
 <<< ../src/indicator/types.ts{ts}
+
+:::

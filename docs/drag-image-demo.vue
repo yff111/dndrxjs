@@ -3,11 +3,11 @@ import createDragDropObservable, {
   addClasses,
   autoScroll,
   dragImage,
+  fromHTML,
   indicator,
   reorderItems,
 } from 'dndrxjs'
 import { onMounted, onUnmounted, ref } from 'vue'
-import { fromHTML } from '../src/utils'
 import data from './data/mock-data-persons.json'
 
 const items = ref<{ name: string, avatar: string, id: string }[]>(data)
@@ -38,7 +38,7 @@ onMounted(() => {
               <img class="avatar" src="${item.avatar}" />
               <span>
                 ${item.name}
-               <span>
+              </span>
               </div>`,
           )
         },

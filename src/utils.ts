@@ -21,7 +21,7 @@ export function moveTreeNodesById<T>(root: TreeNode<T>, target: string, elements
     node: TreeNode<T>,
     level: number = 0,
   ) =>
-    node.children.flatMap<[string, TreeNodeFlat<T>]>(childNode => [
+    (node.children ?? []).flatMap<[string, TreeNodeFlat<T>]>(childNode => [
       [childNode.id, { child: childNode, parent: node, level }],
       ...mapTreeChildrenToTuples(childNode, level + 1),
     ])
@@ -32,6 +32,7 @@ export function moveTreeNodesById<T>(root: TreeNode<T>, target: string, elements
   // adding root with parent undefined
   itemMap[root.id] = { child: root, parent: undefined, level: 0 }
   elements.forEach((id) => {
+    if (!itemMap[id]?.parent) return
     const children = itemMap[id].parent!.children
     const localIndex = children.findIndex(item => item.id === id)
     const isSameNode = children === itemMap[target].child.children
@@ -57,10 +58,8 @@ export function swapElements(array: Array<any>, index1: number, index2: number) 
 
 export function moveItemsToArrayMutate<T = any>(source: T[], target: T[], items: T[], targetIndex: number) {
   const a: any[] = [...source]
-  target = (target as Array<T | T[]>)
-    .splice(targetIndex, 0, items)
-    .flatMap(item => item)
-  return a.filter(e => !items.includes(e)).flatMap(e => e) as T[]
+  target.splice(targetIndex, 0, ...items)
+  return a.filter(e => !items.includes(e)) as T[]
 }
 
 export function getListInfoFromElement(e: Element) {
