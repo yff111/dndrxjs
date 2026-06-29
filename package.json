@@ -1,6 +1,6 @@
 {
   "name": "dndrxjs",
-  "version": "0.0.34",
+  "version": "0.1.0",
   "description": "Drag & Drop with RxJS – low level, modular, performant.",
   "author": "yff111",
   "license": "MIT",
