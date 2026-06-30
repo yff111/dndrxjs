@@ -60,20 +60,14 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
     if (scrollContainer instanceof HTMLElement) {
       scrollContainer.classList.remove(activeContainerClass)
     }
-    document.body.querySelectorAll(` .${dragClass}`).forEach((e: Element) => {
+    document.body.querySelectorAll(`.${dragClass}`).forEach((e: Element) => {
       e.classList.remove(dragClass)
     })
   }
 
-  const clearDragOverClass = (currentDropElement?: HTMLElement) =>
-    document
-      .querySelectorAll(`.${dragOverClass}`)
-      .forEach(
-        e => e !== currentDropElement && e?.classList.remove(dragOverClass),
-      )
-
   return (source: Observable<DragDropPayload>) => {
     let prevScrollContainer: HTMLElement | Window | null = null
+    let prevDragOverEl: HTMLElement | null = null
     return source.pipe(
       tap(({ type, scrollContainer, dragElements, dropElement, options }) => {
         if (scrollContainer !== prevScrollContainer) {
@@ -88,8 +82,11 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
         ;(
           ({
             DragOver: () => {
-              clearDragOverClass(dropElement!)
+              if (prevDragOverEl && prevDragOverEl !== dropElement) {
+                prevDragOverEl.classList.remove(dragOverClass)
+              }
               dropElement?.classList.add(dragOverClass)
+              prevDragOverEl = dropElement ?? null
             },
             DragStart: () => {
               dragElements.forEach(el => el.classList.add(dragClass))
@@ -99,7 +96,8 @@ const addClassesMiddleware: DragDropMiddlewareOperator<
             },
             DragEnd: () => {
               clear(scrollContainer)
-              clearDragOverClass()
+              prevDragOverEl?.classList.remove(dragOverClass)
+              prevDragOverEl = null
               prevScrollContainer = null
               addClassWhenAddedToDom(
                 dragElements,

@@ -8,6 +8,10 @@ import type { DragImageMiddlewareOptions } from './types'
 import { fromEvent, tap } from 'rxjs'
 import { fromHTML } from '../utils'
 
+function isTouchEvent(e: Event): e is TouchEvent {
+  return typeof TouchEvent !== 'undefined' && e instanceof TouchEvent
+}
+
 // #region defaults
 export function defaultUpdateElementFn(selectedElements: HTMLElement[]) {
   return fromHTML(
@@ -53,9 +57,22 @@ const dragImageMiddleware: DragDropMiddlewareOperator<
     img.remove()
   }
 
-  const start = () => {
+  const startDesktop = (originalEvent: DragEvent) => {
+    document.body.appendChild(img)
+    originalEvent.dataTransfer?.setDragImage(img, 0, 0)
     document.body.addEventListener('dragend', () => stop(), { once: true })
     subscription = mousemove$.subscribe(update)
+    update(originalEvent)
+  }
+
+  const startTouch = (originalEvent: TouchEvent) => {
+    const t = originalEvent.touches[0]
+    if (t) updateContainerStyle(customImageContainer, t.clientY, t.clientX)
+    subscription = fromEvent<TouchEvent>(document, 'touchmove').subscribe((e) => {
+      const touch = e.touches[0]
+      if (touch) updateContainerStyle(customImageContainer, touch.clientY, touch.clientX)
+    })
+    document.addEventListener('touchend', () => stop(), { once: true })
   }
 
   return (source: Observable<DragDropPayload>) =>
@@ -67,18 +84,15 @@ const dragImageMiddleware: DragDropMiddlewareOperator<
               if (dragElements.length === minElements) {
                 return
               }
-              document.body.appendChild(img)
-              // set dummy drag Image
-              ;(originalEvent as DragEvent).dataTransfer?.setDragImage(
-                img,
-                0,
-                0,
-              )
-              start()
               customImageContainer.innerHTML = ''
               customImageContainer.appendChild(updateElement(dragElements))
               document.body.appendChild(customImageContainer)
-              update(originalEvent as DragEvent)
+              if (isTouchEvent(originalEvent)) {
+                startTouch(originalEvent)
+              }
+              else {
+                startDesktop(originalEvent as DragEvent)
+              }
             },
             DragEnd: () => stop(),
           }) as DragDropMiddlewareHookMap

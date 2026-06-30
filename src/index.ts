@@ -65,4 +65,5 @@ export {
 
 export { addClasses, autoScroll, dragImage, indicator, placeholder }
 
+export { createTouchDragDropObservable, createUniversalDragDropObservable } from './touch'
 export default createDragDropObservable

@@ -9,6 +9,14 @@ import type { AutoScrollMiddlewareOptions } from './types'
 import { tap } from 'rxjs'
 import { getScrollX, getScrollY } from '../utils'
 
+function getClientCoords(event: DragEvent | MouseEvent | TouchEvent) {
+  if (typeof TouchEvent !== 'undefined' && event instanceof TouchEvent) {
+    const t = event.touches[0] ?? event.changedTouches[0]
+    return { clientX: t?.clientX ?? 0, clientY: t?.clientY ?? 0 }
+  }
+  return { clientX: (event as MouseEvent).clientX, clientY: (event as MouseEvent).clientY }
+}
+
 export const DEFAULTS: AutoScrollMiddlewareOptions = {
   interval: 8,
   steps: 4,
@@ -69,17 +77,18 @@ const autoScrollMiddleware: DragDropMiddlewareOperator<
               if (scrollContainer !== currentScrollContainer) {
                 updateScrollContainer(scrollContainer!)
               }
+              const { clientX, clientY } = getClientCoords(originalEvent)
               const overlapY
-                = originalEvent.clientY - scrollContainerRect.y < threshold
+                = clientY - scrollContainerRect.y < threshold
                   ? -1
-                  : originalEvent.clientY - scrollContainerRect.y
+                  : clientY - scrollContainerRect.y
                     > scrollContainerRect.height - threshold
                     ? 1
                     : 0
               const overlapX
-                = originalEvent.clientX - scrollContainerRect.x < threshold
+                = clientX - scrollContainerRect.x < threshold
                   ? -1
-                  : originalEvent.clientX - scrollContainerRect.x
+                  : clientX - scrollContainerRect.x
                     > scrollContainerRect.width - threshold
                     ? 1
                     : 0

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import createDragDropObservable, {
+import {
   addClasses,
   autoScroll,
+  createUniversalDragDropObservable as createDragDropObservable,
   dragImage,
   fromHTML,
   indicator,

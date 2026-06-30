@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import type { TreeNode,
 } from 'dndrxjs'
-import createDragDropObservable, {
+import {
   addClasses,
   autoScroll,
+  createUniversalDragDropObservable as createDragDropObservable,
   dragImage,
   indicator,
   moveTreeNodesById,

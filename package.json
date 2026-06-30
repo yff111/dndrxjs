@@ -18,6 +18,7 @@
     "entry": [
       "src/index.ts",
       "src/main.ts",
+      "src/touch.ts",
       "src/auto-scroll/index.ts",
       "src/drag-image/index.ts",
       "src/indicator/index.ts",
@@ -58,6 +59,11 @@
       "types": "./dist/add-classes/index.d.ts",
       "import": "./dist/add-classes/index.mjs",
       "require": "./dist/add-classes/index.js"
+    },
+    "./touch": {
+      "types": "./dist/touch.d.ts",
+      "import": "./dist/touch.mjs",
+      "require": "./dist/touch.js"
     },
     "./dist/styles.css": {
       "import": "./dist/styles.css",

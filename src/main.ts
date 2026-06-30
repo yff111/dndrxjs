@@ -3,7 +3,6 @@ import type {
   DragDropOptions,
   DragDropPayload,
   DropPosition,
-  DropPositionRules,
 } from './types'
 import { fromEvent, merge, of } from 'rxjs'
 import {
@@ -17,41 +16,15 @@ import {
   throttleTime,
 } from 'rxjs/operators'
 import {
+  calcPosition,
   flushRectCache,
   getClosestScrollContainer,
   getRectCached,
+  resolveSelectedElements,
   setAttributesTo,
 } from './utils'
 
-/**
- *  Returns a map of functions that returns the position for the given allowed positions.
- * @param allowedPositions
- * @param threshold
- */
-export function calcPosition(allowedPositions: DropPositionRules, threshold: number = 0.3) {
-  return (
-    ({
-      all: (offset: number, widthOrHeight: number) => {
-        return offset < widthOrHeight * threshold
-          ? 'before'
-          : offset > widthOrHeight * (1 - threshold)
-            ? 'after'
-            : 'in'
-      },
-      notAfter: (offset: number, widthOrHeight: number) =>
-        offset < widthOrHeight * threshold ? 'before' : 'in',
-      around: (offset: number, widthOrHeight: number) =>
-        offset < widthOrHeight / 2 ? 'before' : 'after',
-      none: () => 'none',
-      in: () => 'in',
-      before: () => 'before',
-      after: () => 'after',
-    }) as Record<
-      DropPositionRules,
-      (offset?: number, widthOrHeight?: number) => DropPosition
-    >
-  )[allowedPositions]
-}
+export { calcPosition }
 
 export const DEFAULTS: DragDropOptions = {
   container: document.body,
@@ -110,16 +83,6 @@ export function createDragDropObservable(options: Partial<DragDropOptions> = {})
     dragElementSelector,
     handleSelector,
   )
-
-  const getCombinedSelectedElements = (currentElement: HTMLElement) =>
-    getSelectedElements
-      ? [currentElement].reduce((acc, item) => {
-          const selectedElements = getSelectedElements()
-          return selectedElements.includes(item)
-            ? selectedElements
-            : [...selectedElements, item]
-        }, [] as HTMLElement[])
-      : [currentElement]
 
   const calcPositionLocal = vertical
     ? (dropElement: HTMLElement, dragElement: HTMLElement, offset: number) =>
@@ -189,7 +152,7 @@ export function createDragDropObservable(options: Partial<DragDropOptions> = {})
       return createPayload(
         'BeforeDragStart',
         e,
-        getCombinedSelectedElements(dragElement),
+        resolveSelectedElements(dragElement, getSelectedElements),
         getClosestScrollContainer(dragElement),
       )
     }),
@@ -224,7 +187,7 @@ export function createDragDropObservable(options: Partial<DragDropOptions> = {})
       return createPayload(
         'DragStart',
         event,
-        getCombinedSelectedElements(dragElement),
+        resolveSelectedElements(dragElement, getSelectedElements),
         getClosestScrollContainer(dragElement),
       )
     }),

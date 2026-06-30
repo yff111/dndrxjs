@@ -1,4 +1,34 @@
-import type { GetElementIdFn, GetRectFn, Rect } from './types'
+import type { DropPosition, DropPositionRules, GetElementIdFn, GetRectFn, Rect } from './types'
+
+export function calcPosition(allowedPositions: DropPositionRules, threshold: number = 0.3) {
+  return (
+    ({
+      all: (offset: number, widthOrHeight: number) =>
+        offset < widthOrHeight * threshold
+          ? 'before'
+          : offset > widthOrHeight * (1 - threshold)
+            ? 'after'
+            : 'in',
+      notAfter: (offset: number, widthOrHeight: number) =>
+        offset < widthOrHeight * threshold ? 'before' : 'in',
+      around: (offset: number, widthOrHeight: number) =>
+        offset < widthOrHeight / 2 ? 'before' : 'after',
+      none: () => 'none',
+      in: () => 'in',
+      before: () => 'before',
+      after: () => 'after',
+    }) as Record<DropPositionRules, (offset?: number, widthOrHeight?: number) => DropPosition>
+  )[allowedPositions]
+}
+
+export function resolveSelectedElements(
+  element: HTMLElement,
+  getSelectedElements?: () => HTMLElement[],
+): HTMLElement[] {
+  if (!getSelectedElements) return [element]
+  const selected = getSelectedElements()
+  return selected.includes(element) ? selected : [...selected, element]
+}
 
 export interface TreeNode<T = any> {
   id: string

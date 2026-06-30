@@ -93,7 +93,7 @@ export type DropPositionFn = (payload: {
 
 export interface DragDropPayload {
   type: DragDropEventType
-  originalEvent: DragEvent | MouseEvent
+  originalEvent: DragEvent | MouseEvent | TouchEvent
   dragElements: HTMLElement[]
   container: HTMLElement | Window
   scrollContainer: HTMLElement | Window
