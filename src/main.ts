@@ -48,9 +48,7 @@ export const DEFAULTS: DragDropOptions = {
 }
 
 export function createDragDropObservable(options: Partial<DragDropOptions> = {}) {
-  const optionsExtended = options
-    ? { ...DEFAULTS, ...options }
-    : { ...DEFAULTS }
+  const optionsExtended = { ...DEFAULTS, ...options }
   if (!optionsExtended.handleSelector) {
     optionsExtended.handleSelector = optionsExtended.dragElementSelector
   }
@@ -169,7 +167,7 @@ export function createDragDropObservable(options: Partial<DragDropOptions> = {})
           HTMLElement,
         ],
     ),
-    // do not proceed if element was found for dragElementSelector
+    // do not proceed if no element was found for dragElementSelector
     filter(([, dragElement]) => !!dragElement),
     // add style node
     tap(() => document.head.appendChild(styleNode)),

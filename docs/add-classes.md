@@ -1,6 +1,6 @@
 # Add Classes
 
-Temporarily adds classes to the DOM-elements involved in the drag & drop operation.
+Temporarily adds classes to the DOM elements involved in the drag & drop operation.
 
 ### Usage
 

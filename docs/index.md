@@ -17,7 +17,7 @@ hero:
 features:
   - icon: 🎉
     title: Simple, fun and functional...
-    details: All drag & drop events are stuffed into a single RxJS observable.
+    details: All drag & drop events are emitted through a single RxJS observable.
   - icon: 🛠️
     title: Feature rich
     details: Auto-scrolling, custom drag-images, custom indicators or placeholders, multiple-lists, nesting...

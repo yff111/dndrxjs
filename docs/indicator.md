@@ -1,6 +1,6 @@
 # Indicator
 
-Adds an absolute positioned element to indicate the drop position of the element.
+Adds an absolutely positioned element to indicate the drop position of the dragged element.
 
 <script setup>
 

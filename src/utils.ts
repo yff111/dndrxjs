@@ -148,9 +148,9 @@ export const getRectCached: GetRectFn = (
 }
 
 export function getDistance(x1: number, y1: number, x2: number, y2: number) {
-  const y = x2 - x1
-  const x = y2 - y1
-  return Math.sqrt(x * x + y * y)
+  const dx = x2 - x1
+  const dy = y2 - y1
+  return Math.sqrt(dx * dx + dy * dy)
 }
 export function fromHTML(html: string) {
   const template = document.createElement('template')

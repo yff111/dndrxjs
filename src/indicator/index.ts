@@ -26,7 +26,7 @@ export const DEFAULTS: IndicatorMiddlewareOptions = {
 const indicatorMiddleware: DragDropMiddlewareOperator<
   IndicatorMiddlewareOptions
 > = (options?) => {
-  const { indicatorClasses, offset } = options || {}
+  const { indicatorClasses, offset } = options
     ? { ...DEFAULTS, ...options }
     : DEFAULTS
   let containerRect: { x: number, y: number } = { x: 0, y: 0 }

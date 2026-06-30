@@ -1,7 +1,3 @@
-/**
- * Middleware
- */
-
 import type { Observable } from 'rxjs'
 
 export interface DragDropOptions {
@@ -26,20 +22,25 @@ export interface DragDropOptions {
    */
   handleSelector: string
   /**
-   * A method that returns all potential drop positions that for a
-   * drop element.
+   * A method that returns the allowed drop positions for a drop element.
    */
   dropPositionFn: DropPositionFn
-  // A method that returns all selected item ids in a multiselect situation.
+  /**
+   * A method that returns all selected elements in a multi-select situation.
+   */
   getSelectedElements?: GetSelectedElementsFn
   /**
-   * A method that retrieves the elements unique ID from the DOM-Element.
+   * A method that retrieves the element's unique ID from the DOM element.
    * Defaults to: `(el: HTMLElement) => el.getAttribute("data-id")`
    */
   getElementId: GetElementIdFn
-  // Should be false for grids or horizontal lists. Defaults to true.
+  /**
+   * Should be `false` for grids or horizontal lists. Defaults to `true`.
+   */
   vertical: boolean
-  // Throttle timeout for `dragover` events. Defaults to 20ms.
+  /**
+   * Throttle interval for `dragover` events in milliseconds. Defaults to `20`.
+   */
   dragOverThrottle: number
   /**
    * The percentage offset of the elements outer edges for determining whether

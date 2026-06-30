@@ -17,7 +17,7 @@ Simple, low level and modular drag & drop library that provides all Drag & Drop 
 - 📊 **performant:** large-list support due to event-throttling, event-delegation and rect-caching
 - 🖱️ **auto-scrolling**
 - 🍭 **custom drag image**
-- 🍓 **custom indicator or placeholder**:
+- 🍓 **custom indicator or placeholder**
 - 🧩 **modular:** use only the features you need
 
 ### How to use
@@ -64,7 +64,7 @@ subscription.unsubscribe()
 
 ### Caveats
 
-- no touch-support due to native drag events
+- No touch support due to native drag events
 - RxJS dependency
 
 for a more sophisticated solution consider: https://github.com/atlassian/pragmatic-drag-and-drop
