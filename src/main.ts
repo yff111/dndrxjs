@@ -1,9 +1,4 @@
-import type {
-  DragDropEventType,
-  DragDropOptions,
-  DragDropPayload,
-  DropPosition,
-} from './types'
+import type { DragDropOptions, DragDropPayload } from './types'
 import { fromEvent, merge, of } from 'rxjs'
 import {
   distinctUntilChanged,
@@ -20,6 +15,7 @@ import {
   flushRectCache,
   getClosestScrollContainer,
   getRectCached,
+  makePayloadFactory,
   resolveSelectedElements,
   setAttributesTo,
 } from './utils'
@@ -47,11 +43,14 @@ export const DEFAULTS: DragDropOptions = {
     !el.closest('button:not([data-id]), a:not([data-id]), input, textarea'),
 }
 
+export function resolveOptions(options: Partial<DragDropOptions>, overrides?: Partial<DragDropOptions>): DragDropOptions {
+  const merged = { ...DEFAULTS, ...overrides, ...options } as DragDropOptions
+  if (!merged.handleSelector) merged.handleSelector = merged.dragElementSelector
+  return merged
+}
+
 export function createDragDropObservable(options: Partial<DragDropOptions> = {}) {
-  const optionsExtended = { ...DEFAULTS, ...options }
-  if (!optionsExtended.handleSelector) {
-    optionsExtended.handleSelector = optionsExtended.dragElementSelector
-  }
+  const optionsExtended = resolveOptions(options)
 
   const {
     container,
@@ -98,24 +97,7 @@ export function createDragDropObservable(options: Partial<DragDropOptions> = {})
           threshold,
         )(offset, getRectCached(dropElement, getElementId, container).width)
 
-  const createPayload = (
-    type: DragDropEventType,
-    originalEvent: DragEvent | MouseEvent,
-    dragElements: HTMLElement[],
-    scrollContainer: HTMLElement | Window,
-    dropElement?: HTMLElement,
-    position?: DropPosition,
-  ) =>
-    ({
-      type,
-      originalEvent,
-      dropElement,
-      dragElements,
-      scrollContainer,
-      position,
-      options: optionsExtended,
-      container,
-    }) as DragDropPayload
+  const createPayload = makePayloadFactory(optionsExtended)
 
   /**
    * Mousedown

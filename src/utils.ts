@@ -1,4 +1,24 @@
-import type { DropPosition, DropPositionRules, GetElementIdFn, GetRectFn, Rect } from './types'
+import type { DragDropEventType, DragDropOptions, DragDropPayload, DropPosition, DropPositionRules, GetElementIdFn, GetRectFn, Rect } from './types'
+
+export function makePayloadFactory(opts: DragDropOptions) {
+  return (
+    type: DragDropEventType,
+    originalEvent: DragEvent | MouseEvent | TouchEvent,
+    dragElements: HTMLElement[],
+    scrollContainer: HTMLElement | Window,
+    dropElement?: HTMLElement,
+    position?: DropPosition,
+  ): DragDropPayload => ({
+    type,
+    originalEvent,
+    dropElement,
+    dragElements,
+    scrollContainer,
+    position,
+    options: opts,
+    container: opts.container,
+  })
+}
 
 export function calcPosition(allowedPositions: DropPositionRules, threshold: number = 0.3) {
   return (

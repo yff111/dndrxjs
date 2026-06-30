@@ -1,4 +1,4 @@
-import type { DragDropEventType, DragDropOptions, DragDropPayload, DropPosition } from './types'
+import type { DragDropOptions, DragDropPayload, DropPosition } from './types'
 import { Observable, fromEvent, merge, of } from 'rxjs'
 import {
   filter,
@@ -7,21 +7,19 @@ import {
   take,
   tap,
 } from 'rxjs/operators'
-import createDragDropObservable, { DEFAULTS } from './main'
+import createDragDropObservable, { resolveOptions } from './main'
 import {
   calcPosition,
   flushRectCache,
   getClosestScrollContainer,
+  makePayloadFactory,
   resolveSelectedElements,
 } from './utils'
 
 const DRAG_THRESHOLD = 5
 
 export function createTouchDragDropObservable(options: Partial<DragDropOptions> = {}) {
-  const opts: DragDropOptions = { ...DEFAULTS, createStyleNode: () => '', ...options }
-  if (!opts.handleSelector) {
-    opts.handleSelector = opts.dragElementSelector
-  }
+  const opts = resolveOptions(options, { createStyleNode: () => '' })
 
   const {
     container,
@@ -38,23 +36,7 @@ export function createTouchDragDropObservable(options: Partial<DragDropOptions> 
 
   let currentPayload: DragDropPayload
 
-  const createPayload = (
-    type: DragDropEventType,
-    originalEvent: TouchEvent,
-    dragElements: HTMLElement[],
-    scrollContainer: HTMLElement | Window,
-    dropElement?: HTMLElement,
-    position?: DropPosition,
-  ): DragDropPayload => ({
-    type,
-    originalEvent,
-    dropElement,
-    dragElements,
-    scrollContainer,
-    position,
-    options: opts,
-    container,
-  })
+  const createPayload = makePayloadFactory(opts)
 
   return fromEvent<TouchEvent>(container, 'touchstart', { passive: false }).pipe(
     map((e) => {
