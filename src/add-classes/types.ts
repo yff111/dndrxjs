@@ -1,4 +1,4 @@
-export interface AddClassesMiddlewareOptions {
+export interface AddClassesPluginOptions {
   /**
    * Class-name added to element while being dragged
    *

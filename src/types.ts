@@ -63,7 +63,7 @@ export interface DragDropOptions {
    * Primarily sets pointer-events of drop element children to 'none' so the
    * dragover event reports offsets relative to the drop element itself.
    */
-  createStyleNode: (
+  createStyles: (
     dropElementSelector: string,
     dragElementSelector: string,
     handleSelector: string,
@@ -98,7 +98,6 @@ export type DragDropEventType
 
 export type GetSelectedElementsFn = () => HTMLElement[]
 export type GetElementIdFn = (element: HTMLElement) => string
-export type OnDragStartFn = (dragElement: HTMLElement) => any
 export type OnBeforeDragStartFn = (dragElement: HTMLElement) => boolean
 export type DropPositionFn = (payload: {
   dragElement: Element

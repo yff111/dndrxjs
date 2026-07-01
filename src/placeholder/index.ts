@@ -1,5 +1,5 @@
 import type { DragDropPlugin } from '../types'
-import type { PlaceholderMiddlewareOptions } from './types'
+import type { PlaceholderPluginOptions } from './types'
 
 export function createSimplePlaceholder(dragElements: HTMLElement[]) {
   const tagName = dragElements[0].tagName
@@ -19,11 +19,11 @@ export function createClonedPlaceholder(dragElements: HTMLElement[]) {
   return placeholderElements.splice(0, 1)
 }
 
-export const DEFAULTS: PlaceholderMiddlewareOptions = {
+export const DEFAULTS: PlaceholderPluginOptions = {
   createElement: createClonedPlaceholder,
 }
 
-function placeholder(options?: Partial<PlaceholderMiddlewareOptions>): DragDropPlugin {
+function placeholder(options?: Partial<PlaceholderPluginOptions>): DragDropPlugin {
   const { createElement } = options ? { ...DEFAULTS, ...options } : DEFAULTS
 
   let placeholderElements: HTMLElement[]

@@ -1,6 +1,6 @@
 import type { DropPosition } from '../types'
 
-export interface IndicatorMiddlewareOptions {
+export interface IndicatorPluginOptions {
   /**
    * Defaults to:
    * {
@@ -18,16 +18,6 @@ export interface IndicatorMiddlewareOptions {
    */
   offset: number
 }
-
-export type GetIndicatorStyleFn = (
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  position: DropPosition,
-  vertical: boolean,
-  offset: number,
-) => () => string
 
 export type IndicatorClasses = Partial<
   Record<DropPosition | 'initial' | 'vertical' | 'horizontal', string>

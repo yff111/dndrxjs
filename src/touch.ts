@@ -11,7 +11,7 @@ import {
 const DRAG_THRESHOLD = 5
 
 export function createTouchDragDrop(options: Partial<DragDropOptions> = {}): DragDropInstance {
-  const opts = resolveOptions(options, { createStyleNode: () => '' })
+  const opts = resolveOptions(options, { createStyles: () => '' })
   const {
     container,
     vertical,

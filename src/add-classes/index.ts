@@ -1,5 +1,5 @@
 import type { DragDropPlugin, GetElementIdFn } from '../types'
-import type { AddClassesMiddlewareOptions } from './types'
+import type { AddClassesPluginOptions } from './types'
 import { isWindow } from '../utils'
 
 export function addClassWhenAddedToDom(selectedElements: HTMLElement[], selector: string, cssClass: string, getElementId: GetElementIdFn, container: HTMLElement = document.body, timeout: number = 100) {
@@ -32,14 +32,14 @@ export function addClassWhenAddedToDom(selectedElements: HTMLElement[], selector
   return observer
 }
 
-export const DEFAULTS: AddClassesMiddlewareOptions = {
+export const DEFAULTS: AddClassesPluginOptions = {
   dragClass: 'drag',
   dragOverClass: 'dragover',
   dropClass: 'drop',
   activeContainerClass: 'active',
 }
 
-function addClasses(options?: Partial<AddClassesMiddlewareOptions>): DragDropPlugin {
+function addClasses(options?: Partial<AddClassesPluginOptions>): DragDropPlugin {
   const { dragClass, dropClass, dragOverClass, activeContainerClass } = options
     ? { ...DEFAULTS, ...options }
     : DEFAULTS

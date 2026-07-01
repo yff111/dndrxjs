@@ -1,5 +1,5 @@
 import type { DragDropPlugin, Rect } from '../types'
-import type { AutoScrollMiddlewareOptions } from './types'
+import type { AutoScrollPluginOptions } from './types'
 import { getScrollX, getScrollY } from '../utils'
 
 function getClientCoords(event: DragEvent | MouseEvent | TouchEvent) {
@@ -10,13 +10,13 @@ function getClientCoords(event: DragEvent | MouseEvent | TouchEvent) {
   return { clientX: (event as MouseEvent).clientX, clientY: (event as MouseEvent).clientY }
 }
 
-export const DEFAULTS: AutoScrollMiddlewareOptions = {
+export const DEFAULTS: AutoScrollPluginOptions = {
   interval: 8,
   steps: 4,
   threshold: 100,
 }
 
-function autoScroll(options?: Partial<AutoScrollMiddlewareOptions>): DragDropPlugin {
+function autoScroll(options?: Partial<AutoScrollPluginOptions>): DragDropPlugin {
   const { interval, steps, threshold } = options
     ? { ...DEFAULTS, ...options }
     : DEFAULTS
@@ -25,13 +25,13 @@ function autoScroll(options?: Partial<AutoScrollMiddlewareOptions>): DragDropPlu
   let currentScrollContainer: HTMLElement | Window = window
   let scrollContainerRect: Rect | DOMRect = { x: 0, y: 0, width: 0, height: 0 }
 
-  const scroll = (overlapY: number, overlapX: number) => {
+  const scroll = (scrollDirY: number, scrollDirX: number) => {
     clearInterval(scrollInterval)
     scrollInterval = setInterval(
       () =>
         currentScrollContainer.scrollTo({
-          top: getScrollY(currentScrollContainer) + overlapY * steps,
-          left: getScrollX(currentScrollContainer) + overlapX * steps,
+          top: getScrollY(currentScrollContainer) + scrollDirY * steps,
+          left: getScrollX(currentScrollContainer) + scrollDirX * steps,
         }),
       interval,
     )
@@ -59,21 +59,21 @@ function autoScroll(options?: Partial<AutoScrollMiddlewareOptions>): DragDropPlu
         updateScrollContainer(scrollContainer)
       }
       const { clientX, clientY } = getClientCoords(originalEvent)
-      const overlapY
+      const scrollDirY
         = clientY - scrollContainerRect.y < threshold
           ? -1
           : clientY - scrollContainerRect.y > scrollContainerRect.height - threshold
             ? 1
             : 0
-      const overlapX
+      const scrollDirX
         = clientX - scrollContainerRect.x < threshold
           ? -1
           : clientX - scrollContainerRect.x > scrollContainerRect.width - threshold
             ? 1
             : 0
 
-      if (overlapY || overlapX)
-        scroll(overlapY, overlapX)
+      if (scrollDirY || scrollDirX)
+        scroll(scrollDirY, scrollDirX)
       else cancelScroll()
     },
     DragEnd() { cancelScroll() },

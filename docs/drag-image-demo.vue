@@ -17,7 +17,7 @@ onMounted(() => {
     autoScroll: true,
     dragImage: {
       minElements: 0,
-      updateElement: (selectedElements: HTMLElement[]) => {
+      createElement: (selectedElements: HTMLElement[]) => {
         const item = items.value[Number.parseInt(selectedElements[0].getAttribute('data-index')!)]
         return fromHTML(
           `<div class='custom-drag-image' data-num='${selectedElements.length}'>

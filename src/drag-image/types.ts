@@ -1,10 +1,10 @@
-export interface DragImageMiddlewareOptions {
+export interface DragImagePluginOptions {
   /**
-   * Method that updates the actual drag image,
+   * Method that creates the drag image element.
    *
-   * Defaults to: defaultUpdateElementFn
+   * Defaults to: defaultCreateElementFn
    */
-  updateElement: (selectedElements: HTMLElement[]) => HTMLElement
+  createElement: (selectedElements: HTMLElement[]) => HTMLElement
   /**
    * Minium amount of elements required to use custom drag image instead of
    * browser default.

@@ -1,5 +1,5 @@
 import type { DragDropPlugin, DropPosition } from '../types'
-import type { IndicatorClasses, IndicatorMiddlewareOptions } from './types'
+import type { IndicatorClasses, IndicatorPluginOptions } from './types'
 import { getRelativeRect, isWindow } from '../utils'
 
 export const defaultIndicatorClasses: IndicatorClasses = {
@@ -11,12 +11,12 @@ export const defaultIndicatorClasses: IndicatorClasses = {
   before: 'indicator-before',
 }
 
-export const DEFAULTS: IndicatorMiddlewareOptions = {
+export const DEFAULTS: IndicatorPluginOptions = {
   indicatorClasses: defaultIndicatorClasses,
   offset: 0,
 }
 
-function indicator(options?: Partial<IndicatorMiddlewareOptions>): DragDropPlugin {
+function indicator(options?: Partial<IndicatorPluginOptions>): DragDropPlugin {
   const { indicatorClasses, offset } = options
     ? { ...DEFAULTS, ...options }
     : DEFAULTS

@@ -1,8 +1,8 @@
-import type { AddClassesMiddlewareOptions } from './add-classes/types'
-import type { AutoScrollMiddlewareOptions } from './auto-scroll/types'
-import type { DragImageMiddlewareOptions } from './drag-image/types'
-import type { IndicatorMiddlewareOptions } from './indicator/types'
-import type { PlaceholderMiddlewareOptions } from './placeholder/types'
+import type { AddClassesPluginOptions } from './add-classes/types'
+import type { AutoScrollPluginOptions } from './auto-scroll/types'
+import type { DragImagePluginOptions } from './drag-image/types'
+import type { IndicatorPluginOptions } from './indicator/types'
+import type { PlaceholderPluginOptions } from './placeholder/types'
 import addClasses from './add-classes'
 import autoScroll from './auto-scroll'
 import dragImage from './drag-image'
@@ -23,7 +23,6 @@ import {
   GetRectFn,
   GetSelectedElementsFn,
   OnBeforeDragStartFn,
-  OnDragStartFn,
   Rect,
 } from './types'
 
@@ -41,24 +40,23 @@ export {
   GetRectFn,
   GetSelectedElementsFn,
   OnBeforeDragStartFn,
-  OnDragStartFn,
   Rect,
 }
 export { addClasses, autoScroll, dragImage, indicator, placeholder }
 export { createMouseDragDrop, createTouchDragDrop, createUniversalDragDrop }
 
 export interface DragDropConfig extends Partial<Omit<DragDropOptions, 'container'>> {
-  touch?: boolean
-  addClasses?: boolean | Partial<AddClassesMiddlewareOptions>
-  autoScroll?: boolean | Partial<AutoScrollMiddlewareOptions>
-  indicator?: boolean | Partial<IndicatorMiddlewareOptions>
-  dragImage?: boolean | Partial<DragImageMiddlewareOptions>
-  placeholder?: boolean | Partial<PlaceholderMiddlewareOptions>
+  enableTouch?: boolean
+  addClasses?: boolean | Partial<AddClassesPluginOptions>
+  autoScroll?: boolean | Partial<AutoScrollPluginOptions>
+  indicator?: boolean | Partial<IndicatorPluginOptions>
+  dragImage?: boolean | Partial<DragImagePluginOptions>
+  placeholder?: boolean | Partial<PlaceholderPluginOptions>
 }
 
 export function createDragDrop(container: HTMLElement, config: DragDropConfig = {}): DragDropInstance {
   const {
-    touch = true,
+    enableTouch = true,
     addClasses: addClassesOpt,
     autoScroll: autoScrollOpt,
     indicator: indicatorOpt,
@@ -68,25 +66,25 @@ export function createDragDrop(container: HTMLElement, config: DragDropConfig = 
     ...rest
   } = config
 
-  const builtins: DragDropPlugin[] = []
+  const builtinPlugins: DragDropPlugin[] = []
   if (addClassesOpt)
-    builtins.push(addClasses(addClassesOpt === true ? undefined : addClassesOpt))
+    builtinPlugins.push(addClasses(addClassesOpt === true ? undefined : addClassesOpt))
   if (indicatorOpt)
-    builtins.push(indicator(indicatorOpt === true ? undefined : indicatorOpt))
+    builtinPlugins.push(indicator(indicatorOpt === true ? undefined : indicatorOpt))
   if (placeholderOpt)
-    builtins.push(placeholder(placeholderOpt === true ? undefined : placeholderOpt))
+    builtinPlugins.push(placeholder(placeholderOpt === true ? undefined : placeholderOpt))
   if (autoScrollOpt)
-    builtins.push(autoScroll(autoScrollOpt === true ? undefined : autoScrollOpt))
+    builtinPlugins.push(autoScroll(autoScrollOpt === true ? undefined : autoScrollOpt))
   if (dragImageOpt)
-    builtins.push(dragImage(dragImageOpt === true ? undefined : dragImageOpt))
+    builtinPlugins.push(dragImage(dragImageOpt === true ? undefined : dragImageOpt))
 
   const opts: Partial<DragDropOptions> = {
     ...rest,
     container,
-    plugins: [...builtins, ...userPlugins],
+    plugins: [...builtinPlugins, ...userPlugins],
   }
 
-  if (!touch)
+  if (!enableTouch)
     return createMouseDragDrop(opts)
   return createUniversalDragDrop(opts)
 }

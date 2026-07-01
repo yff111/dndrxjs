@@ -95,9 +95,9 @@ export function moveTreeNodesById<T>(root: TreeNode<T>, target: string, elements
 }
 
 export function reorderItems<T = any>(source: T[], items: T[], targetIndex: number) {
-  const a: any[] = [...source]
-  a.splice(targetIndex, 0, items)
-  return a.filter(e => !items.includes(e)).flatMap(e => e) as T[]
+  const copy: any[] = [...source]
+  copy.splice(targetIndex, 0, items)
+  return copy.filter(e => !items.includes(e)).flatMap(e => e) as T[]
 }
 
 export function swapElements(array: Array<any>, index1: number, index2: number) {
@@ -105,9 +105,9 @@ export function swapElements(array: Array<any>, index1: number, index2: number) 
 }
 
 export function moveItemsToArrayMutate<T = any>(source: T[], target: T[], items: T[], targetIndex: number) {
-  const a: any[] = [...source]
+  const copy: any[] = [...source]
   target.splice(targetIndex, 0, ...items)
-  return a.filter(e => !items.includes(e)) as T[]
+  return copy.filter(e => !items.includes(e)) as T[]
 }
 
 export function getListInfoFromElement(e: Element) {
@@ -154,10 +154,10 @@ export function flushRectCache() {
 }
 export const getRectCached: GetRectFn = (
   element: HTMLElement,
-  getElementIdLocal: GetElementIdFn,
+  getElementId: GetElementIdFn,
   scrollContainer: HTMLElement,
 ) => {
-  const id = getElementIdLocal(element)
+  const id = getElementId(element)
 
   return (
     boundingRectCache[id!]

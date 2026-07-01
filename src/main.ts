@@ -22,7 +22,7 @@ export const DEFAULTS: DragDropOptions = {
   dragOverThrottle: 20,
   threshold: 0.3,
   enableRectCaching: false,
-  createStyleNode: (
+  createStyles: (
     dropElementSelector: string,
     dragElementSelector: string,
     handleSelector: string,
@@ -53,7 +53,7 @@ export function createMouseDragDrop(options: Partial<DragDropOptions> = {}): Dra
     threshold,
     getSelectedElements,
     dropElementSelector,
-    createStyleNode,
+    createStyles,
     plugins = [],
   } = opts
 
@@ -66,7 +66,7 @@ export function createMouseDragDrop(options: Partial<DragDropOptions> = {}): Dra
   let lastPositionDropEl: HTMLElement | null = null
 
   const styleNode = document.createElement('style')
-  styleNode.textContent = createStyleNode(dropElementSelector, dragElementSelector, handleSelector)
+  styleNode.textContent = createStyles(dropElementSelector, dragElementSelector, handleSelector)
 
   const createPayload = makePayloadFactory(opts)
 
@@ -81,7 +81,7 @@ export function createMouseDragDrop(options: Partial<DragDropOptions> = {}): Dra
       opts.onDragEnd?.(payload)
   }
 
-  function calcPositionLocal(dropElement: HTMLElement, dragElement: HTMLElement, offset: number) {
+  function resolvePosition(dropElement: HTMLElement, dragElement: HTMLElement, offset: number) {
     const rules = dragElement !== dropElement
       ? dropPositionFn({ dropElement, dragElement })
       : 'none' as const
@@ -114,7 +114,7 @@ export function createMouseDragDrop(options: Partial<DragDropOptions> = {}): Dra
     if (!dropElement)
       return
 
-    const position = calcPositionLocal(dropElement, currentPayload.dragElements[0], offset)
+    const position = resolvePosition(dropElement, currentPayload.dragElements[0], offset)
 
     // skip when position and target are both unchanged
     if (position === lastPosition && dropElement === lastPositionDropEl)

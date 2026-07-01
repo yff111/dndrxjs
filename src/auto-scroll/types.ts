@@ -1,4 +1,4 @@
-export interface AutoScrollMiddlewareOptions {
+export interface AutoScrollPluginOptions {
   /**
    * Interval (in milliseconds)
    *
