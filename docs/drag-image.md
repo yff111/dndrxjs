@@ -4,7 +4,7 @@ Adds a custom drag image that follows the mouse cursor while dragging.
 
 <script setup>
 
-import 'dndrxjs/dist/styles.css'
+import 'superdrop/dist/styles.css'
 import { defineClientComponent } from 'vitepress'
 
 const DragImageDemo = defineClientComponent(() => {
@@ -13,7 +13,7 @@ const DragImageDemo = defineClientComponent(() => {
 
 </script>
 
-#### Demo
+## Demo
 
 <DragImageDemo></DragImageDemo>
 
@@ -23,7 +23,7 @@ const DragImageDemo = defineClientComponent(() => {
 
 :::
 
-#### Types
+## Types
 
 ::: code-group
 

@@ -1,18 +1,13 @@
-import type { Observable } from 'rxjs'
-import type {
-  DragDropMiddlewareHookMap,
-  DragDropMiddlewareOperator,
-  DragDropPayload,
-} from '../types'
+import type { DragDropPlugin } from '../types'
 import type { PlaceholderMiddlewareOptions } from './types'
-import { tap } from 'rxjs'
 
 export function createSimplePlaceholder(dragElements: HTMLElement[]) {
   const tagName = dragElements[0].tagName
   const placeholderElement = document.createElement(tagName)
-  placeholderElement.style.height = `${dragElements[0]!.getBoundingClientRect().height}px`
+  placeholderElement.style.height = `${dragElements[0].getBoundingClientRect().height}px`
   return [placeholderElement]
 }
+
 export function createClonedPlaceholder(dragElements: HTMLElement[]) {
   const placeholderElements = dragElements.map(
     el => el.cloneNode(true) as HTMLElement,
@@ -28,56 +23,43 @@ export const DEFAULTS: PlaceholderMiddlewareOptions = {
   createElement: createClonedPlaceholder,
 }
 
-const placeholderElementMiddleware: DragDropMiddlewareOperator<
-  PlaceholderMiddlewareOptions
-> = (options) => {
+function placeholder(options?: Partial<PlaceholderMiddlewareOptions>): DragDropPlugin {
   const { createElement } = options ? { ...DEFAULTS, ...options } : DEFAULTS
 
   let placeholderElements: HTMLElement[]
-  let dragStart = false
-  return (source: Observable<DragDropPayload>) =>
-    source.pipe(
-      tap(({ type, position, dragElements, dropElement }) =>
-        (
-          ({
-            BeforeDragStart: () => {
-              placeholderElements = createElement(dragElements)
-            },
-            DragStart: () => {
-              dragStart = true
-            },
-            DragOver: () => {
-              if (dragStart) {
-                dragStart = false
-                // hide drag elements only on the first DragOver after DragStart
-                dragElements?.forEach(el => (el.style.display = 'none'))
-              }
-              if (position === 'before') {
-                placeholderElements
-                  .reverse()
-                  .forEach(el =>
-                    dropElement?.parentNode?.insertBefore(el, dropElement),
-                  )
-              }
-              else if (position === 'after') {
-                placeholderElements
-                  .reverse()
-                  .forEach(el =>
-                    dropElement?.parentNode?.insertBefore(
-                      el,
-                      dropElement.nextSibling,
-                    ),
-                  )
-              }
-            },
-            DragEnd: () => {
-              placeholderElements?.forEach(el => el.remove?.())
-              dragElements?.forEach(el => (el.style.display = ''))
-            },
-          }) as DragDropMiddlewareHookMap
-        )[type]?.(),
-      ),
-    )
+  let dragStarted = false
+
+  return {
+    BeforeDragStart({ dragElements }) {
+      placeholderElements = createElement(dragElements)
+    },
+    DragStart() {
+      dragStarted = true
+    },
+    DragOver({ position, dragElements, dropElement }) {
+      if (dragStarted) {
+        dragStarted = false
+        dragElements.forEach(el => (el.style.display = 'none'))
+      }
+      if (position === 'before') {
+        placeholderElements
+          .reverse()
+          .forEach(el => dropElement?.parentNode?.insertBefore(el, dropElement))
+      }
+      else if (position === 'after') {
+        placeholderElements
+          .reverse()
+          .forEach(el =>
+            dropElement?.parentNode?.insertBefore(el, dropElement.nextSibling),
+          )
+      }
+    },
+    DragEnd({ dragElements }) {
+      placeholderElements?.forEach(el => el.remove())
+      dragElements.forEach(el => (el.style.display = ''))
+    },
+  }
 }
 
-export default placeholderElementMiddleware
+export { placeholder }
+export default placeholder

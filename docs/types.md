@@ -2,9 +2,10 @@
 
 Core types used across the library.
 
-- `DragDropOptions` — Configuration for `createDragDropObservable()`
-- `DragDropPayload` — The event payload emitted by the observable
-- `DragDropMiddlewareOperator` — Type for creating custom middleware
+- `DragDropOptions` — Configuration for `createDragDrop()`, including lifecycle callbacks and plugins
+- `DragDropPayload` — The event payload passed to each callback and plugin hook
+- `DragDropPlugin` — Type for creating custom plugins (`Partial<Record<DragDropEventType, (p: DragDropPayload) => void>>`)
+- `DragDropInstance` — Returned by `createDragDrop()`; call `.destroy()` to remove all listeners
 - `DropPosition` / `DropPositionRules` — Drop position values (`before`, `after`, `in`, `around`, etc.)
 - `DragDropEventType` — Event lifecycle stages: `BeforeDragStart`, `DragStart`, `DragOver`, `DragEnd`
 

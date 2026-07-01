@@ -5,7 +5,10 @@
     "moduleResolution": "bundler",
     "ignoreDeprecations": "6.0",
     "paths": {
-      "dndrxjs": ["./src/"]
+      "superdrop": ["./src/"],
+      "superdrop/*": ["./src/*"],
+      "dndrxjs": ["./src/"],
+      "dndrxjs/*": ["./src/*"]
     },
     "resolveJsonModule": true,
     "types": ["vitest/globals"],

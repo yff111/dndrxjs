@@ -1,12 +1,6 @@
 <script lang="ts" setup>
-import {
-  addClasses,
-  autoScroll,
-  createUniversalDragDropObservable as createDragDropObservable,
-  dragImage,
-  indicator,
-  reorderItems,
-} from 'dndrxjs'
+import { createDragDrop } from 'superdrop'
+import { reorderItems } from 'superdrop/utils'
 import { onMounted, onUnmounted, ref } from 'vue'
 import data from './data/MOCK_DATA_1000.json'
 
@@ -15,46 +9,39 @@ const container = ref<HTMLElement | null>(null)
 const checked = ref<Record<string, boolean>>({})
 
 onMounted(() => {
-  // #region subscription
-  const subscription = createDragDropObservable({
-    container: container.value!,
-    dropPositionFn: () => 'around',
+  const instance = createDragDrop(container.value!, {
     getSelectedElements: () =>
       Array.from(container.value!.querySelectorAll(`[data-selected="true"]`)),
-  })
-    .pipe(
-      addClasses(),
-      indicator({
-        offset: 2,
-        indicatorClasses: {
-          initial: 'custom-indicator',
-          vertical: 'custom-indicator-vertical',
-          horizontal: 'custom-indicator-horizontal',
-          after: 'custom-indicator-after',
-          in: 'custom-indicator-in',
-          before: 'custom-indicator-before',
-        },
-      }),
-      autoScroll(),
-      dragImage(),
-    )
-    .subscribe(({ type, dragElements, dropElement, position }) => {
-      if (!!dropElement && type === 'DragEnd') {
-        const index = Number.parseInt(dropElement.getAttribute('data-index')!)
-        const selectedItems = dragElements.map(
-          e =>
-            items.value.find(item => item.id === e.getAttribute('data-id'))!,
-        )
-        if (position === 'after') {
-          items.value = reorderItems(items.value, selectedItems, index + 1)
-        }
-        else if (position === 'before') {
-          items.value = reorderItems(items.value, selectedItems, index)
-        }
+    addClasses: true,
+    indicator: {
+      offset: 2,
+      indicatorClasses: {
+        initial: 'custom-indicator',
+        vertical: 'custom-indicator-vertical',
+        horizontal: 'custom-indicator-horizontal',
+        after: 'custom-indicator-after',
+        in: 'custom-indicator-in',
+        before: 'custom-indicator-before',
+      },
+    },
+    autoScroll: true,
+    dragImage: true,
+    onDragEnd({ dragElements, dropElement, position }) {
+      if (!dropElement)
+        return
+      const index = Number.parseInt(dropElement.getAttribute('data-index')!)
+      const selectedItems = dragElements.map(
+        e => items.value.find(item => item.id === e.getAttribute('data-id'))!,
+      )
+      if (position === 'after') {
+        items.value = reorderItems(items.value, selectedItems, index + 1)
       }
-    })
-  // #endregion subscription
-  onUnmounted(() => subscription.unsubscribe())
+      else if (position === 'before') {
+        items.value = reorderItems(items.value, selectedItems, index)
+      }
+    },
+  })
+  onUnmounted(() => instance.destroy())
 })
 </script>
 

@@ -2,7 +2,7 @@
 
 <script setup>
 
-import 'dndrxjs/dist/styles.css'
+import 'superdrop/dist/styles.css'
 import { defineClientComponent } from 'vitepress'
 
 const GridDemo = defineClientComponent(() => {
@@ -17,7 +17,7 @@ const GridDemoSwap = defineClientComponent(() => {
 <br>
 <br>
 
-#### Sort
+## Sort
 <br>
 
 <GridDemo></GridDemo>
@@ -34,7 +34,7 @@ Select multiple items by pressing `shift` or `alt`/`cmd`.
 
 <br><br>
 
-#### Swap
+## Swap
 <br>
 <GridDemoSwap></GridDemoSwap>
 

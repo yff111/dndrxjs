@@ -1,16 +1,6 @@
 <script lang="ts" setup>
-import type {
-  TreeNode,
-} from 'dndrxjs'
-import {
-  addClasses,
-  autoScroll,
-  createUniversalDragDropObservable as createDragDropObservable,
-  dragImage,
-  indicator,
-  moveTreeNodesById,
-} from 'dndrxjs'
-import { filter } from 'rxjs'
+import { createDragDrop } from 'superdrop'
+import { type TreeNode, moveTreeNodesById } from 'superdrop/utils'
 
 import { onMounted, onUnmounted, ref } from 'vue'
 
@@ -25,48 +15,33 @@ const container = ref(null)
 const collapsed = ref({})
 
 onMounted(() => {
-  const subscription = createDragDropObservable({
-    container: container.value!,
+  const instance = createDragDrop(container.value!, {
     dropElementSelector: '[data-id].hasChildren',
     dropPositionFn: () => 'in',
-  })
-    .pipe(
-      addClasses(),
-      indicator({ offset: 0 }),
-      autoScroll(),
-      dragImage({ minElements: 1 }),
-      filter(({ type, dropElement }) => !!dropElement && type === 'DragEnd'),
-    )
-    .subscribe(({ dropElement, position, dragElements }) => {
-      const index = Number.parseInt(dropElement!.getAttribute('data-index') as string)
-      const dropElementId = dropElement!.getAttribute('data-id')
-      const dragElementParentId
-        = dropElement!.getAttribute('data-parent-id') || 'root'
-      const selectedIds = dragElements.map(e =>
-        e.getAttribute('data-id'),
-      ) as string[]
+    addClasses: true,
+    indicator: { offset: 0 },
+    autoScroll: true,
+    dragImage: { minElements: 1 },
+    onDragEnd({ dropElement, position, dragElements }) {
+      if (!dropElement)
+        return
+      const index = Number.parseInt(dropElement.getAttribute('data-index') as string)
+      const dropElementId = dropElement.getAttribute('data-id')
+      const dragElementParentId = dropElement.getAttribute('data-parent-id') || 'root'
+      const selectedIds = dragElements.map(e => e.getAttribute('data-id')) as string[]
       if (position === 'in') {
         moveTreeNodesById(root.value, dropElementId!, selectedIds, 0)
       }
       else if (position === 'after') {
-        moveTreeNodesById(
-          root.value,
-          dragElementParentId,
-          selectedIds,
-          index + 1,
-        )
+        moveTreeNodesById(root.value, dragElementParentId, selectedIds, index + 1)
       }
       else if (position === 'before') {
-        moveTreeNodesById<any>(
-          root.value,
-          dragElementParentId,
-          selectedIds,
-          index,
-        )
+        moveTreeNodesById<any>(root.value, dragElementParentId, selectedIds, index)
       }
-    })
+    },
+  })
 
-  onUnmounted(() => subscription.unsubscribe())
+  onUnmounted(() => instance.destroy())
 })
 </script>
 
@@ -118,7 +93,6 @@ ul.tree > li > span {
   cursor: grab;
   border-radius: 5px;
   padding: 5px 12px 5px 25px !important;
-  /* color: var(--vp-c-text-1); */
 }
 ul.tree > li > span:hover {
   background: #f5f5f5;

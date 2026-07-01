@@ -1,50 +1,38 @@
 <script lang="ts" setup>
-import {
-  addClasses,
-  autoScroll,
-  createUniversalDragDropObservable as createDragDropObservable,
-  dragImage,
-  indicator,
-  reorderItems,
-} from 'dndrxjs'
+import { createDragDrop } from 'superdrop'
+import { reorderItems } from 'superdrop/utils'
 
 import { onMounted, onUnmounted, ref } from 'vue'
 import COLORS from './data/MOCK_DATA_COLORS.json'
 import { useSelectStuff } from './select-stuff'
-import 'dndrxjs/dist/styles.css'
 
 const items = ref(COLORS.map(hex => ({ id: hex })))
 const container = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-  const subscription = createDragDropObservable({
+  const instance = createDragDrop(container.value!, {
     vertical: false,
-    container: container.value!,
-    dropPositionFn: ({ dragElement, dropElement }) => 'around',
     getSelectedElements: () =>
       Array.from(container.value!.querySelectorAll('.selected')),
-  })
-    .pipe(
-      addClasses(),
-      indicator({ offset: 3 }),
-      autoScroll(),
-      dragImage({ minElements: 1 }),
-    )
-    .subscribe(({ type, dragElements, dropElement, position }) => {
-      if (type === 'DragEnd' && !!dropElement) {
-        const selectedItems = dragElements.map(
-          e =>
-            items.value.find(item => item.id === e.getAttribute('data-id'))!,
-        )
-        const index = Number.parseInt(dropElement.getAttribute('data-index')!)
-        if (position === 'after') {
-          items.value = reorderItems(items.value, selectedItems, index + 1)
-        }
-        else if (position === 'before') {
-          items.value = reorderItems(items.value, selectedItems, index)
-        }
+    addClasses: true,
+    indicator: { offset: 3 },
+    autoScroll: true,
+    dragImage: { minElements: 1 },
+    onDragEnd({ dragElements, dropElement, position }) {
+      if (!dropElement)
+        return
+      const selectedItems = dragElements.map(
+        e => items.value.find(item => item.id === e.getAttribute('data-id'))!,
+      )
+      const index = Number.parseInt(dropElement.getAttribute('data-index')!)
+      if (position === 'after') {
+        items.value = reorderItems(items.value, selectedItems, index + 1)
       }
-    })
+      else if (position === 'before') {
+        items.value = reorderItems(items.value, selectedItems, index)
+      }
+    },
+  })
 
   const { destroy } = useSelectStuff(container.value!, selected =>
     Array.from(container.value!.querySelectorAll('[data-id]')).forEach(el =>
@@ -54,7 +42,7 @@ onMounted(() => {
     ))
   onUnmounted(() => {
     destroy()
-    subscription.unsubscribe()
+    instance.destroy()
   })
 })
 </script>

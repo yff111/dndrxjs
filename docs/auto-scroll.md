@@ -3,7 +3,7 @@
 Adds horizontal and vertical auto-scrolling for the closest scrollable container element.
 
 <script setup>
-  import 'dndrxjs/dist/styles.css'
+  import 'superdrop/dist/styles.css'
   import { defineClientComponent } from 'vitepress'
 
   const AutoScrollDemo = defineClientComponent(() => {

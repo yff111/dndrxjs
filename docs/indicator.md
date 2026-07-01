@@ -4,7 +4,7 @@ Adds an absolutely positioned element to indicate the drop position of the dragg
 
 <script setup>
 
-import 'dndrxjs/dist/styles.css'
+import 'superdrop/dist/styles.css'
 import { defineClientComponent } from 'vitepress'
 
 const IndicatorDemo = defineClientComponent(() => {
@@ -13,7 +13,7 @@ const IndicatorDemo = defineClientComponent(() => {
 
 </script>
 
-#### Demo
+## Demo
 
 <IndicatorDemo></IndicatorDemo>
 
@@ -23,7 +23,7 @@ const IndicatorDemo = defineClientComponent(() => {
 
 :::
 
-#### Types
+## Types
 
 ::: code-group
 

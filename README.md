@@ -25,41 +25,31 @@ Simple, low level and modular drag & drop library that provides all Drag & Drop 
 ```ts
 // docs/getting-started-snippet.ts
 
-import createDragDropObservable, {
-  addClasses,
-  autoScroll,
-  dragImage,
-  indicator,
-} from 'dndrxjs'
+/* eslint-disable unused-imports/no-unused-vars */
+import createDragDrop from 'superdrop'
 
 // provides a few basic styles for drop-animations etc.
-import 'dndrxjs/dist/styles.css'
+// @ts-expect-error — CSS module, no types needed
+import 'superdrop/dist/styles.css'
 
-const subscription = createDragDropObservable({
-  // draggable element selector
-  dragElementSelector: '[data-id]',
-  // method that determines the drop-position
-  dropPositionFn: ({ dragElement, dropElement }) => 'around',
-  // for more options @see `DragDropOptions`
+const instance = createDragDrop(document.getElementById('list')!, {
+  // adds css classes to drag-, drop- and container-elements
+  addClasses: true,
+  // adds drop position indicator while dragging
+  indicator: true,
+  // adds custom drag image that follows the mouse cursor
+  dragImage: true,
+  // adds auto-scroll behavior inside the closest scrollable container
+  autoScroll: true,
+  onDragEnd({ dragElements, dropElement, position }) {
+    // do list transformation on "DragEnd"
+  },
+  // for more options @see `DragDropConfig`
 })
-  .pipe(
-    // adds css classes to drag-, drop- and container-elements
-    addClasses(),
-    // adds drop position indicator while dragging
-    indicator(),
-    // adds custom drag image that follows the mouse cursor
-    dragImage(),
-    // adds auto-scroll behavior inside the closest scrollable container
-    autoScroll(),
-  )
-  .subscribe(({ type, dragElements, dropElement, position }) => {
-    if (type === 'DragEnd') {
-      // do list transformation on "DragEnd"
-    }
-  })
 
-// unsubscribe when component is unmounted to remove all event-listeners
-subscription.unsubscribe()
+// call destroy() when the component is unmounted to remove all event-listeners
+instance.destroy()
+
 ```
 
 ### Caveats

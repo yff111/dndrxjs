@@ -1,12 +1,6 @@
 <script lang="ts" setup>
-import {
-  addClasses,
-  autoScroll,
-  createUniversalDragDropObservable as createDragDropObservable,
-  dragImage,
-  indicator,
-  reorderItems,
-} from 'dndrxjs'
+import { createDragDrop } from 'superdrop'
+import { reorderItems } from 'superdrop/utils'
 import { onMounted, onUnmounted, ref } from 'vue'
 import COLORS from './data/MOCK_DATA_COLORS.json'
 
@@ -14,34 +8,29 @@ const items = ref(COLORS.map(hex => ({ id: hex })))
 const container = ref(null)
 
 onMounted(() => {
-  const subscription = createDragDropObservable({
-    container: container.value!,
+  const instance = createDragDrop(container.value!, {
     vertical: false,
-    dropPositionFn: ({ dragElement, dropElement }) => 'around',
-  })
-    .pipe(
-      addClasses(),
-      indicator({ offset: 6 }),
-      dragImage({ minElements: 1 }),
-      autoScroll({ threshold: 120 }), // [!code highlight]
-    )
-    .subscribe(({ type, dragElements, dropElement, position }) => {
-      if (!!dropElement && type === 'DragEnd') {
-        const index = Number.parseInt(dropElement?.getAttribute('data-index') || '0')
-        const selectedItems = dragElements.map(
-          e =>
-            items.value.find(item => item.id === e.getAttribute('data-id'))!,
-        )
-        if (position === 'after') {
-          items.value = reorderItems(items.value, selectedItems, index + 1)
-        }
-        else if (position === 'before') {
-          items.value = reorderItems(items.value, selectedItems, index)
-        }
+    addClasses: true,
+    indicator: { offset: 6 },
+    dragImage: { minElements: 1 },
+    autoScroll: { threshold: 120 }, // [!code highlight]
+    onDragEnd({ dragElements, dropElement, position }) {
+      if (!dropElement)
+        return
+      const index = Number.parseInt(dropElement.getAttribute('data-index') || '0')
+      const selectedItems = dragElements.map(
+        e => items.value.find(item => item.id === e.getAttribute('data-id'))!,
+      )
+      if (position === 'after') {
+        items.value = reorderItems(items.value, selectedItems, index + 1)
       }
-    })
+      else if (position === 'before') {
+        items.value = reorderItems(items.value, selectedItems, index)
+      }
+    },
+  })
 
-  onUnmounted(() => subscription.unsubscribe())
+  onUnmounted(() => instance.destroy())
 })
 </script>
 

@@ -1,41 +1,33 @@
 <script lang="ts" setup>
-import {
-  addClasses,
-  autoScroll,
-  createUniversalDragDropObservable as createDragDropObservable,
-  dragImage,
-  indicator,
-  swapElements,
-} from 'dndrxjs'
+import { createDragDrop } from 'superdrop'
+import { swapElements } from 'superdrop/utils'
 
 import { onMounted, onUnmounted, ref } from 'vue'
 import COLORS from './data/MOCK_DATA_COLORS.json'
 
 const items = ref(COLORS.map(hex => ({ id: hex })))
 const container = ref<HTMLElement | null>(null)
-onMounted(() => {
-  const subscription = createDragDropObservable({
-    container: container.value!,
-    vertical: false,
-    dropPositionFn: ({ dragElement, dropElement }) => 'in',
-  })
-    .pipe(
-      addClasses(),
-      indicator({ offset: 3 }),
-      autoScroll(),
-      dragImage({ minElements: 0 }),
-    )
-    .subscribe(({ type, dragElements, dropElement, position }) => {
-      if (type === 'DragEnd' && !!dropElement) {
-        const index1 = Number.parseInt(dropElement.getAttribute('data-index')!)
-        const index2 = Number.parseInt(dragElements[0].getAttribute('data-index')!)
-        if (position === 'in') {
-          swapElements(items.value, index1, index2)
-        }
-      }
-    })
 
-  onUnmounted(() => subscription.unsubscribe())
+onMounted(() => {
+  const instance = createDragDrop(container.value!, {
+    vertical: false,
+    dropPositionFn: () => 'in',
+    addClasses: true,
+    indicator: { offset: 3 },
+    autoScroll: true,
+    dragImage: { minElements: 0 },
+    onDragEnd({ dragElements, dropElement, position }) {
+      if (!dropElement)
+        return
+      const index1 = Number.parseInt(dropElement.getAttribute('data-index')!)
+      const index2 = Number.parseInt(dragElements[0].getAttribute('data-index')!)
+      if (position === 'in') {
+        swapElements(items.value, index1, index2)
+      }
+    },
+  })
+
+  onUnmounted(() => instance.destroy())
 })
 </script>
 

@@ -21,31 +21,28 @@ export function makePayloadFactory(opts: DragDropOptions) {
 }
 
 export function calcPosition(allowedPositions: DropPositionRules, threshold: number = 0.3) {
-  return (
-    ({
-      all: (offset: number, widthOrHeight: number) =>
-        offset < widthOrHeight * threshold
-          ? 'before'
-          : offset > widthOrHeight * (1 - threshold)
-            ? 'after'
-            : 'in',
-      notAfter: (offset: number, widthOrHeight: number) =>
-        offset < widthOrHeight * threshold ? 'before' : 'in',
-      around: (offset: number, widthOrHeight: number) =>
-        offset < widthOrHeight / 2 ? 'before' : 'after',
-      none: () => 'none',
-      in: () => 'in',
-      before: () => 'before',
-      after: () => 'after',
-    }) as Record<DropPositionRules, (offset?: number, widthOrHeight?: number) => DropPosition>
-  )[allowedPositions]
+  return (offset: number = 0, widthOrHeight: number = 0): DropPosition => {
+    switch (allowedPositions) {
+      case 'all':
+        return offset < widthOrHeight * threshold ? 'before' : offset > widthOrHeight * (1 - threshold) ? 'after' : 'in'
+      case 'notAfter':
+        return offset < widthOrHeight * threshold ? 'before' : 'in'
+      case 'around':
+        return offset < widthOrHeight / 2 ? 'before' : 'after'
+      case 'none': return 'none'
+      case 'in': return 'in'
+      case 'before': return 'before'
+      case 'after': return 'after'
+    }
+  }
 }
 
 export function resolveSelectedElements(
   element: HTMLElement,
   getSelectedElements?: () => HTMLElement[],
 ): HTMLElement[] {
-  if (!getSelectedElements) return [element]
+  if (!getSelectedElements)
+    return [element]
   const selected = getSelectedElements()
   return selected.includes(element) ? selected : [...selected, element]
 }
@@ -82,7 +79,8 @@ export function moveTreeNodesById<T>(root: TreeNode<T>, target: string, elements
   // adding root with parent undefined
   itemMap[root.id] = { child: root, parent: undefined, level: 0 }
   elements.forEach((id) => {
-    if (!itemMap[id]?.parent) return
+    if (!itemMap[id]?.parent)
+      return
     const children = itemMap[id].parent!.children
     const localIndex = children.findIndex(item => item.id === id)
     const isSameNode = children === itemMap[target].child.children

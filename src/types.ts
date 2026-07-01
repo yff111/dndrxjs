@@ -1,5 +1,3 @@
-import type { Observable } from 'rxjs'
-
 export interface DragDropOptions {
   /**
    * Container element where the draggable elements and drop targets are found.
@@ -56,32 +54,47 @@ export interface DragDropOptions {
    */
   enableRectCaching: boolean
   /**
-   * Method that is called on mousedown and should return a boolean that
-   * indicates whether the Drag & Drop operation should proceed.
-   * Defaults to:
-   * (el) => !el.closest("button:not([data-id]), a:not([data-id]), input, textarea")
+   * Guard called on mousedown/touchstart — return `false` to cancel the drag.
+   * Defaults to blocking drags initiated on buttons, links, inputs, and textareas.
    */
   onBeforeDragStart: OnBeforeDragStartFn
   /**
-   * Method to create style-tag contents that will be added to the DOM during the
-   * drag & drop operation. Primarily used to set pointer-events of drop element
-   * children to 'none' to get correct offset values from dragover event.
+   * Method to create style-tag contents added to the DOM during a drag operation.
+   * Primarily sets pointer-events of drop element children to 'none' so the
+   * dragover event reports offsets relative to the drop element itself.
    */
   createStyleNode: (
     dropElementSelector: string,
     dragElementSelector: string,
     handleSelector: string,
   ) => string
+
+  // ── Lifecycle callbacks ────────────────────────────────────────────────────
+
+  /** Called when the drag begins (after the browser fires dragstart / touch threshold crossed). */
+  onDragStart?: (payload: DragDropPayload) => void
+  /** Called each time the drag position changes. */
+  onDragOver?: (payload: DragDropPayload) => void
+  /** Called when the drag ends. */
+  onDragEnd?: (payload: DragDropPayload) => void
+
+  // ── Plugins ───────────────────────────────────────────────────────────────
+
+  /**
+   * Optional list of plugins. Each plugin is an object with optional hooks for
+   * each drag lifecycle phase. Plugins are called before the option callbacks above.
+   */
+  plugins?: DragDropPlugin[]
 }
 
 export type DropPosition = 'before' | 'after' | 'in' | 'none'
 export type DropPositionRules = DropPosition | 'around' | 'all' | 'notAfter'
-export type DragDropEventType =
-  | 'BeforeDragStart'
-  | 'DragStart'
-  | 'DragOver'
-  | 'DragEnd'
-  | 'DragAbort' // currently not fired
+export type DragDropEventType
+  = | 'BeforeDragStart'
+    | 'DragStart'
+    | 'DragOver'
+    | 'DragEnd'
+    | 'DragAbort' // currently not fired
 
 export type GetSelectedElementsFn = () => HTMLElement[]
 export type GetElementIdFn = (element: HTMLElement) => string
@@ -102,16 +115,21 @@ export interface DragDropPayload {
   position?: DropPosition
   options: DragDropOptions
 }
-export type DragDropMiddlewareOperator<T = undefined> = (
-  options?: Partial<T>,
-) => (source: Observable<DragDropPayload>) => Observable<DragDropPayload>
 
-export type DragDropMiddlewareHookMap = Record<DragDropEventType, () => any>
+/**
+ * A plugin is a plain object with optional hooks for each drag lifecycle phase.
+ * Create one by calling a plugin factory (e.g. `autoScroll()`, `indicator()`).
+ */
+export type DragDropPlugin = Partial<Record<DragDropEventType, (payload: DragDropPayload) => void>>
+
+/** Returned by `createDragDrop` and its variants. Call `destroy()` to remove all listeners. */
+export interface DragDropInstance {
+  destroy: () => void
+}
 
 /**
  * Rect
  */
-
 export interface Rect { x: number, y: number, width: number, height: number }
 
 export type GetRectFn = (

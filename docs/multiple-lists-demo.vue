@@ -1,65 +1,46 @@
 <script lang="ts" setup>
-import type { TreeNode,
-} from 'dndrxjs'
-import {
-  addClasses,
-  autoScroll,
-  createUniversalDragDropObservable as createDragDropObservable,
-  dragImage,
-  indicator,
-  moveTreeNodesById,
-} from 'dndrxjs'
+import { createDragDrop } from 'superdrop'
+import { type TreeNode, moveTreeNodesById } from 'superdrop/utils'
 import { onMounted, onUnmounted, ref } from 'vue'
 import MOCK_TREE from './data/MOCK_TREE.json'
 
 const container = ref(null)
-
 const root = ref<TreeNode<string>>(MOCK_TREE)
 
 onMounted(() => {
-  const subscription = createDragDropObservable({
-    container: container.value!,
+  const instance = createDragDrop(container.value!, {
     handleSelector: '[data-id]:not([data-has-children])',
     dragOverThrottle: 10,
     dropPositionFn: ({ dragElement, dropElement }) => {
-      const isDropElementParent
-        = dropElement.getAttribute('data-parent-id') === null
+      const isDropElementParent = dropElement.getAttribute('data-parent-id') === null
       const isOwnChild = dropElement.contains(dragElement)
       return isOwnChild ? 'in' : isDropElementParent ? 'in' : 'around'
     },
-  })
-    .pipe(
-      addClasses(),
-      indicator({ offset: 0 }),
-      autoScroll(),
-      dragImage({ minElements: 1 }),
-    )
-    .subscribe(({ type, dropElement, dragElements, position }) => {
-      if (!!dropElement && type === 'DragEnd') {
-        const index = Number.parseInt(dropElement.getAttribute('data-index')!)
-        const dropElementId = dropElement.getAttribute('data-id')!
-        const dropElementParentId
-          = dropElement.getAttribute('data-parent-id') || 'root'
-        const selectedIds = dragElements.map(e => e.getAttribute('data-id')!)
+    addClasses: true,
+    indicator: { offset: 0 },
+    autoScroll: true,
+    dragImage: { minElements: 1 },
+    onDragEnd({ dropElement, dragElements, position }) {
+      if (!dropElement)
+        return
+      const index = Number.parseInt(dropElement.getAttribute('data-index')!)
+      const dropElementId = dropElement.getAttribute('data-id')!
+      const dropElementParentId = dropElement.getAttribute('data-parent-id') || 'root'
+      const selectedIds = dragElements.map(e => e.getAttribute('data-id')!)
 
-        if (position === 'in') {
-          moveTreeNodesById(root.value, dropElementId, selectedIds, 0)
-        }
-        else if (position === 'after') {
-          moveTreeNodesById(
-            root.value,
-            dropElementParentId,
-            selectedIds,
-            index + 1,
-          )
-        }
-        else if (position === 'before') {
-          moveTreeNodesById(root.value, dropElementParentId, selectedIds, index)
-        }
+      if (position === 'in') {
+        moveTreeNodesById(root.value, dropElementId, selectedIds, 0)
       }
-    })
+      else if (position === 'after') {
+        moveTreeNodesById(root.value, dropElementParentId, selectedIds, index + 1)
+      }
+      else if (position === 'before') {
+        moveTreeNodesById(root.value, dropElementParentId, selectedIds, index)
+      }
+    },
+  })
 
-  onUnmounted(() => subscription.unsubscribe())
+  onUnmounted(() => instance.destroy())
 })
 </script>
 

@@ -1,15 +1,4 @@
-import type { DragDropOptions, DragDropPayload } from './types'
-import { fromEvent, merge, of } from 'rxjs'
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  switchMap,
-  take,
-  takeUntil,
-  tap,
-  throttleTime,
-} from 'rxjs/operators'
+import type { DragDropInstance, DragDropOptions, DragDropPayload } from './types'
 import {
   calcPosition,
   flushRectCache,
@@ -26,7 +15,7 @@ export const DEFAULTS: DragDropOptions = {
   container: document.body,
   dragElementSelector: '[data-id]',
   dropElementSelector: '[data-id]',
-  handleSelector: '[data-id]', // use target selector when no handle selector was provided
+  handleSelector: '[data-id]',
   getElementId: (el: HTMLElement) => el.getAttribute('data-id') as string,
   dropPositionFn: () => 'around',
   vertical: true,
@@ -45,13 +34,13 @@ export const DEFAULTS: DragDropOptions = {
 
 export function resolveOptions(options: Partial<DragDropOptions>, overrides?: Partial<DragDropOptions>): DragDropOptions {
   const merged = { ...DEFAULTS, ...overrides, ...options } as DragDropOptions
-  if (!merged.handleSelector) merged.handleSelector = merged.dragElementSelector
+  if (!merged.handleSelector)
+    merged.handleSelector = merged.dragElementSelector
   return merged
 }
 
-export function createDragDropObservable(options: Partial<DragDropOptions> = {}) {
-  const optionsExtended = resolveOptions(options)
-
+export function createMouseDragDrop(options: Partial<DragDropOptions> = {}): DragDropInstance {
+  const opts = resolveOptions(options)
   const {
     container,
     vertical,
@@ -65,217 +54,191 @@ export function createDragDropObservable(options: Partial<DragDropOptions> = {})
     getSelectedElements,
     dropElementSelector,
     createStyleNode,
-  } = optionsExtended
+    plugins = [],
+  } = opts
 
-  const property = vertical ? 'offsetY' : ('offsetX' as keyof DragEvent)
-  let currentPayload: DragDropPayload
+  let currentPayload: DragDropPayload | null = null
+  let isDragging = false
+  let throttleTimer: ReturnType<typeof setTimeout> | undefined
+  let lastRawOffset: number | null = null
+  let lastRawDropEl: HTMLElement | null = null
+  let lastPosition: string | null = null
+  let lastPositionDropEl: HTMLElement | null = null
 
-  /**
-   * removes pointer-events on children of drop-targets so offsetY and offsetX
-   * in dragover event will be absolute
-   */
   const styleNode = document.createElement('style')
-  styleNode.textContent = createStyleNode(
-    dropElementSelector,
-    dragElementSelector,
-    handleSelector,
-  )
+  styleNode.textContent = createStyleNode(dropElementSelector, dragElementSelector, handleSelector)
 
-  const calcPositionLocal = vertical
-    ? (dropElement: HTMLElement, dragElement: HTMLElement, offset: number) =>
-        calcPosition(
-          dragElement !== dropElement
-            ? dropPositionFn({ dropElement, dragElement })
-            : 'none',
-          threshold,
-        )(offset, getRectCached(dropElement, getElementId, container).height)
-    : (dropElement: HTMLElement, dragElement: HTMLElement, offset: number) =>
-        calcPosition(
-          dragElement !== dropElement
-            ? dropPositionFn({ dropElement, dragElement })
-            : 'none',
-          threshold,
-        )(offset, getRectCached(dropElement, getElementId, container).width)
+  const createPayload = makePayloadFactory(opts)
 
-  const createPayload = makePayloadFactory(optionsExtended)
+  function dispatch(payload: DragDropPayload) {
+    currentPayload = payload
+    for (const p of plugins) p[payload.type]?.(payload)
+    if (payload.type === 'DragStart')
+      opts.onDragStart?.(payload)
+    else if (payload.type === 'DragOver')
+      opts.onDragOver?.(payload)
+    else if (payload.type === 'DragEnd')
+      opts.onDragEnd?.(payload)
+  }
 
-  /**
-   * Mousedown
-   */
-  const mousedown$ = fromEvent<MouseEvent>(container, 'mousedown').pipe(
-    filter(
-      (e: MouseEvent) =>
-        e.target instanceof HTMLElement
-        && (onBeforeDragStart ? onBeforeDragStart(e.target) : true)
-        && !!e.target.closest(handleSelector),
-    ),
-    map(
-      (e: MouseEvent) =>
-        [
-          e,
-          (e.target as HTMLElement)?.closest(handleSelector),
-          (e.target as HTMLElement)?.closest(dragElementSelector),
-        ] as [MouseEvent, HTMLElement, HTMLElement],
-    ),
-    // don't proceed if there are neither handle- nor drag-elements
-    filter(
-      ([, handleElement, dragElement]) => !!handleElement && !!dragElement,
-    ),
-    map(([e, , dragElement]) => {
-      dragElement.setAttribute('draggable', 'true')
-      // in case no drag events will be called
-      fromEvent<MouseEvent>(document, 'mouseup')
-        .pipe(take(1))
-        .subscribe(() =>
-          setAttributesTo(dragElementSelector, 'draggable', 'false', container),
-        )
-      return createPayload(
-        'BeforeDragStart',
-        e,
-        resolveSelectedElements(dragElement, getSelectedElements),
-        getClosestScrollContainer(dragElement),
-      )
-    }),
-  )
+  function calcPositionLocal(dropElement: HTMLElement, dragElement: HTMLElement, offset: number) {
+    const rules = dragElement !== dropElement
+      ? dropPositionFn({ dropElement, dragElement })
+      : 'none' as const
+    const rect = getRectCached(dropElement, getElementId, container)
+    return calcPosition(rules, threshold)(offset, vertical ? rect.height : rect.width)
+  }
 
-  /**
-   * DragStart
-   */
-  const dragStart$ = fromEvent<DragEvent>(container, 'dragstart').pipe(
-    map(
-      (e: DragEvent) =>
-        [e, (e.target as HTMLElement).closest?.(dragElementSelector)] as [
-          DragEvent,
-          HTMLElement,
-        ],
-    ),
-    // do not proceed if no element was found for dragElementSelector
-    filter(([, dragElement]) => !!dragElement),
-    // add style node
-    tap(() => document.head.appendChild(styleNode)),
-    map(([event, dragElement]) => {
-      // empty range selection
-      if (window.getSelection()?.type === 'Range') {
-        event.preventDefault()
-        document.getSelection()?.empty()
-      }
-      event.dataTransfer!.effectAllowed = 'move'
-      event.dataTransfer!.dropEffect = 'move'
+  function onDragOver(e: DragEvent) {
+    e.preventDefault()
+    if (!isDragging || !currentPayload)
+      return
 
-      flushRectCache()
+    if (dragOverThrottle) {
+      if (throttleTimer !== undefined)
+        return
+      throttleTimer = setTimeout(() => {
+        throttleTimer = undefined
+      }, dragOverThrottle)
+    }
 
-      return createPayload(
-        'DragStart',
-        event,
-        resolveSelectedElements(dragElement, getSelectedElements),
-        getClosestScrollContainer(dragElement),
-      )
-    }),
-  )
+    const offset = vertical ? e.offsetY : e.offsetX
+    const dropElement = (e.target as HTMLElement)?.closest?.(dropElementSelector) as HTMLElement | null
 
-  /**
-   * DragOver
-   */
-  const dragOver$ = fromEvent<DragEvent>(document.body, 'dragover').pipe(
-    // prevents drag end animation
-    tap((dragEvent: DragEvent) => dragEvent.preventDefault()),
-    // add dragOver event throttling
-    dragOverThrottle ? throttleTime(dragOverThrottle) : tap(),
-    map(
-      (dragEvent: DragEvent) =>
-        [
-          dragEvent[property],
-          (dragEvent.target as HTMLElement)?.closest?.(
-            dropElementSelector,
-          ) as HTMLElement,
-          dragEvent,
-        ] as [number, HTMLElement, DragEvent],
-    ),
-    // only proceed when offset and target element have both not changed
-    distinctUntilChanged(([offset, el], [offset2, el2]) => offset === offset2 && el === el2),
-    // only proceed when element exists (was found)
-    filter(
-      ([, dropElement]: [number, HTMLElement | null, DragEvent]) =>
-        !!dropElement,
-    ),
-    // map to local position, ids etc.
-    map(([offset, dropElement, dragEvent]) => ({
-      position: calcPositionLocal(
-        dropElement!,
-        currentPayload.dragElements[0],
-        offset,
-      ),
-      dropElement: dropElement!,
-      dragEvent,
-    })),
-    distinctUntilChanged(
-      (e, e2) => e.position === e2.position && e.dropElement === e2.dropElement,
-    ),
-    filter(
-      ({ dropElement, position }) =>
-        // abort when drop element not in container
-        // abort when not dragging over element
-        position !== 'none' && container.contains(dropElement),
-    ),
-    map(({ dropElement, position, dragEvent }) =>
-      createPayload(
-        'DragOver',
-        dragEvent,
-        currentPayload.dragElements,
-        getClosestScrollContainer(dropElement),
-        dropElement,
-        position,
-      ),
-    ),
-  )
+    // skip when neither offset nor target changed
+    if (offset === lastRawOffset && dropElement === lastRawDropEl)
+      return
+    lastRawOffset = offset
+    lastRawDropEl = dropElement
 
-  /**
-   * DragEnd
-   */
-  const dragEnd$ = merge(
-    fromEvent<DragEvent>(document.body, 'dragend'),
-    fromEvent<MouseEvent>(document.body, 'mouseup'),
-  ).pipe(
-    tap((e: DragEvent | MouseEvent) => {
+    if (!dropElement)
+      return
+
+    const position = calcPositionLocal(dropElement, currentPayload.dragElements[0], offset)
+
+    // skip when position and target are both unchanged
+    if (position === lastPosition && dropElement === lastPositionDropEl)
+      return
+    lastPosition = position
+    lastPositionDropEl = dropElement
+
+    if (position === 'none' || !container.contains(dropElement))
+      return
+
+    dispatch(createPayload(
+      'DragOver',
+      e,
+      currentPayload.dragElements,
+      getClosestScrollContainer(dropElement),
+      dropElement,
+      position,
+    ))
+  }
+
+  function onDragEnd(e: DragEvent | MouseEvent) {
+    if (!isDragging)
+      return
+    isDragging = false
+
+    clearTimeout(throttleTimer)
+    throttleTimer = undefined
+    lastRawOffset = null
+    lastRawDropEl = null
+    lastPosition = null
+    lastPositionDropEl = null
+
+    e.preventDefault()
+    styleNode.remove()
+    setAttributesTo(dragElementSelector, 'draggable', 'false', container)
+
+    document.body.removeEventListener('dragover', onDragOver)
+    document.body.removeEventListener('dragend', onDragEnd)
+    document.body.removeEventListener('mouseup', onDragEnd)
+
+    dispatch(createPayload(
+      'DragEnd',
+      e,
+      currentPayload!.dragElements,
+      currentPayload!.container,
+      currentPayload!.dropElement,
+      currentPayload!.position,
+    ))
+  }
+
+  function onDragStart(e: DragEvent) {
+    const dragElement = (e.target as HTMLElement).closest?.(dragElementSelector) as HTMLElement | null
+    if (!dragElement || isDragging)
+      return
+
+    isDragging = true
+    document.removeEventListener('mouseup', cleanupDraggable)
+
+    if (window.getSelection()?.type === 'Range') {
       e.preventDefault()
-      // @TODO: this does not work in FF
-      // if (e.dataTransfer?.dropEffect === "none") {
-      //   currentDropElement = null
-      // }
+      document.getSelection()?.empty()
+    }
+    e.dataTransfer!.effectAllowed = 'move'
+    e.dataTransfer!.dropEffect = 'move'
+    flushRectCache()
+    document.head.appendChild(styleNode)
 
-      // remove styleNode
+    document.body.addEventListener('dragover', onDragOver)
+    document.body.addEventListener('dragend', onDragEnd)
+    document.body.addEventListener('mouseup', onDragEnd)
+
+    dispatch(createPayload(
+      'DragStart',
+      e,
+      resolveSelectedElements(dragElement, getSelectedElements),
+      getClosestScrollContainer(dragElement),
+    ))
+  }
+
+  // Cleans up the draggable attribute when mouseup fires before dragstart
+  function cleanupDraggable() {
+    setAttributesTo(dragElementSelector, 'draggable', 'false', container)
+  }
+
+  function onMouseDown(e: MouseEvent) {
+    if (!(e.target instanceof HTMLElement))
+      return
+    if (!e.target.closest(handleSelector))
+      return
+    if (onBeforeDragStart && !onBeforeDragStart(e.target))
+      return
+
+    const dragElement = e.target.closest<HTMLElement>(dragElementSelector)
+    if (!dragElement)
+      return
+
+    dragElement.setAttribute('draggable', 'true')
+    document.addEventListener('mouseup', cleanupDraggable, { once: true })
+
+    const payload = createPayload(
+      'BeforeDragStart',
+      e,
+      resolveSelectedElements(dragElement, getSelectedElements),
+      getClosestScrollContainer(dragElement),
+    )
+    currentPayload = payload
+    for (const p of plugins) p.BeforeDragStart?.(payload)
+  }
+
+  container.addEventListener('mousedown', onMouseDown)
+  container.addEventListener('dragstart', onDragStart)
+
+  return {
+    destroy() {
+      container.removeEventListener('mousedown', onMouseDown)
+      container.removeEventListener('dragstart', onDragStart)
+      document.body.removeEventListener('dragover', onDragOver)
+      document.body.removeEventListener('dragend', onDragEnd)
+      document.body.removeEventListener('mouseup', onDragEnd)
+      document.removeEventListener('mouseup', cleanupDraggable)
+      clearTimeout(throttleTimer)
       styleNode.remove()
-      // remove attributes
-      setAttributesTo(dragElementSelector, 'draggable', 'false', container)
-    }),
-    map((e: DragEvent | MouseEvent) =>
-      createPayload(
-        'DragEnd',
-        e,
-        currentPayload.dragElements,
-        currentPayload.container,
-        currentPayload.dropElement,
-        currentPayload.position,
-      ),
-    ),
-  )
-
-  /**
-   * Bringing it all together
-   */
-  return mousedown$.pipe(
-    switchMap(mousedown =>
-      merge(
-        of(mousedown), // merge mousedown event to stream
-        dragStart$.pipe(take(1)),
-        dragOver$.pipe(takeUntil(dragEnd$)),
-        dragEnd$.pipe(take(1)),
-      ),
-    ),
-
-    // store payload
-    tap(payload => (currentPayload = payload)),
-  )
+    },
+  }
 }
 
-export default createDragDropObservable
+export default createMouseDragDrop

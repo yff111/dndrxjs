@@ -1,12 +1,6 @@
 <script lang="ts" setup>
-import {
-  addClasses,
-  autoScroll,
-  createUniversalDragDropObservable as createDragDropObservable,
-  dragImage,
-  indicator,
-  reorderItems,
-} from 'dndrxjs'
+import { createDragDrop } from 'superdrop'
+import { reorderItems } from 'superdrop/utils'
 import { onMounted, onUnmounted, ref } from 'vue'
 import data from './data/MOCK_DATA_1000.json'
 
@@ -14,32 +8,27 @@ const items = ref<{ name: string, id: string }[]>(data)
 const container = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-  const subscription = createDragDropObservable({
-    container: container.value!,
-    dropPositionFn: () => 'around',
-  })
-    .pipe(
-      addClasses(),
-      indicator({ offset: 2 }),
-      autoScroll(),
-      dragImage({ minElements: 1 }),
-    )
-    .subscribe(({ type, dragElements, dropElement, position }) => {
-      if (!!dropElement && type === 'DragEnd') {
-        const index = Number.parseInt(dropElement.getAttribute('data-index')!)
-        const selectedItems = dragElements.map(
-          e =>
-            items.value.find(item => item.id === e.getAttribute('data-id'))!,
-        )
-        if (position === 'after') {
-          items.value = reorderItems(items.value, selectedItems, index + 1)
-        }
-        else if (position === 'before') {
-          items.value = reorderItems(items.value, selectedItems, index)
-        }
+  const instance = createDragDrop(container.value!, {
+    addClasses: true,
+    indicator: { offset: 2 },
+    autoScroll: true,
+    dragImage: { minElements: 1 },
+    onDragEnd({ dragElements, dropElement, position }) {
+      if (!dropElement)
+        return
+      const index = Number.parseInt(dropElement.getAttribute('data-index')!)
+      const selectedItems = dragElements.map(
+        e => items.value.find(item => item.id === e.getAttribute('data-id'))!,
+      )
+      if (position === 'after') {
+        items.value = reorderItems(items.value, selectedItems, index + 1)
       }
-    })
-  onUnmounted(() => subscription.unsubscribe())
+      else if (position === 'before') {
+        items.value = reorderItems(items.value, selectedItems, index)
+      }
+    },
+  })
+  onUnmounted(() => instance.destroy())
 })
 </script>
 

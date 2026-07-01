@@ -2,10 +2,10 @@
 layout: home
 
 hero:
-  name: "dndrxjs"
-  text: "drag & drop with rxjs"
+  name: "superdrop"
+  text: "drag & drop"
   image: "logo.png"
-  tagline: "Low-level modular drag & drop library powered by RxJS."
+  tagline: "Low-level, modular, zero-dependency drag & drop."
   actions:
     - theme: brand
       text: Getting Started
@@ -17,7 +17,7 @@ hero:
 features:
   - icon: 🎉
     title: Simple, fun and functional...
-    details: All drag & drop events are emitted through a single RxJS observable.
+    details: All drag & drop events reach you via plain callbacks — no operators, no subscriptions.
   - icon: 🛠️
     title: Feature rich
     details: Auto-scrolling, custom drag-images, custom indicators or placeholders, multiple-lists, nesting...

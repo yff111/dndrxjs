@@ -2,13 +2,14 @@
 
 Temporarily adds classes to the DOM elements involved in the drag & drop operation.
 
-### Usage
+## Usage
 
 ```ts
-import createDragDropObservable, { addClasses } from 'dndrxjs'
+import createDragDrop, { addClasses } from 'superdrop'
 
-createDragDropObservable({ container })
-  .pipe(
+createDragDrop({
+  container,
+  plugins: [
     addClasses(), // uses default class names
     // or with custom class names:
     addClasses({
@@ -17,11 +18,11 @@ createDragDropObservable({ container })
       dropClass: 'drop',
       activeContainerClass: 'active',
     }),
-  )
-  .subscribe(/* ... */)
+  ],
+})
 ```
 
-### Types
+## Types
 
 ::: code-group
 

@@ -1,27 +1,19 @@
-import type { Observable } from 'rxjs'
-import type {
-  DragDropMiddlewareHookMap,
-  DragDropMiddlewareOperator,
-  DragDropPayload,
-} from '../types'
+import type { DragDropPlugin } from '../types'
 import type { DragImageMiddlewareOptions } from './types'
-import { fromEvent, tap } from 'rxjs'
 import { fromHTML } from '../utils'
 
 function isTouchEvent(e: Event): e is TouchEvent {
   return typeof TouchEvent !== 'undefined' && e instanceof TouchEvent
 }
 
-// #region defaults
 export function defaultUpdateElementFn(selectedElements: HTMLElement[]) {
   return fromHTML(
     `<div class='drag-image'>${selectedElements.length} Element(s)</div>`,
   )
 }
-// #endregion defaults
 
 export function updateContainerStyle(element: HTMLElement, top: number, left: number) {
-  return element.setAttribute(
+  element.setAttribute(
     'style',
     `position: fixed; z-index: 9999; top: ${top}px; left:${left}px; pointer-events: none;`,
   )
@@ -31,28 +23,21 @@ export const DEFAULTS: DragImageMiddlewareOptions = {
   updateElement: defaultUpdateElementFn,
   minElements: 0,
 }
-const dragImageMiddleware: DragDropMiddlewareOperator<
-  Partial<DragImageMiddlewareOptions>
-> = (options?) => {
+
+function dragImage(options?: Partial<DragImageMiddlewareOptions>): DragDropPlugin {
   const { updateElement, minElements } = options
     ? { ...DEFAULTS, ...options }
     : DEFAULTS
 
-  let subscription: any = null
+  let removeListeners: (() => void) | null = null
   const customImageContainer = document.createElement('div')
 
-  const mousemove$ = fromEvent<DragEvent>(document, 'dragover')
-  const update = (event: DragEvent) =>
-    updateContainerStyle(customImageContainer, event.clientY, event.clientX)
-
-  // img is created once per middleware instance but only appended to the DOM
-  // during an active drag and removed in stop() to avoid permanent DOM pollution
-  const img = new Image(1, 1)
-  img.src
-    = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='
+  const img = document.createElement('canvas')
+  img.width = img.height = 1
 
   const stop = () => {
-    subscription?.unsubscribe()
+    removeListeners?.()
+    removeListeners = null
     customImageContainer.remove()
     img.remove()
   }
@@ -60,45 +45,40 @@ const dragImageMiddleware: DragDropMiddlewareOperator<
   const startDesktop = (originalEvent: DragEvent) => {
     document.body.appendChild(img)
     originalEvent.dataTransfer?.setDragImage(img, 0, 0)
-    document.body.addEventListener('dragend', () => stop(), { once: true })
-    subscription = mousemove$.subscribe(update)
-    update(originalEvent)
+    const onMove = (e: DragEvent) =>
+      updateContainerStyle(customImageContainer, e.clientY, e.clientX)
+    document.addEventListener('dragover', onMove)
+    removeListeners = () => document.removeEventListener('dragover', onMove)
+    updateContainerStyle(customImageContainer, originalEvent.clientY, originalEvent.clientX)
   }
 
   const startTouch = (originalEvent: TouchEvent) => {
     const t = originalEvent.touches[0]
-    if (t) updateContainerStyle(customImageContainer, t.clientY, t.clientX)
-    subscription = fromEvent<TouchEvent>(document, 'touchmove').subscribe((e) => {
+    if (t)
+      updateContainerStyle(customImageContainer, t.clientY, t.clientX)
+    const onMove = (e: TouchEvent) => {
       const touch = e.touches[0]
-      if (touch) updateContainerStyle(customImageContainer, touch.clientY, touch.clientX)
-    })
-    document.addEventListener('touchend', () => stop(), { once: true })
+      if (touch)
+        updateContainerStyle(customImageContainer, touch.clientY, touch.clientX)
+    }
+    document.addEventListener('touchmove', onMove)
+    removeListeners = () => document.removeEventListener('touchmove', onMove)
   }
 
-  return (source: Observable<DragDropPayload>) =>
-    source.pipe(
-      tap(({ type, originalEvent, dragElements }) =>
-        (
-          ({
-            DragStart: () => {
-              if (dragElements.length === minElements) {
-                return
-              }
-              customImageContainer.innerHTML = ''
-              customImageContainer.appendChild(updateElement(dragElements))
-              document.body.appendChild(customImageContainer)
-              if (isTouchEvent(originalEvent)) {
-                startTouch(originalEvent)
-              }
-              else {
-                startDesktop(originalEvent as DragEvent)
-              }
-            },
-            DragEnd: () => stop(),
-          }) as DragDropMiddlewareHookMap
-        )[type]?.(),
-      ),
-    )
+  return {
+    DragStart({ originalEvent, dragElements }) {
+      if (dragElements.length <= minElements)
+        return
+      customImageContainer.innerHTML = ''
+      customImageContainer.appendChild(updateElement(dragElements))
+      document.body.appendChild(customImageContainer)
+      if (isTouchEvent(originalEvent))
+        startTouch(originalEvent)
+      else startDesktop(originalEvent as DragEvent)
+    },
+    DragEnd: stop,
+  }
 }
 
-export default dragImageMiddleware
+export { dragImage }
+export default dragImage

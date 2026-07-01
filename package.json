@@ -1,7 +1,8 @@
 {
-  "name": "dndrxjs",
-  "version": "0.1.0",
-  "description": "Drag & Drop with RxJS – low level, modular, performant.",
+  "name": "superdrop",
+  "type": "module",
+  "version": "0.2.0",
+  "description": "Drag & Drop – low level, modular, performant. Zero dependencies.",
   "author": "yff111",
   "license": "MIT",
   "homepage": "https://yff111.github.io/dndrxjs/",
@@ -17,61 +18,28 @@
   "tsup": {
     "entry": [
       "src/index.ts",
-      "src/main.ts",
-      "src/touch.ts",
-      "src/auto-scroll/index.ts",
-      "src/drag-image/index.ts",
-      "src/indicator/index.ts",
-      "src/add-classes/index.ts",
       "src/utils.ts"
     ],
     "splitting": false,
     "treeshake": true,
     "minify": true,
     "format": [
-      "esm",
-      "cjs"
+      "esm"
     ],
     "clean": true
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "default": "./dist/index.js"
     },
-    "./auto-scroll": {
-      "types": "./dist/auto-scroll/index.d.ts",
-      "import": "./dist/auto-scroll/index.mjs",
-      "require": "./dist/auto-scroll/index.js"
+    "./utils": {
+      "types": "./dist/utils.d.ts",
+      "default": "./dist/utils.js"
     },
-    "./indicator": {
-      "types": "./dist/indicator/index.d.ts",
-      "import": "./dist/indicator/index.mjs",
-      "require": "./dist/indicator/index.js"
-    },
-    "./drag-image": {
-      "types": "./dist/drag-image/index.d.ts",
-      "import": "./dist/drag-image/index.mjs",
-      "require": "./dist/drag-image/index.js"
-    },
-    "./add-classes": {
-      "types": "./dist/add-classes/index.d.ts",
-      "import": "./dist/add-classes/index.mjs",
-      "require": "./dist/add-classes/index.js"
-    },
-    "./touch": {
-      "types": "./dist/touch.d.ts",
-      "import": "./dist/touch.mjs",
-      "require": "./dist/touch.js"
-    },
-    "./dist/styles.css": {
-      "import": "./dist/styles.css",
-      "require": "./dist/styles.css"
-    }
+    "./dist/styles.css": "./dist/styles.css"
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
@@ -90,9 +58,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "peerDependencies": {
-    "rxjs": "^7.8.1"
-  },
+  "peerDependencies": {},
   "dependencies": {},
   "devDependencies": {
     "@antfu/eslint-config": "^9.1.0",
@@ -102,7 +68,6 @@
     "embedme": "^1.22.1",
     "eslint": "^10.6.0",
     "install-peers": "^1.0.4",
-    "rxjs": "^7.8.1",
     "tsup": "8.5.1",
     "typescript": "6.0.3",
     "vitepress": "^1.6.4",

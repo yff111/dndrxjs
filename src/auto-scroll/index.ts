@@ -1,12 +1,5 @@
-import type { Observable } from 'rxjs'
-import type {
-  DragDropMiddlewareHookMap,
-  DragDropMiddlewareOperator,
-  DragDropPayload,
-  Rect,
-} from '../types'
+import type { DragDropPlugin, Rect } from '../types'
 import type { AutoScrollMiddlewareOptions } from './types'
-import { tap } from 'rxjs'
 import { getScrollX, getScrollY } from '../utils'
 
 function getClientCoords(event: DragEvent | MouseEvent | TouchEvent) {
@@ -23,88 +16,69 @@ export const DEFAULTS: AutoScrollMiddlewareOptions = {
   threshold: 100,
 }
 
-const autoScrollMiddleware: DragDropMiddlewareOperator<
-  AutoScrollMiddlewareOptions
-> = (options?) => {
+function autoScroll(options?: Partial<AutoScrollMiddlewareOptions>): DragDropPlugin {
   const { interval, steps, threshold } = options
     ? { ...DEFAULTS, ...options }
     : DEFAULTS
-  let scrollInterval: any
+
+  let scrollInterval: ReturnType<typeof setInterval> | undefined
   let currentScrollContainer: HTMLElement | Window = window
+  let scrollContainerRect: Rect | DOMRect = { x: 0, y: 0, width: 0, height: 0 }
 
   const scroll = (overlapY: number, overlapX: number) => {
     clearInterval(scrollInterval)
     scrollInterval = setInterval(
       () =>
-        currentScrollContainer!.scrollTo({
-          top: getScrollY(currentScrollContainer!) + overlapY * steps,
-          left: getScrollX(currentScrollContainer!) + overlapX * steps,
+        currentScrollContainer.scrollTo({
+          top: getScrollY(currentScrollContainer) + overlapY * steps,
+          left: getScrollX(currentScrollContainer) + overlapX * steps,
         }),
       interval,
     )
   }
+
   const cancelScroll = () => {
     clearInterval(scrollInterval)
-    scrollInterval = false
-  }
-  let scrollContainerRect: Rect | DOMRect = {
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
+    scrollInterval = undefined
   }
 
   const updateScrollContainer = (element: HTMLElement | Window) => {
     currentScrollContainer = element
     scrollContainerRect
       = element instanceof Window
-        ? {
-            x: 0,
-            y: 0,
-            height: element.innerHeight,
-            width: element.innerWidth,
-          }
-        : element!.getBoundingClientRect()
+        ? { x: 0, y: 0, height: element.innerHeight, width: element.innerWidth }
+        : element.getBoundingClientRect()
   }
 
-  return (source: Observable<DragDropPayload>) =>
-    source.pipe(
-      tap(({ type, scrollContainer, originalEvent }) =>
-        (
-          ({
-            DragStart: () => updateScrollContainer(scrollContainer!),
-            DragOver: () => {
-              if (scrollContainer !== currentScrollContainer) {
-                updateScrollContainer(scrollContainer!)
-              }
-              const { clientX, clientY } = getClientCoords(originalEvent)
-              const overlapY
-                = clientY - scrollContainerRect.y < threshold
-                  ? -1
-                  : clientY - scrollContainerRect.y
-                    > scrollContainerRect.height - threshold
-                    ? 1
-                    : 0
-              const overlapX
-                = clientX - scrollContainerRect.x < threshold
-                  ? -1
-                  : clientX - scrollContainerRect.x
-                    > scrollContainerRect.width - threshold
-                    ? 1
-                    : 0
+  return {
+    DragStart({ scrollContainer }) {
+      updateScrollContainer(scrollContainer)
+    },
+    DragOver({ scrollContainer, originalEvent }) {
+      if (scrollContainer !== currentScrollContainer) {
+        updateScrollContainer(scrollContainer)
+      }
+      const { clientX, clientY } = getClientCoords(originalEvent)
+      const overlapY
+        = clientY - scrollContainerRect.y < threshold
+          ? -1
+          : clientY - scrollContainerRect.y > scrollContainerRect.height - threshold
+            ? 1
+            : 0
+      const overlapX
+        = clientX - scrollContainerRect.x < threshold
+          ? -1
+          : clientX - scrollContainerRect.x > scrollContainerRect.width - threshold
+            ? 1
+            : 0
 
-              if (overlapY || overlapX) {
-                scroll(overlapY, overlapX)
-              }
-              else {
-                cancelScroll()
-              }
-            },
-            DragEnd: () => cancelScroll(),
-          }) as DragDropMiddlewareHookMap
-        )[type]?.(),
-      ),
-    )
+      if (overlapY || overlapX)
+        scroll(overlapY, overlapX)
+      else cancelScroll()
+    },
+    DragEnd() { cancelScroll() },
+  }
 }
 
-export default autoScrollMiddleware
+export { autoScroll }
+export default autoScroll

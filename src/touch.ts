@@ -1,13 +1,5 @@
-import type { DragDropOptions, DragDropPayload, DropPosition } from './types'
-import { Observable, fromEvent, merge, of } from 'rxjs'
-import {
-  filter,
-  map,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs/operators'
-import createDragDropObservable, { resolveOptions } from './main'
+import type { DragDropInstance, DragDropOptions, DragDropPayload, DropPosition } from './types'
+import createMouseDragDrop, { DEFAULTS, resolveOptions } from './main'
 import {
   calcPosition,
   flushRectCache,
@@ -18,9 +10,8 @@ import {
 
 const DRAG_THRESHOLD = 5
 
-export function createTouchDragDropObservable(options: Partial<DragDropOptions> = {}) {
+export function createTouchDragDrop(options: Partial<DragDropOptions> = {}): DragDropInstance {
   const opts = resolveOptions(options, { createStyleNode: () => '' })
-
   const {
     container,
     vertical,
@@ -32,176 +23,202 @@ export function createTouchDragDropObservable(options: Partial<DragDropOptions> 
     threshold,
     getSelectedElements,
     dropElementSelector,
+    plugins = [],
   } = opts
 
-  let currentPayload: DragDropPayload
+  let currentPayload: DragDropPayload | null = null
 
   const createPayload = makePayloadFactory(opts)
 
-  return fromEvent<TouchEvent>(container, 'touchstart', { passive: false }).pipe(
-    map((e) => {
-      const target = e.target as HTMLElement
-      return [
-        e,
-        target?.closest<HTMLElement>(handleSelector),
-        target?.closest<HTMLElement>(dragElementSelector),
-      ] as [TouchEvent, HTMLElement | null, HTMLElement | null]
-    }),
-    filter(([e, handleEl, dragEl]) =>
-      !!handleEl
-      && !!dragEl
-      && (onBeforeDragStart ? onBeforeDragStart(e.target as HTMLElement) : true),
-    ),
-    switchMap(([startEvent, , dragElement]) => {
-      const touch0 = startEvent.touches[0]
-      const startX = touch0.clientX
-      const startY = touch0.clientY
-      const rect = dragElement!.getBoundingClientRect()
-      const offsetX = startX - rect.left
-      const offsetY = startY - rect.top
-      const dragElements = resolveSelectedElements(dragElement!, getSelectedElements)
-      const scrollContainer = getClosestScrollContainer(dragElement!)
+  function onTouchStart(startEvent: TouchEvent) {
+    const target = startEvent.target as HTMLElement
+    const handleEl = target?.closest<HTMLElement>(handleSelector)
+    const dragEl = target?.closest<HTMLElement>(dragElementSelector)
+    if (!handleEl || !dragEl)
+      return
+    if (onBeforeDragStart && !onBeforeDragStart(target))
+      return
+    const el: HTMLElement = dragEl // capture narrowed type for closures
 
-      let ghost: HTMLElement | null = null
-      let dragStarted = false
-      let lastDropEl: HTMLElement | undefined
-      let lastPos: DropPosition | undefined
+    const touch0 = startEvent.touches[0]
+    const startX = touch0.clientX
+    const startY = touch0.clientY
+    const rect = el.getBoundingClientRect()
+    const offsetX = startX - rect.left
+    const offsetY = startY - rect.top
+    const dragElements = resolveSelectedElements(el, getSelectedElements)
+    const scrollContainer = getClosestScrollContainer(el)
 
-      const touchend$ = fromEvent<TouchEvent>(document, 'touchend').pipe(take(1))
+    let ghost: HTMLElement | null = null
+    let dragStarted = false
+    let lastDropEl: HTMLElement | undefined
+    let lastPos: DropPosition | undefined
+    let throttleTimer: ReturnType<typeof setTimeout> | undefined
 
-      /**
-       * Imperative touchmove handler: waits for DRAG_THRESHOLD before committing,
-       * then prevents scroll and emits DragStart / DragOver payloads.
-       * Using new Observable for precise control over addEventListener options.
-       */
-      const touchmove$ = new Observable<DragDropPayload>((subscriber) => {
-        let throttleTimer: ReturnType<typeof setTimeout> | undefined
+    // Dispatch BeforeDragStart immediately
+    const beforePayload = createPayload('BeforeDragStart', startEvent, dragElements, scrollContainer)
+    currentPayload = beforePayload
+    for (const p of plugins) p.BeforeDragStart?.(beforePayload)
 
-        const onMove = (e: TouchEvent) => {
-          const t = e.touches[0]
+    function onMove(e: TouchEvent) {
+      const t = e.touches[0]
 
-          // ── Phase 1: waiting for threshold ──────────────────────────────────
-          if (!dragStarted) {
-            if (Math.hypot(t.clientX - startX, t.clientY - startY) <= DRAG_THRESHOLD) {
-              return // allow native scroll
-            }
-            dragStarted = true
-            e.preventDefault()
+      // Phase 1: waiting for threshold to commit to a drag
+      if (!dragStarted) {
+        if (Math.hypot(t.clientX - startX, t.clientY - startY) <= DRAG_THRESHOLD)
+          return
+        dragStarted = true
+        e.preventDefault()
 
-            ghost = dragElement!.cloneNode(true) as HTMLElement
-            ghost.style.cssText = `position:fixed;pointer-events:none;z-index:9999;top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;height:${rect.height}px;opacity:0.75;margin:0;box-sizing:border-box;`
-            document.body.appendChild(ghost)
-            flushRectCache()
-            ghost.style.top = `${t.clientY - offsetY}px`
-            ghost.style.left = `${t.clientX - offsetX}px`
+        ghost = el.cloneNode(true) as HTMLElement
+        ghost.style.cssText = `position:fixed;pointer-events:none;z-index:9999;top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;height:${rect.height}px;opacity:0.75;margin:0;box-sizing:border-box;`
+        document.body.appendChild(ghost)
+        flushRectCache()
+        ghost.style.top = `${t.clientY - offsetY}px`
+        ghost.style.left = `${t.clientX - offsetX}px`
 
-            subscriber.next(createPayload('DragStart', e, dragElements, scrollContainer))
-            return
-          }
+        const startPayload = createPayload('DragStart', e, dragElements, scrollContainer)
+        currentPayload = startPayload
+        for (const p of plugins) p.DragStart?.(startPayload)
+        opts.onDragStart?.(startPayload)
+        return
+      }
 
-          // ── Phase 2: drag committed ─────────────────────────────────────────
-          e.preventDefault()
+      // Phase 2: drag committed
+      e.preventDefault()
 
-          // Throttle DragOver processing
-          if (dragOverThrottle) {
-            if (throttleTimer) {
-              // Update ghost position even while throttled so it feels smooth
-              ghost!.style.top = `${t.clientY - offsetY}px`
-              ghost!.style.left = `${t.clientX - offsetX}px`
-              return
-            }
-            throttleTimer = setTimeout(() => { throttleTimer = undefined }, dragOverThrottle)
-          }
-
+      if (dragOverThrottle) {
+        if (throttleTimer !== undefined) {
+          // keep ghost smooth even while throttled
           ghost!.style.top = `${t.clientY - offsetY}px`
           ghost!.style.left = `${t.clientX - offsetX}px`
-
-          const dropEl = document.elementFromPoint(t.clientX, t.clientY)
-            ?.closest<HTMLElement>(dropElementSelector) ?? null
-          if (!dropEl || !container.contains(dropEl)) return
-
-          const { top, left, height, width } = dropEl.getBoundingClientRect()
-          const offset = vertical ? t.clientY - top : t.clientX - left
-          const dim = vertical ? height : width
-          const posRules = dragElement !== dropEl
-            ? dropPositionFn({ dropElement: dropEl, dragElement: dragElement! })
-            : 'none' as const
-          const position = calcPosition(posRules, threshold)(offset, dim)
-          if (position === 'none') return
-          if (position === lastPos && dropEl === lastDropEl) return // deduplicate
-
-          lastPos = position
-          lastDropEl = dropEl
-          subscriber.next(
-            createPayload('DragOver', e, dragElements, getClosestScrollContainer(dropEl), dropEl, position),
-          )
+          return
         }
+        throttleTimer = setTimeout(() => {
+          throttleTimer = undefined
+        }, dragOverThrottle)
+      }
 
-        document.addEventListener('touchmove', onMove, { passive: false })
-        const endSub = touchend$.subscribe(() => {
-          clearTimeout(throttleTimer)
-          document.removeEventListener('touchmove', onMove)
-          subscriber.complete()
-        })
+      ghost!.style.top = `${t.clientY - offsetY}px`
+      ghost!.style.left = `${t.clientX - offsetX}px`
 
-        return () => {
-          clearTimeout(throttleTimer)
-          document.removeEventListener('touchmove', onMove)
-          endSub.unsubscribe()
-        }
-      })
+      const dropEl = document.elementFromPoint(t.clientX, t.clientY)
+        ?.closest<HTMLElement>(dropElementSelector) ?? null
+      if (!dropEl || !container.contains(dropEl))
+        return
 
-      const end$ = touchend$.pipe(
-        tap(() => ghost?.remove()),
-        map(e =>
-          createPayload(
-            'DragEnd',
-            e,
-            dragElements,
-            container,
-            currentPayload?.dropElement,
-            currentPayload?.position,
-          ),
-        ),
+      const { top, left, height, width } = dropEl.getBoundingClientRect()
+      const offset = vertical ? t.clientY - top : t.clientX - left
+      const dim = vertical ? height : width
+      const posRules = el !== dropEl
+        ? dropPositionFn({ dropElement: dropEl, dragElement: el })
+        : 'none' as const
+      const position = calcPosition(posRules, threshold)(offset, dim)
+      if (position === 'none')
+        return
+      if (position === lastPos && dropEl === lastDropEl)
+        return
+
+      lastPos = position
+      lastDropEl = dropEl
+
+      const overPayload = createPayload(
+        'DragOver',
+        e,
+        dragElements,
+        getClosestScrollContainer(dropEl),
+        dropEl,
+        position,
       )
+      currentPayload = overPayload
+      for (const p of plugins) p.DragOver?.(overPayload)
+      opts.onDragOver?.(overPayload)
+    }
 
-      return merge(
-        of(createPayload('BeforeDragStart', startEvent, dragElements, scrollContainer)),
-        touchmove$,
-        end$,
+    function onEnd(e: TouchEvent) {
+      clearTimeout(throttleTimer)
+      document.removeEventListener('touchmove', onMove)
+      ghost?.remove()
+
+      const endPayload = createPayload(
+        'DragEnd',
+        e,
+        dragElements,
+        opts.container,
+        currentPayload?.dropElement,
+        currentPayload?.position,
       )
-    }),
-    tap(payload => (currentPayload = payload)),
-  )
+      currentPayload = endPayload
+      for (const p of plugins) p.DragEnd?.(endPayload)
+      opts.onDragEnd?.(endPayload)
+    }
+
+    document.addEventListener('touchmove', onMove, { passive: false })
+    document.addEventListener('touchend', onEnd, { once: true })
+  }
+
+  container.addEventListener('touchstart', onTouchStart, { passive: false })
+
+  return {
+    destroy() {
+      container.removeEventListener('touchstart', onTouchStart)
+    },
+  }
 }
 
 /**
- * Merges the mouse/HTML5-DnD and touch streams into one observable that works
+ * Merges the mouse/HTML5-DnD and touch streams into one instance that works
  * on desktop, mobile, and Chrome DevTools touch simulation.
  *
  * `touchstart` always fires before `mousedown` on hybrid/simulated devices, so
- * a shared flag is used to suppress the mouse stream whenever touch is active,
- * preventing duplicate BeforeDragStart/DragEnd events.
+ * a shared flag suppresses the mouse instance whenever touch is active,
+ * preventing duplicate events.
  */
-export function createUniversalDragDropObservable(options: Partial<DragDropOptions> = {}) {
+export function createUniversalDragDrop(options: Partial<DragDropOptions> = {}): DragDropInstance {
   let activeDragSource: 'mouse' | 'touch' | null = null
 
-  const mouse$ = createDragDropObservable(options).pipe(
-    filter(() => activeDragSource !== 'touch'),
-    tap(({ type }) => {
-      if (type === 'BeforeDragStart') activeDragSource = 'mouse'
-      if (type === 'DragEnd') activeDragSource = null
-    }),
-  )
+  const { onBeforeDragStart: userGuard, plugins: userPlugins = [], ...rest } = options
 
-  const touch$ = createTouchDragDropObservable(options).pipe(
-    tap(({ type }) => {
-      if (type === 'BeforeDragStart') activeDragSource = 'touch'
-      if (type === 'DragEnd') activeDragSource = null
-    }),
-  )
+  const mouse = createMouseDragDrop({
+    ...rest,
+    onBeforeDragStart: (el: HTMLElement) => {
+      if (activeDragSource === 'touch')
+        return false
+      const guard = userGuard ?? DEFAULTS.onBeforeDragStart
+      const ok = guard(el)
+      if (ok)
+        activeDragSource = 'mouse'
+      return ok
+    },
+    plugins: [
+      ...userPlugins,
+      { DragEnd: () => { activeDragSource = null } },
+    ],
+    onDragStart: options.onDragStart,
+    onDragOver: options.onDragOver,
+    onDragEnd: options.onDragEnd,
+  })
 
-  return merge(touch$, mouse$)
+  const touch = createTouchDragDrop({
+    ...rest,
+    plugins: [
+      ...userPlugins,
+      {
+        BeforeDragStart: () => { activeDragSource = 'touch' },
+        DragEnd: () => { activeDragSource = null },
+      },
+    ],
+    onDragStart: options.onDragStart,
+    onDragOver: options.onDragOver,
+    onDragEnd: options.onDragEnd,
+  })
+
+  return {
+    destroy() {
+      mouse.destroy()
+      touch.destroy()
+    },
+  }
 }
 
-export default createTouchDragDropObservable
+export default createTouchDragDrop
