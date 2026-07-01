@@ -35,7 +35,7 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Middleware',
+        text: 'Plugins',
         items: [
           { text: 'Placeholder', link: '/placeholder' },
           { text: 'Indicator', link: '/indicator' },

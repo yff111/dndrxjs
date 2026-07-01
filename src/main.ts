@@ -54,6 +54,8 @@ export function createMouseDragDrop(options: Partial<DragDropOptions> = {}): Dra
     getSelectedElements,
     dropElementSelector,
     createStyles,
+    snapToGrid,
+    collisionDetection,
     plugins = [],
   } = opts
 
@@ -70,6 +72,8 @@ export function createMouseDragDrop(options: Partial<DragDropOptions> = {}): Dra
 
   const createPayload = makePayloadFactory(opts)
 
+  const resolveCollision = collisionDetection ?? calcPosition
+
   function dispatch(payload: DragDropPayload) {
     currentPayload = payload
     for (const p of plugins) p[payload.type]?.(payload)
@@ -77,16 +81,22 @@ export function createMouseDragDrop(options: Partial<DragDropOptions> = {}): Dra
       opts.onDragStart?.(payload)
     else if (payload.type === 'DragOver')
       opts.onDragOver?.(payload)
+    else if (payload.type === 'DragAbort')
+      opts.onDragAbort?.(payload)
     else if (payload.type === 'DragEnd')
       opts.onDragEnd?.(payload)
   }
 
-  function resolvePosition(dropElement: HTMLElement, dragElement: HTMLElement, offset: number) {
+  function snapOffset(offset: number) {
+    return snapToGrid ? Math.round(offset / snapToGrid) * snapToGrid : offset
+  }
+
+  function resolvePosition(dropElement: HTMLElement, dragElement: HTMLElement, rawOffset: number) {
     const rules = dragElement !== dropElement
       ? dropPositionFn({ dropElement, dragElement })
       : 'none' as const
     const rect = getRectCached(dropElement, getElementId, container)
-    return calcPosition(rules, threshold)(offset, vertical ? rect.height : rect.width)
+    return resolveCollision(rules, threshold)(snapOffset(rawOffset), vertical ? rect.height : rect.width)
   }
 
   function onDragOver(e: DragEvent) {
@@ -135,33 +145,44 @@ export function createMouseDragDrop(options: Partial<DragDropOptions> = {}): Dra
     ))
   }
 
-  function onDragEnd(e: DragEvent | MouseEvent) {
-    if (!isDragging)
-      return
+  function cleanupDragState(e: DragEvent | MouseEvent) {
     isDragging = false
-
     clearTimeout(throttleTimer)
     throttleTimer = undefined
     lastRawOffset = null
     lastRawDropEl = null
     lastPosition = null
     lastPositionDropEl = null
-
     e.preventDefault()
     styleNode.remove()
     setAttributesTo(dragElementSelector, 'draggable', 'false', container)
-
     document.body.removeEventListener('dragover', onDragOver)
     document.body.removeEventListener('dragend', onDragEnd)
     document.body.removeEventListener('mouseup', onDragEnd)
+  }
+
+  function onDragEnd(e: DragEvent | MouseEvent) {
+    if (!isDragging)
+      return
+
+    // dataTransfer.dropEffect is 'none' when the drag was cancelled (Escape key
+    // or released outside any accepting target). This is more reliable than
+    // listening for keydown, which browsers suppress during HTML5 DnD.
+    const aborted = e instanceof DragEvent && e.dataTransfer?.dropEffect === 'none'
+
+    cleanupDragState(e)
+
+    if (aborted) {
+      dispatch(createPayload('DragAbort', e, currentPayload!.dragElements, currentPayload!.scrollContainer))
+    }
 
     dispatch(createPayload(
       'DragEnd',
       e,
       currentPayload!.dragElements,
-      currentPayload!.container,
-      currentPayload!.dropElement,
-      currentPayload!.position,
+      currentPayload!.scrollContainer,
+      aborted ? undefined : currentPayload!.dropElement,
+      aborted ? undefined : currentPayload!.position,
     ))
   }
 

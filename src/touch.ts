@@ -23,8 +23,16 @@ export function createTouchDragDrop(options: Partial<DragDropOptions> = {}): Dra
     threshold,
     getSelectedElements,
     dropElementSelector,
+    snapToGrid,
+    collisionDetection,
     plugins = [],
   } = opts
+
+  const resolveCollision = collisionDetection ?? calcPosition
+
+  function snapVal(v: number) {
+    return snapToGrid ? Math.round(v / snapToGrid) * snapToGrid : v
+  }
 
   let currentPayload: DragDropPayload | null = null
 
@@ -51,6 +59,7 @@ export function createTouchDragDrop(options: Partial<DragDropOptions> = {}): Dra
 
     let ghost: HTMLElement | null = null
     let dragStarted = false
+    let isAborted = false
     let lastDropEl: HTMLElement | undefined
     let lastPos: DropPosition | undefined
     let throttleTimer: ReturnType<typeof setTimeout> | undefined
@@ -71,11 +80,22 @@ export function createTouchDragDrop(options: Partial<DragDropOptions> = {}): Dra
         e.preventDefault()
 
         ghost = el.cloneNode(true) as HTMLElement
-        ghost.style.cssText = `position:fixed;pointer-events:none;z-index:9999;top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;height:${rect.height}px;opacity:0.75;margin:0;box-sizing:border-box;`
+        Object.assign(ghost.style, {
+          position: 'fixed',
+          pointerEvents: 'none',
+          zIndex: '9999',
+          top: `${rect.top}px`,
+          left: `${rect.left}px`,
+          width: `${rect.width}px`,
+          height: `${rect.height}px`,
+          opacity: '0.75',
+          margin: '0',
+          boxSizing: 'border-box',
+        })
         document.body.appendChild(ghost)
         flushRectCache()
-        ghost.style.top = `${t.clientY - offsetY}px`
-        ghost.style.left = `${t.clientX - offsetX}px`
+        ghost.style.top = `${snapVal(t.clientY - offsetY)}px`
+        ghost.style.left = `${snapVal(t.clientX - offsetX)}px`
 
         const startPayload = createPayload('DragStart', e, dragElements, scrollContainer)
         currentPayload = startPayload
@@ -99,8 +119,8 @@ export function createTouchDragDrop(options: Partial<DragDropOptions> = {}): Dra
         }, dragOverThrottle)
       }
 
-      ghost!.style.top = `${t.clientY - offsetY}px`
-      ghost!.style.left = `${t.clientX - offsetX}px`
+      ghost!.style.top = `${snapVal(t.clientY - offsetY)}px`
+      ghost!.style.left = `${snapVal(t.clientX - offsetX)}px`
 
       const dropEl = document.elementFromPoint(t.clientX, t.clientY)
         ?.closest<HTMLElement>(dropElementSelector) ?? null
@@ -108,12 +128,12 @@ export function createTouchDragDrop(options: Partial<DragDropOptions> = {}): Dra
         return
 
       const { top, left, height, width } = dropEl.getBoundingClientRect()
-      const offset = vertical ? t.clientY - top : t.clientX - left
+      const rawOffset = vertical ? t.clientY - top : t.clientX - left
       const dim = vertical ? height : width
       const posRules = el !== dropEl
         ? dropPositionFn({ dropElement: dropEl, dragElement: el })
         : 'none' as const
-      const position = calcPosition(posRules, threshold)(offset, dim)
+      const position = resolveCollision(posRules, threshold)(snapVal(rawOffset), dim)
       if (position === 'none')
         return
       if (position === lastPos && dropEl === lastDropEl)
@@ -135,18 +155,34 @@ export function createTouchDragDrop(options: Partial<DragDropOptions> = {}): Dra
       opts.onDragOver?.(overPayload)
     }
 
+    function onEscapeKey(e: KeyboardEvent) {
+      if (e.key === 'Escape' && dragStarted)
+        isAborted = true
+    }
+
     function onEnd(e: TouchEvent) {
       clearTimeout(throttleTimer)
       document.removeEventListener('touchmove', onMove)
+      document.removeEventListener('keydown', onEscapeKey)
       ghost?.remove()
+
+      const aborted = isAborted
+      isAborted = false
+
+      if (aborted) {
+        const abortPayload = createPayload('DragAbort', e, dragElements, opts.container)
+        currentPayload = abortPayload
+        for (const p of plugins) p.DragAbort?.(abortPayload)
+        opts.onDragAbort?.(abortPayload)
+      }
 
       const endPayload = createPayload(
         'DragEnd',
         e,
         dragElements,
         opts.container,
-        currentPayload?.dropElement,
-        currentPayload?.position,
+        aborted ? undefined : currentPayload?.dropElement,
+        aborted ? undefined : currentPayload?.position,
       )
       currentPayload = endPayload
       for (const p of plugins) p.DragEnd?.(endPayload)
@@ -155,6 +191,7 @@ export function createTouchDragDrop(options: Partial<DragDropOptions> = {}): Dra
 
     document.addEventListener('touchmove', onMove, { passive: false })
     document.addEventListener('touchend', onEnd, { once: true })
+    document.addEventListener('keydown', onEscapeKey)
   }
 
   container.addEventListener('touchstart', onTouchStart, { passive: false })

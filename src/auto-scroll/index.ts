@@ -2,11 +2,13 @@ import type { DragDropPlugin, Rect } from '../types'
 import type { AutoScrollPluginOptions } from './types'
 import { getScrollX, getScrollY } from '../utils'
 
-function getClientCoords(event: DragEvent | MouseEvent | TouchEvent) {
+function getClientCoords(event: DragEvent | MouseEvent | TouchEvent | KeyboardEvent) {
   if (typeof TouchEvent !== 'undefined' && event instanceof TouchEvent) {
     const t = event.touches[0] ?? event.changedTouches[0]
     return { clientX: t?.clientX ?? 0, clientY: t?.clientY ?? 0 }
   }
+  if (event instanceof KeyboardEvent)
+    return { clientX: 0, clientY: 0 }
   return { clientX: (event as MouseEvent).clientX, clientY: (event as MouseEvent).clientY }
 }
 

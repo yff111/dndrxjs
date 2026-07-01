@@ -69,14 +69,28 @@ export interface DragDropOptions {
     handleSelector: string,
   ) => string
 
+  /**
+   * Snap ghost position (touch) and offset computation to a grid of this many pixels.
+   * Defaults to `undefined` (no snapping).
+   */
+  snapToGrid?: number
+  /**
+   * Override the default threshold-based position calculation.
+   * Receives `(rules, threshold)` and must return a function `(offset, size) => DropPosition`.
+   * Defaults to the built-in `calcPosition`.
+   */
+  collisionDetection?: CollisionDetectionFn
+
   // ── Lifecycle callbacks ────────────────────────────────────────────────────
 
   /** Called when the drag begins (after the browser fires dragstart / touch threshold crossed). */
   onDragStart?: (payload: DragDropPayload) => void
   /** Called each time the drag position changes. */
   onDragOver?: (payload: DragDropPayload) => void
-  /** Called when the drag ends. */
+  /** Called when the drag ends (always fires, even after an abort). */
   onDragEnd?: (payload: DragDropPayload) => void
+  /** Called when the drag is cancelled via Escape. Fires before `onDragEnd`. */
+  onDragAbort?: (payload: DragDropPayload) => void
 
   // ── Plugins ───────────────────────────────────────────────────────────────
 
@@ -94,7 +108,7 @@ export type DragDropEventType
     | 'DragStart'
     | 'DragOver'
     | 'DragEnd'
-    | 'DragAbort' // currently not fired
+    | 'DragAbort'
 
 export type GetSelectedElementsFn = () => HTMLElement[]
 export type GetElementIdFn = (element: HTMLElement) => string
@@ -103,10 +117,19 @@ export type DropPositionFn = (payload: {
   dragElement: Element
   dropElement: Element
 }) => DropPositionRules
+/**
+ * Swappable collision detection algorithm. Receives the resolved position rules
+ * and threshold, returns a function that maps (offset, elementSize) → DropPosition.
+ * The default implementation is `calcPosition` from `./main`.
+ */
+export type CollisionDetectionFn = (
+  rules: DropPositionRules,
+  threshold: number,
+) => (offset: number, size: number) => DropPosition
 
 export interface DragDropPayload {
   type: DragDropEventType
-  originalEvent: DragEvent | MouseEvent | TouchEvent
+  originalEvent: DragEvent | MouseEvent | TouchEvent | KeyboardEvent
   dragElements: HTMLElement[]
   container: HTMLElement | Window
   scrollContainer: HTMLElement | Window

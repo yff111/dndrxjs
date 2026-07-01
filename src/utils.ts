@@ -3,7 +3,7 @@ import type { DragDropEventType, DragDropOptions, DragDropPayload, DropPosition,
 export function makePayloadFactory(opts: DragDropOptions) {
   return (
     type: DragDropEventType,
-    originalEvent: DragEvent | MouseEvent | TouchEvent,
+    originalEvent: DragEvent | MouseEvent | TouchEvent | KeyboardEvent,
     dragElements: HTMLElement[],
     scrollContainer: HTMLElement | Window,
     dropElement?: HTMLElement,
