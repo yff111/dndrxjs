@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: 'dndrxjs',
+  title: 'easydnd',
   description: 'low level drag & drop library based on rxjs',
   srcDir: './docs/',
   base: '/dndrxjs/',

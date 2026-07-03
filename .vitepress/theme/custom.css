@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --vp-c-brand-1: #ed448d;
   --vp-c-brand-2: #ed448d;
   --vp-c-text-1: #222;
@@ -10,11 +10,11 @@
 
 .dark {
   --vp-c-text-1: #fff;
-}
+} 
 .title {
   font-weight: 700 !important;
 }
-
+*/
 ul.list {
   list-style: none;
   padding-left: 0;
